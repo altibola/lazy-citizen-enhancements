@@ -1,6 +1,6 @@
-"""RSI Launcher API authentication + manifest-based file download.
+"""RSI Launcher API authentication + p4k range extraction.
 
-Downloads only the files the pipeline needs from the RSI CDN:
+Downloads only the files the pipeline needs from the RSI CDN p4k archive:
   - Data/Localization/english/global.ini
   - Data/Game2.dcb
 
@@ -9,17 +9,16 @@ AUTH FLOW (reverse-engineered from RSI Launcher):
   POST /api/launcher/v3/signin/multiStep → (if MFA required)
   POST /api/launcher/v3/games/claims     → game claims
   POST /api/launcher/v3/games/library    → find game/channel IDs
-  POST /api/launcher/v3/games/release    → signed CDN URLs + manifest URL
+  POST /api/launcher/v3/games/release    → signed CDN URLs
 
-MANIFEST (binary P4K-MANI\x01 format, SC 4.7+):
-  Parsed to find per-file CDN content hashes.
-  The hash section maps file-index → 16-byte CDN object identifier.
-
-CDN OBJECTS:
-  URL: {objects_url}/{path_prefix}{hash}?{objects_sigs}
-  The path_prefix is discovered by decoding the CloudFront Policy
-  embedded in objects_sigs (base64-encoded JSON with Resource field).
-  Falls back to trying common prefixes if Policy is absent.
+DOWNLOAD STRATEGY:
+  The full p4k URL is a signed CloudFront URL — always works after auth.
+  Instead of downloading the entire p4k (50+ GB), we use HTTP Range requests:
+    1. HEAD to get total file size
+    2. Fetch last 64 KB → find ZIP/ZIP64 End-of-Central-Directory
+    3. Fetch Central Directory (CD) → find offsets of target files
+    4. Fetch each file's compressed data only
+    5. Decompress in-memory (zstd or deflate)
 
 SESSION CACHING:
   Successful login is saved to .auth/session.json (gitignored).
@@ -30,7 +29,6 @@ from __future__ import annotations
 import base64
 import json
 import logging
-import os
 import struct
 import time
 import urllib.error
@@ -65,21 +63,16 @@ _AUTH_FILE = _AUTH_DIR / "session.json"
 
 # ── Manifest targets ──────────────────────────────────────────────────────────
 
-# Maps local output filename → list of candidate trie paths (case-insensitive,
-# slash-normalised to backslash).  The first match wins; we stop as soon as
-# every local name is found.
-#
-# RSI CDN manifests can use either the full P4K-internal path *or* just the
-# bare filename when the file is a CDN-only object (SC 4.7+).  Both forms are
-# listed here so the parser works regardless of manifest version.
+# Maps local output filename → list of candidate paths inside the p4k
+# (case-insensitive, slash-normalised to backslash for comparison).
 _MANIFEST_TARGETS: dict[str, list[str]] = {
     "global.ini": [
-        "global.ini",                              # CDN-only (bare filename)
-        "Data/Localization/english/global.ini",    # P4K-internal path
+        "Data/Localization/english/global.ini",
+        "global.ini",
     ],
     "Game2.dcb": [
-        "Game2.dcb",                               # CDN-only (bare filename)
-        "Data/Game2.dcb",                          # P4K-internal path
+        "Data/Game2.dcb",
+        "Game2.dcb",
     ],
 }
 
@@ -101,27 +94,17 @@ class MFARequiredError(Exception):
 # ── Data types ────────────────────────────────────────────────────────────────
 
 class _Session(NamedTuple):
-    header_key: str    # e.g. "X-Rsi-Token"
-    header_value: str  # the token value
+    header_key: str
+    header_value: str
 
 class _Device(NamedTuple):
     header_key: str
     header_value: str
 
 class BuildInfo(NamedTuple):
-    version:      str
-    p4k_url:      str   # signed base P4K URL (legacy)
-    p4k_size:     int
-    manifest_url: str   # fully-signed manifest URL
-    objects_url:  str   # CDN base URL for per-object downloads
-    objects_sigs: str   # CloudFront auth query params (no leading "?")
-
-class _ManifestEntry(NamedTuple):
-    local_name:      str
-    hash:            str  # 32-char hex CDN object identifier
-    size:            int  # uncompressed (0 = unknown)
-    compressed_size: int  # compressed  (0 = unknown)
-    compression:     str  # "zstd" | ""
+    version:  str
+    p4k_url:  str   # signed CDN URL for the full p4k
+    p4k_size: int
 
 # ── Session cache ─────────────────────────────────────────────────────────────
 
@@ -219,7 +202,6 @@ def sign_in(username: str, password: str, retries: int = 4) -> _Session:
         except AuthError as exc:
             last_exc = exc
             msg = str(exc)
-            # Only retry on transient gateway errors; 400/401/captcha are fatal
             if any(f"HTTP {c}" in msg for c in ("403", "429", "500", "502", "503", "504")):
                 continue
             raise
@@ -314,25 +296,15 @@ def get_p4k_url(session: _Session, claims: object, channel: str = "LIVE") -> Bui
         sigs = e.get("signatures", "")
         return f"{url}?{sigs}" if url and sigs else url
 
-    manifest_full = _signed("manifest")
-    objects_raw   = _entry("objects")
-    objects_url   = objects_raw.get("url", "").rstrip("/")
-    objects_sigs  = objects_raw.get("signatures", "")
-    p4k_full      = _signed("p4kBase")
-
-    logger.info("version=%s  manifest=%s  objects_base=%s",
-                version,
-                manifest_full.split("?")[0] if manifest_full else "(none)",
-                objects_url or "(none)")
+    p4k_full = _signed("p4kBase")
 
     if not p4k_full:
         raise AuthError(f"No p4kBase.url in release response. Keys: {list(rel.keys())}")
 
-    return BuildInfo(
-        version=version, p4k_url=p4k_full, p4k_size=0,
-        manifest_url=manifest_full,
-        objects_url=objects_url, objects_sigs=objects_sigs,
-    )
+    p4k_path = p4k_full.split("?")[0]
+    logger.info("version=%s  p4k=%s", version, p4k_path)
+
+    return BuildInfo(version=version, p4k_url=p4k_full, p4k_size=0)
 
 # ── Authenticate (with session caching) ──────────────────────────────────────
 
@@ -340,7 +312,6 @@ def authenticate(username: str, password: str, channel: str = "LIVE",
                  mfa_code: str | None = None) -> BuildInfo:
     """Full auth flow. Reuses .auth/session.json when still valid."""
 
-    # 1. Try cached session
     cached = _load_cached_session()
     if cached is not None:
         logger.info("Using cached RSI session (skipping sign-in).")
@@ -351,12 +322,11 @@ def authenticate(username: str, password: str, channel: str = "LIVE",
             logger.info("Cached session expired (%s) — re-authenticating.", exc)
             _clear_cached_session()
 
-    # 2. Fresh sign-in
     try:
         session = sign_in(username, password)
     except MFARequiredError as exc:
-        partial: _Session     = exc.args[0]
-        device:  _Device | None = exc.args[1] if len(exc.args) > 1 else None
+        partial: _Session       = exc.args[0]
+        device: _Device | None  = exc.args[1] if len(exc.args) > 1 else None
         if mfa_code is None:
             try:
                 mfa_code = input("MFA code (authenticator app): ").strip()
@@ -372,432 +342,215 @@ def authenticate(username: str, password: str, channel: str = "LIVE",
 
 # ── HTTP helpers ──────────────────────────────────────────────────────────────
 
-def _http_get(url: str, extra_headers: dict | None = None) -> bytes:
+def _http_head(url: str) -> int:
+    """Return Content-Length from a HEAD request (0 if unknown)."""
     req = urllib.request.Request(
-        url, headers={"User-Agent": _USER_AGENT, **(extra_headers or {})},
+        url, method="HEAD", headers={"User-Agent": _USER_AGENT},
     )
-    with urllib.request.urlopen(req, timeout=120) as resp:
-        return resp.read()
+    with urllib.request.urlopen(req, timeout=30) as resp:
+        return int(resp.headers.get("Content-Length") or 0)
 
 def _http_range(url: str, start: int, end: int) -> bytes:
-    logger.debug("Range %d-%d (%d B)", start, end, end - start + 1)
-    return _http_get(url, {"Range": f"bytes={start}-{end}"})
+    """Download bytes [start, end] inclusive."""
+    size = end - start + 1
+    logger.debug("Range %d-%d (%d B)", start, end, size)
+    req = urllib.request.Request(
+        url, headers={"User-Agent": _USER_AGENT, "Range": f"bytes={start}-{end}"},
+    )
+    with urllib.request.urlopen(req, timeout=600) as resp:
+        return resp.read()
 
-# ── CloudFront Policy decoder ─────────────────────────────────────────────────
+# ── ZIP/p4k range extraction ──────────────────────────────────────────────────
 
-def _decode_cf_policy(objects_sigs: str) -> str | None:
-    """Decode the CloudFront Policy from objects_sigs and return the path prefix.
+_ZIP_EOCD_SIG   = 0x06054b50
+_ZIP64_EOCD_SIG = 0x06064b50
+_ZIP64_LOC_SIG  = 0x07064b50
+_ZIP_CD_SIG     = 0x02014b50
+_ZIP_LOCAL_SIG  = 0x04034b50
+_ZSTD_MAGIC     = b"\x28\xb5\x2f\xfd"
 
-    CloudFront custom-policy sigs look like:
-        Policy=<base64url-json>&Signature=<b64>&Key-Pair-Id=<id>
 
-    The JSON looks like:
-        {"Statement":[{"Resource":"https://cdn.example.com/gamedata/*",...}]}
+def _find_eocd(tail: bytes) -> int:
+    """Find the EOCD record offset within tail bytes (scan backwards)."""
+    sig = _ZIP_EOCD_SIG.to_bytes(4, "little")
+    pos = len(tail) - 22
+    while pos >= 0:
+        if tail[pos : pos + 4] == sig:
+            comment_len = struct.unpack_from("<H", tail, pos + 20)[0]
+            if pos + 22 + comment_len == len(tail):
+                return pos
+        pos -= 1
+    raise RuntimeError(
+        "ZIP End-of-Central-Directory not found in last 64 KB of p4k. "
+        "The file may be incomplete or not a valid ZIP/p4k."
+    )
 
-    We extract the path component of the Resource URL (e.g. "/gamedata/")
-    and strip the trailing wildcard/glob chars. Returns None if no Policy is
-    present (canned policy uses Expires= instead).
 
-    CloudFront URL-safe base64 uses: - → +, _ → /, ~ → =
+def _p4k_extract(p4k_url: str, out_dir: Path) -> dict[str, Path]:
+    """Extract target files from a remote p4k via HTTP Range requests.
+
+    The p4k format is ZIP-compatible (RSI uses zstd or deflate for entries).
+    We only download what we need:
+      1. HEAD → total file size
+      2. Last 64 KB → EOCD (+ ZIP64 structures)
+      3. Central Directory → file offsets
+      4. Each file's compressed data → decompress → write
     """
-    try:
-        params = dict(urllib.parse.parse_qsl(objects_sigs, keep_blank_values=True))
-        raw_b64 = params.get("Policy", "")
-        if not raw_b64:
-            return None
+    TAIL = 65536 + 22   # enough for EOCD + max ZIP comment
 
-        # Fix CloudFront's non-standard base64 chars; ~ is their padding substitute
-        padded = raw_b64.replace("-", "+").replace("_", "/").replace("~", "=")
-        padded += "=" * (-len(padded) % 4)   # ensure correct padding length
-        policy = json.loads(base64.b64decode(padded))
-
-        resource = policy["Statement"][0]["Resource"]
-        path = urllib.parse.urlparse(resource).path
-
-        # Strip trailing glob: "/gamedata/*" → "/gamedata/"
-        prefix = path.rstrip("*").rstrip("?")
-        # Guarantee a trailing "/" so the hash appends cleanly
-        if prefix and not prefix.endswith("/"):
-            prefix += "/"
-
-        logger.info("CloudFront Policy decoded → Resource path prefix: %r", prefix)
-        return prefix
-
-    except Exception as exc:
-        logger.debug("Could not decode CloudFront Policy: %s", exc)
-        return None
-
-def _decode_url_prefix(objects_sigs: str) -> str | None:
-    """Extract path prefix from a CloudFront canned-policy URLPrefix param.
-
-    RSI's canned-policy sigs look like:
-        URLPrefix=<value>&Expires=<ts>&Signature=<b64>&KeyName=<id>
-
-    URLPrefix may be:
-      - A plain URL: https://cdn.../gamedata/ (parse_qsl already URL-decodes it)
-      - A base64url-encoded URL (CloudFront custom variant)
-
-    Returns the path component (e.g. "/gamedata/"), or None if undecodable.
-    """
-    try:
-        params = dict(urllib.parse.parse_qsl(objects_sigs, keep_blank_values=True))
-        raw = params.get("URLPrefix", "")
-        if not raw:
-            return None
-
-        logger.info("URLPrefix raw value (first 120 chars): %r", raw[:120])
-
-        # Try 1: treat as a plain URL (parse_qsl already URL-decodes %xx)
-        parsed = urllib.parse.urlparse(raw)
-        if parsed.scheme in ("http", "https") and parsed.path:
-            path = parsed.path
-            if not path.endswith("/"):
-                path += "/"
-            logger.info("CloudFront URLPrefix (plain URL) → path prefix: %r", path)
-            return path
-
-        # Try 2: base64url-decode (CloudFront uses - → +, _ → /, ~ → =)
-        padded = raw.replace("-", "+").replace("_", "/").replace("~", "=")
-        padded += "=" * (-len(padded) % 4)
-        decoded = base64.b64decode(padded).decode("utf-8", errors="replace")
-        parsed2 = urllib.parse.urlparse(decoded)
-        if parsed2.scheme in ("http", "https") and parsed2.path:
-            path = parsed2.path
-            if not path.endswith("/"):
-                path += "/"
-            logger.info("CloudFront URLPrefix (base64url) → path prefix: %r", path)
-            return path
-
-        logger.info("URLPrefix not recognisable as URL (plain or b64): %r", raw[:80])
-        return None
-    except Exception as exc:
-        logger.debug("Could not decode URLPrefix: %s", exc)
-        return None
-
-
-def _p4k_path_prefix(p4k_url: str) -> str | None:
-    """Extract the directory prefix from the p4k signed URL.
-
-    p4k_url looks like:
-      https://cdn.../base/sc-alpha-4.6.0/sc-alpha-4.6.0-11228648-2.p4k?...
-
-    Returns "/base/sc-alpha-4.6.0/" so we can try that prefix for objects.
-    """
-    try:
-        path = urllib.parse.urlparse(p4k_url.split("?")[0]).path
-        prefix = path.rsplit("/", 1)[0] + "/"  # directory of the p4k file
-        logger.info("p4k path prefix: %r", prefix)
-        return prefix
-    except Exception:
-        return None
-
-
-def _cf_path_candidates(objects_sigs: str, h16: str) -> list[str]:
-    """Return ordered list of URL path strings to try for a CDN object hash.
-
-    Every path starts with "/" so it appends cleanly to the base URL
-    (which has no trailing slash).
-
-    Tries in order:
-      1. Path from CloudFront custom-policy (Policy= param)
-      2. Path from CloudFront canned-policy URLPrefix= param
-      3. Common RSI CDN path pattern fallbacks
-    """
-    candidates: list[str] = []
-
-    # 1. Custom-policy: Policy= param carries the Resource URL pattern
-    prefix = _decode_cf_policy(objects_sigs)
-    if prefix:
-        for h in (h16, h16.lower()):
-            c = f"{prefix}{h}"
-            if c not in candidates:
-                candidates.append(c)
-
-    # 2. Canned-policy: URLPrefix= is a base64url-encoded URL prefix
-    if not candidates:
-        prefix = _decode_url_prefix(objects_sigs)
-        if prefix:
-            for h in (h16, h16.lower()):
-                c = f"{prefix}{h}"
-                if c not in candidates:
-                    candidates.append(c)
-
-    # 3. Common RSI CDN path patterns, all with a leading "/"
-    for pfx in ("/", "/gamedata/", "/objects/", "/sc/", "/data/"):
-        for h in (h16, h16.lower()):
-            path = f"{pfx}{h}"
-            if path not in candidates:
-                candidates.append(path)
-
-    return candidates
-
-# ── P4K-MANI manifest parser ──────────────────────────────────────────────────
-
-_P4KMANI_MAGIC  = b"P4K-MANI\x01"
-_P4KMANI_HS     = 0x28   # header size = 40 bytes
-
-def _parse_p4kmani(data: bytes) -> list[_ManifestEntry]:
-    """Parse a binary P4K-MANI\x01 manifest (RSI 4.7+).
-
-    Tree entries: [f0:u32][nlen:u32][f2:u32][f3:u32][name:nlen bytes]
-      DIR  (f0=0xFFFFFFFF): f2=rel_child, f3=rel_sibling
-      FILE (f0=file_index): f3=rel_sibling
-    Relative → absolute: abs = rel + _P4KMANI_HS
-
-    Hash section (at HS+tree_size, stride=40):
-      [h16:16][comp:u64][uncomp:u64][other:u64]
-    """
-    HS         = _P4KMANI_HS
-    tree_size  = struct.unpack_from("<Q", data, 0x18)[0]
-    file_count = struct.unpack_from("<Q", data, 0x20)[0]
-    HASH_BASE  = HS + tree_size
-    STRIDE     = 40
-    _MAX_SIZE  = 10 ** 9   # >1 GB → not a real byte count
-
-    logger.info("P4K-MANI: tree=%d B  files=%d  hash_base=0x%x",
-                tree_size, file_count, HASH_BASE)
-    logger.info("P4K-MANI hash section first 64 bytes: %s",
-                data[HASH_BASE : HASH_BASE + 64].hex().upper())
-
-    # Build lookup: normalised trie path → local output name.
-    # Each local name may have multiple candidate paths; we accept any of them
-    # but stop as soon as every local name has been found (dedup by local name).
-    path_to_local: dict[str, str] = {}
-    for local_name, candidates in _MANIFEST_TARGETS.items():
-        for c in candidates:
-            path_to_local[_norm_path(c)] = local_name
-
-    found: list[_ManifestEntry] = []
-    found_names: set[str] = set()   # local names already collected
-
-    def _hash_entry(f0: int) -> tuple[str, str, int, int]:
-        """Return (h16, h32, comp, uncomp).
-
-        h16 = first 16 bytes as hex (stride-40 interpretation).
-        h32 = first 32 bytes as hex (stride-48/56 interpretation, or h16+next16).
-        Both are returned so the downloader can try whichever matches the CDN.
-        """
-        off = HASH_BASE + f0 * STRIDE
-        if off + STRIDE > len(data):
-            return ("", "", 0, 0)
-        raw64 = data[off : off + min(64, len(data) - off)]
-        h16   = raw64[:16].hex().upper() if len(raw64) >= 16 else ""
-        h32   = raw64[:32].hex().upper() if len(raw64) >= 32 else h16
-        comp   = struct.unpack_from("<Q", data, off + 16)[0]
-        uncomp = struct.unpack_from("<Q", data, off + 24)[0]
-        if comp   > _MAX_SIZE: comp   = 0
-        if uncomp > _MAX_SIZE: uncomp = 0
-        logger.debug("hash_entry f0=%d off=0x%x raw(64B)=%s", f0, off, raw64.hex().upper())
-        return h16, h32, comp, uncomp
-
-    def _walk(off: int, parent_path: str) -> None:
-        while True:
-            if len(found_names) == len(_MANIFEST_TARGETS):
-                return   # all targets found — stop early
-            if off < HS or off + 16 > HS + tree_size:
-                break
-            f0, nlen, f2, f3 = struct.unpack_from("<IIII", data, off)
-            if nlen == 0 or nlen > 512 or off + 16 + nlen > HS + tree_size:
-                break
-
-            name = data[off + 16: off + 16 + nlen].decode("ascii", errors="replace")
-            full = parent_path + name
-
-            if f0 == 0xFFFFFFFF:
-                if f2 != 0xFFFFFFFF:
-                    _walk(f2 + HS, full)
-            else:
-                norm = full.lower()
-                local = path_to_local.get(norm)
-                if local and local not in found_names:
-                    found_names.add(local)
-                    h16, h32, comp, uncomp = _hash_entry(f0)
-                    logger.info(
-                        "P4K-MANI match: %r  path=%r  f0=%d"
-                        "  h16=%s  h32=%s  comp=%d  uncomp=%d",
-                        local, full, f0, h16, h32, comp, uncomp,
-                    )
-                    found.append(_ManifestEntry(
-                        local_name=local,
-                        hash=h32 if h32 and len(h32) == 64 else h16,
-                        size=uncomp,
-                        compressed_size=comp,
-                        compression="zstd",
-                    ))
-
-            if f3 == 0xFFFFFFFF:
-                break
-            off = f3 + HS
-
-    # Root sentinel at HS: f0=0, nlen=0xDEAD0000, f2=rel→first real entry
-    _, _nlen, root_f2, _ = struct.unpack_from("<IIII", data, HS)
-    if root_f2 != 0xFFFFFFFF:
-        _walk(root_f2 + HS, "")
-    else:
-        logger.warning("P4K-MANI: root has f2=0xFFFFFFFF — tree empty?")
-
-    missing = set(_MANIFEST_TARGETS) - {e.local_name for e in found}
-    if missing:
-        logger.warning("P4K-MANI: targets not found: %s", missing)
-
-    return found
-
-# ── Manifest download + parse ─────────────────────────────────────────────────
-
-def _decompress_manifest(data: bytes) -> bytes:
-    if data[:2] == b"\x1f\x8b":
-        import gzip
-        return gzip.decompress(data)
-    if data[:4] == b"\x28\xb5\x2f\xfd":
-        try:
-            import zstandard as zstd
-        except ImportError:
-            raise RuntimeError("Manifest is zstd-compressed but 'zstandard' not installed.")
-        return zstd.ZstdDecompressor().decompress(data)
-    return data
-
-def _download_manifest(build: BuildInfo, cache_dir: Path | None = None) -> bytes:
-    if not build.manifest_url:
-        raise RuntimeError("No manifest URL in BuildInfo")
-
-    hash_part = build.manifest_url.split("?")[0].rsplit("/", 1)[-1]
-    if cache_dir:
-        cache_dir.mkdir(parents=True, exist_ok=True)
-        cache_file = cache_dir / f"manifest_{hash_part}.bin"
-        if cache_file.exists():
-            logger.info("Manifest from cache: %s", cache_file.name)
-            return cache_file.read_bytes()
-
-    logger.info("Downloading manifest (%s)...", hash_part[:16])
-    data = _http_get(build.manifest_url)
-    logger.info("Manifest: %d bytes", len(data))
-    if cache_dir:
-        cache_file.write_bytes(data)
-        logger.info("Manifest cached: %s", cache_file)
-    return data
-
-def _parse_manifest(data: bytes) -> list[_ManifestEntry]:
-    logger.info("Manifest probe: %s | %r",
-                data[:32].hex(), data[:64].decode("utf-8", errors="replace"))
-
-    if data[:len(_P4KMANI_MAGIC)] == _P4KMANI_MAGIC:
-        logger.info("Binary P4K-MANI format detected.")
-        return _parse_p4kmani(data)
-
-    data = _decompress_manifest(data)
-    try:
-        payload = json.loads(data)
-    except json.JSONDecodeError as exc:
-        raise RuntimeError(f"Manifest is not valid JSON: {exc}") from exc
-
-    file_list = (payload.get("files") or payload.get("entries") or []
-                 if isinstance(payload, dict) else payload)
-    logger.info("JSON manifest: %d entries", len(file_list))
-
-    # Build lookup: normalised path → local name (multiple candidates per name)
-    path_to_local: dict[str, str] = {}
-    for local_name, candidates in _MANIFEST_TARGETS.items():
-        for c in candidates:
-            path_to_local[_norm_path(c)] = local_name
-
-    found: list[_ManifestEntry] = []
-    found_names: set[str] = set()
-    for entry in file_list:
-        if not isinstance(entry, dict):
-            continue
-        raw = entry.get("localPath") or entry.get("path") or entry.get("name") or ""
-        norm = _norm_path(raw)
-        for prefix in ("starcitizen\\live\\", "starcitizen\\ptu\\", "starcitizen\\"):
-            if norm.startswith(prefix):
-                norm = norm[len(prefix):]
-                break
-        local = path_to_local.get(norm)
-        if local and local not in found_names:
-            found_names.add(local)
-            found.append(_ManifestEntry(
-                local_name=local,
-                hash=str(entry.get("hash") or entry.get("sha256") or ""),
-                size=int(entry.get("size") or 0),
-                compressed_size=int(entry.get("compressedSize") or 0),
-                compression=str(entry.get("compression") or ""),
-            ))
-            logger.info("JSON manifest match: %r hash=%s", local, found[-1].hash[:16])
-    return found
-
-# ── CDN object download ───────────────────────────────────────────────────────
-
-_ZSTD_MAGIC = b"\x28\xb5\x2f\xfd"
-
-def _download_object(build: BuildInfo, file_hash: str,
-                     compressed_size: int, uncomp_size: int,
-                     compression: str) -> bytes:
-    """Download one content-addressed object, trying multiple URL path formats.
-
-    The correct path prefix is discovered from the CloudFront Policy embedded
-    in build.objects_sigs. Falls back to common prefixes if the Policy is absent.
-    """
-    base = build.objects_url.rstrip("/")
-    sigs = build.objects_sigs
-
-    # Derive candidates: versioned prefix from p4k URL takes priority
-    p4k_prefix = _p4k_path_prefix(build.p4k_url) if build.p4k_url else None
-    candidates: list[str] = []
-    if p4k_prefix:
-        for h in (file_hash, file_hash.lower()):
-            candidates.append(f"{p4k_prefix}{h}")
-    candidates += _cf_path_candidates(sigs, file_hash)
-
-    last_exc: Exception | None = None
-    for path in candidates:
-        url = f"{base}{path}"
-        if sigs:
-            url = f"{url}?{sigs}"
-        logger.info("Trying CDN: %s%s", base, path)
-        try:
-            data = _http_get(url)
-            logger.info("  ✓ %d bytes", len(data))
-            break
-        except urllib.error.HTTPError as exc:
-            if exc.code == 403:
-                logger.warning("  403 Forbidden — CloudFront signatures may have expired.")
-                raise AuthError(
-                    "CDN returned 403 Forbidden. The CloudFront signatures in this "
-                    "session have expired. Re-run to get fresh auth."
-                ) from exc
-            if exc.code == 404:
-                logger.debug("  404 for path %r — trying next format.", path)
-                last_exc = exc
-                continue
-            raise
-        except Exception as exc:
-            last_exc = exc
-            continue
-    else:
-        paths_tried = "\n".join(f"  {base}{p}" for p in candidates)
+    # 1. Total size
+    total = _http_head(p4k_url)
+    if not total:
         raise RuntimeError(
-            f"Could not download CDN object {file_hash[:16]}:\n"
-            f"All {len(candidates)} URL formats returned 404.\n"
-            f"Paths tried:\n{paths_tried}\n\n"
-            f"Last error: {last_exc}"
+            "p4k server returned no Content-Length. "
+            "Cannot do range-based extraction without knowing file size."
+        )
+    logger.info("p4k total size: %d bytes (%.2f GB)", total, total / 1e9)
+
+    # 2. Read tail, find EOCD
+    tail_start = max(0, total - TAIL)
+    tail = _http_range(p4k_url, tail_start, total - 1)
+    eocd_pos = _find_eocd(tail)
+    eocd = tail[eocd_pos:]
+
+    cd_size   = struct.unpack_from("<I", eocd, 12)[0]
+    cd_offset = struct.unpack_from("<I", eocd, 16)[0]
+
+    # ZIP64: values == 0xFFFFFFFF → read from ZIP64 EOCD
+    if cd_size == 0xFFFFFFFF or cd_offset == 0xFFFFFFFF:
+        loc_pos = eocd_pos - 20
+        if loc_pos >= 0 and tail[loc_pos : loc_pos + 4] == _ZIP64_LOC_SIG.to_bytes(4, "little"):
+            z64_off = struct.unpack_from("<Q", tail, loc_pos + 8)[0]
+            z64_hdr = _http_range(p4k_url, z64_off, z64_off + 55)
+            if struct.unpack_from("<I", z64_hdr, 0)[0] == _ZIP64_EOCD_SIG:
+                cd_size   = struct.unpack_from("<Q", z64_hdr, 40)[0]
+                cd_offset = struct.unpack_from("<Q", z64_hdr, 48)[0]
+                logger.info("ZIP64 EOCD: cd_offset=%d cd_size=%d", cd_offset, cd_size)
+
+    logger.info("Central directory: offset=%d size=%d (%.1f MB)",
+                cd_offset, cd_size, cd_size / 1e6)
+
+    # 3. Fetch central directory
+    cd = _http_range(p4k_url, cd_offset, cd_offset + cd_size - 1)
+
+    # Build normalised-path → local-name lookup
+    path_to_local: dict[str, str] = {}
+    for local_name, candidates in _MANIFEST_TARGETS.items():
+        for c in candidates:
+            path_to_local[_norm_path(c)] = local_name
+
+    # 4. Parse CD entries
+    FileEntry = tuple[int, int, int, int]   # (local_off, comp_size, uncomp_size, method)
+    file_entries: dict[str, FileEntry] = {}
+
+    pos = 0
+    while pos + 46 <= len(cd):
+        if struct.unpack_from("<I", cd, pos)[0] != _ZIP_CD_SIG:
+            break
+
+        method      = struct.unpack_from("<H", cd, pos + 10)[0]
+        comp_size   = struct.unpack_from("<I", cd, pos + 20)[0]
+        uncomp_size = struct.unpack_from("<I", cd, pos + 24)[0]
+        fname_len   = struct.unpack_from("<H", cd, pos + 28)[0]
+        extra_len   = struct.unpack_from("<H", cd, pos + 30)[0]
+        comment_len = struct.unpack_from("<H", cd, pos + 32)[0]
+        local_off   = struct.unpack_from("<I", cd, pos + 42)[0]
+
+        fname_raw = cd[pos + 46 : pos + 46 + fname_len]
+        try:
+            fname = fname_raw.decode("utf-8")
+        except UnicodeDecodeError:
+            fname = fname_raw.decode("latin-1")
+
+        # Resolve ZIP64 extended info if any field is 0xFFFFFFFF
+        if comp_size == 0xFFFFFFFF or uncomp_size == 0xFFFFFFFF or local_off == 0xFFFFFFFF:
+            extra = cd[pos + 46 + fname_len : pos + 46 + fname_len + extra_len]
+            epos = 0
+            while epos + 4 <= len(extra):
+                eid  = struct.unpack_from("<H", extra, epos)[0]
+                elen = struct.unpack_from("<H", extra, epos + 2)[0]
+                if eid == 0x0001:
+                    vals = [
+                        struct.unpack_from("<Q", extra, epos + 4 + i * 8)[0]
+                        for i in range(elen // 8)
+                    ]
+                    vi = 0
+                    if uncomp_size == 0xFFFFFFFF and vi < len(vals):
+                        uncomp_size = vals[vi]; vi += 1
+                    if comp_size == 0xFFFFFFFF and vi < len(vals):
+                        comp_size = vals[vi]; vi += 1
+                    if local_off == 0xFFFFFFFF and vi < len(vals):
+                        local_off = vals[vi]; vi += 1
+                    break
+                epos += 4 + elen
+
+        norm = _norm_path(fname)
+        local_name = path_to_local.get(norm)
+        if local_name and local_name not in file_entries:
+            logger.info(
+                "CD entry: %r → %r  local_off=%d  comp=%d  uncomp=%d  method=%d",
+                fname, local_name, local_off, comp_size, uncomp_size, method,
+            )
+            file_entries[local_name] = (local_off, comp_size, uncomp_size, method)
+            if len(file_entries) == len(_MANIFEST_TARGETS):
+                break
+
+        pos += 46 + fname_len + extra_len + comment_len
+
+    missing = set(_MANIFEST_TARGETS) - set(file_entries)
+    if missing:
+        logger.warning("Files not found in p4k CD: %s", missing)
+    if not file_entries:
+        raise FileNotFoundError(
+            "None of the target files found in the p4k central directory. "
+            "The p4k may use a different internal path layout."
         )
 
-    # Decompress
-    comp = compression.lower()
-    if not comp or comp in ("none", "store"):
-        return data
-    if comp in ("zstd", "zstandard"):
-        if data[:4] != _ZSTD_MAGIC:
-            logger.warning("compression='zstd' but data starts with %s — returning raw.",
-                           data[:4].hex())
-            return data
-        try:
-            import zstandard as zstd_mod
-        except ImportError:
-            raise RuntimeError("'zstandard' package required. Run bootstrap.sh.")
-        return zstd_mod.ZstdDecompressor().decompress(data, max_length=uncomp_size or -1)
-    if comp in ("deflate", "zlib"):
-        return zlib.decompress(data)
-    raise ValueError(f"Unknown compression: {compression!r}")
+    # 5. Download + decompress each file
+    results: dict[str, Path] = {}
+    for local_name, (local_off, comp_size, uncomp_size, method) in file_entries.items():
+        logger.info(
+            "Downloading %s from p4k (comp=%d B / uncomp=%d B)...",
+            local_name, comp_size, uncomp_size,
+        )
+
+        # Local file header: fixed 30 bytes + variable fname + extra
+        lhdr = _http_range(p4k_url, local_off, local_off + 29)
+        lh_fname_len = struct.unpack_from("<H", lhdr, 26)[0]
+        lh_extra_len = struct.unpack_from("<H", lhdr, 28)[0]
+        data_start   = local_off + 30 + lh_fname_len + lh_extra_len
+
+        raw = _http_range(p4k_url, data_start, data_start + comp_size - 1)
+        logger.info("  fetched %d B", len(raw))
+
+        # Decompress — check zstd magic first (RSI uses it regardless of method code)
+        if raw[:4] == _ZSTD_MAGIC:
+            try:
+                import zstandard as zstd_mod
+            except ImportError:
+                raise RuntimeError(
+                    "'zstandard' package is required to decompress p4k entries. "
+                    "Run bootstrap.sh to install it."
+                )
+            decompressed = zstd_mod.ZstdDecompressor().decompress(
+                raw, max_length=uncomp_size or -1,
+            )
+        elif method == 0:
+            decompressed = raw
+        elif method == 8:
+            decompressed = zlib.decompress(raw, -15)
+        else:
+            raise ValueError(
+                f"Unknown compression for {local_name}: method={method} "
+                f"(first 4 bytes: {raw[:4].hex()})"
+            )
+
+        dest = out_dir / local_name
+        dest.write_bytes(decompressed)
+        logger.info("  saved %s (%d B)", dest, len(decompressed))
+        results[local_name] = dest
+
+    return results
 
 # ── Public API ────────────────────────────────────────────────────────────────
 
@@ -808,65 +561,24 @@ def download_pipeline_inputs(
     channel: str = "LIVE",
     mfa_code: str | None = None,
 ) -> tuple[str, Path, Path | None]:
-    """Authenticate and download global.ini + Game2.dcb from RSI CDN.
+    """Authenticate and download global.ini + Game2.dcb from the RSI CDN p4k.
+
+    Uses HTTP Range requests to extract only the needed files without
+    downloading the full archive (which is 50+ GB).
 
     Returns (game_version, path_to_global_ini, path_to_game2_dcb_or_None).
-    Game2.dcb is optional — if absent, returns None (caller must handle).
+    Game2.dcb is optional — if absent from the p4k, returns None.
     """
     build = authenticate(username, password, channel, mfa_code)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    p4k_path = build.p4k_url.split("?")[0] if build.p4k_url else "(none)"
-    logger.info("BuildInfo: version=%s  manifest=%s  objects=%s  p4k_path=%s",
-                build.version,
-                build.manifest_url.split("?")[0] if build.manifest_url else "(none)",
-                build.objects_url or "(none)",
-                p4k_path)
-
-    # Log CloudFront Policy so we can diagnose URL issues
-    if build.objects_sigs:
-        prefix = _decode_cf_policy(build.objects_sigs)
-        if prefix is None:
-            prefix = _decode_url_prefix(build.objects_sigs)
-        if prefix is None:
-            sigs_params = dict(urllib.parse.parse_qsl(build.objects_sigs))
-            logger.info("objects_sigs keys: %s  (Expires=%s)",
-                        list(sigs_params.keys()),
-                        sigs_params.get("Expires", "n/a"))
-
-    manifest_data = _download_manifest(build, cache_dir=out_dir)
-    entries = _parse_manifest(manifest_data)
-
-    if not entries:
-        raise FileNotFoundError(
-            "None of the target files found in the manifest.\n"
-            "Check log above for what paths the manifest contains."
-        )
-
-    results: dict[str, Path] = {}
-    errors:  dict[str, str]  = {}
-
-    for entry in entries:
-        if not entry.hash:
-            logger.warning("No hash for %r — skipping.", entry.local_name)
-            continue
-        try:
-            raw = _download_object(build, entry.hash,
-                                   entry.compressed_size, entry.size,
-                                   entry.compression)
-            dest = out_dir / entry.local_name
-            dest.write_bytes(raw)
-            logger.info("Saved %s → %s (%d B)", entry.local_name, dest, len(raw))
-            results[entry.local_name] = dest
-        except Exception as exc:
-            logger.error("Failed to download %r: %s", entry.local_name, exc)
-            errors[entry.local_name] = str(exc)
+    results = _p4k_extract(build.p4k_url, out_dir)
 
     if "global.ini" not in results:
-        err = errors.get("global.ini", "not found in manifest")
-        raise FileNotFoundError(f"Could not obtain global.ini: {err}")
+        err_msg = "global.ini not found in p4k central directory"
+        raise FileNotFoundError(err_msg)
 
     if "Game2.dcb" not in results:
-        logger.warning("Game2.dcb not downloaded — continuing without it.")
+        logger.warning("Game2.dcb not found in p4k — continuing without it.")
 
     return build.version, results["global.ini"], results.get("Game2.dcb")
