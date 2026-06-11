@@ -32,6 +32,7 @@ import json
 import logging
 import os
 import struct
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -199,12 +200,34 @@ def _make_session(data: dict) -> _Session:
 
 # ── Auth steps ────────────────────────────────────────────────────────────────
 
-def sign_in(username: str, password: str) -> _Session:
-    logger.info("Signing in to RSI...")
-    resp = _rsi_post("signin", {
+def sign_in(username: str, password: str, retries: int = 4) -> _Session:
+    """Sign in to RSI, retrying on transient 403/5xx (Cloudflare edge blocks)."""
+    payload = {
         "username": username, "password": password,
         "remember": True, "captcha": None, "launcherVersion": _LAUNCHER_VER,
-    })
+    }
+    last_exc: Exception | None = None
+    for attempt in range(retries):
+        if attempt:
+            delay = min(4 ** attempt, 30)  # 4, 16, 30 s
+            logger.warning("sign_in attempt %d/%d failed — retrying in %ds...",
+                           attempt, retries, delay)
+            time.sleep(delay)
+        logger.info("Signing in to RSI... (attempt %d/%d)", attempt + 1, retries)
+        try:
+            resp = _rsi_post("signin", payload)
+        except AuthError as exc:
+            last_exc = exc
+            msg = str(exc)
+            # Only retry on transient gateway errors; 400/401/captcha are fatal
+            if any(f"HTTP {c}" in msg for c in ("403", "429", "500", "502", "503", "504")):
+                continue
+            raise
+        else:
+            last_exc = None
+            break
+    if last_exc is not None:
+        raise last_exc
 
     if str(resp.get("code", "")) == _ERR_CAPTCHA:
         raise AuthError(

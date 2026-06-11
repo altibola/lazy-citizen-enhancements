@@ -132,6 +132,13 @@ jobs:
           restore-keys: |
             lce-${{ inputs.os }}-
 
+      # ── 4b. Restore RSI session across runs (skips re-login when session valid) ─
+      - name: Restore RSI session cache
+        uses: actions/cache@v4
+        with:
+          path: .auth
+          key: rsi-session-${{ runner.os }}
+
       # ── 5. Bootstrap env (skipped when restored from cache) ─────────────────
       - name: Bootstrap micromamba env + Smart Citizen
         env:
