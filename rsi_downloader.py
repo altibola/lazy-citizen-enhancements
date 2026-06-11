@@ -491,10 +491,15 @@ def _p4k_extract(p4k_url: str, out_dir: Path) -> dict[str, Path]:
     # Parse CD entries
     FileEntry = tuple[int, int, int, int]   # (local_off, comp_size, uncomp_size, method)
     file_entries: dict[str, FileEntry] = {}
+    _logged_samples = 0   # log first 20 paths to diagnose structure
 
     pos = 0
     while pos + 46 <= len(cd):
         if struct.unpack_from("<I", cd, pos)[0] != _ZIP_CD_SIG:
+            logger.warning(
+                "CD parse stopped at pos=%d (sig=0x%08x, expected 0x%08x)",
+                pos, struct.unpack_from("<I", cd, pos)[0], _ZIP_CD_SIG,
+            )
             break
 
         method      = struct.unpack_from("<H", cd, pos + 10)[0]
@@ -510,6 +515,10 @@ def _p4k_extract(p4k_url: str, out_dir: Path) -> dict[str, Path]:
             fname = fname_raw.decode("utf-8")
         except UnicodeDecodeError:
             fname = fname_raw.decode("latin-1")
+
+        if _logged_samples < 20:
+            logger.info("CD[%d] %r", _logged_samples, fname)
+            _logged_samples += 1
 
         # Resolve ZIP64 extended info if any field is 0xFFFFFFFF
         if comp_size == 0xFFFFFFFF or uncomp_size == 0xFFFFFFFF or local_off == 0xFFFFFFFF:
