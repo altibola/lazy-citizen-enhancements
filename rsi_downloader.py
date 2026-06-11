@@ -941,85 +941,149 @@ def _parse_manifest(data: bytes) -> list[_ManifestEntry]:
 
 # ── CDN content-addressed object download ─────────────────────────────────────
 
-def _download_object(build: BuildInfo, entry: _ManifestEntry) -> bytes:
-    """Download one content-addressed object, probing URL formats.
+def _fetch_object_by_hashes(build: BuildInfo, hashes: list[str],
+                            label: str) -> tuple[bytes, str] | None:
+    """Fetch a CDN object, trying each hash as a flat {domain}/{hash} path.
 
-    Logs the HTTP status of every candidate so that, even on total failure, the
-    run reveals which path layout the CDN expects.
+    Returns (data, winning_hash_hex) or None if every candidate 404s. The
+    object key is a flat root path (the manifest's own URL proves this); we try
+    uppercase then lowercase for each hash.
     """
     base = build.objects_url.rstrip("/")
     sigs = build.objects_sigs
+    seen: set[str] = set()
+    for h in hashes:
+        if not h:
+            continue
+        for hx in (h.upper(), h.lower()):
+            if hx in seen:
+                continue
+            seen.add(hx)
+            url = f"{base}/{hx}"
+            if sigs:
+                url = f"{url}?{sigs}"
+            try:
+                data = _http_get(url)
+                logger.info("  ✓ 200  %s/%s  (%d B)  [%s]", base, hx, len(data), label)
+                return data, hx
+            except urllib.error.HTTPError as exc:
+                if exc.code == 403:
+                    logger.warning("  403 %s/%s — signature/path mismatch", base, hx)
+                elif exc.code != 404:
+                    logger.info("  %d %s/%s", exc.code, base, hx)
+                else:
+                    logger.debug("  404 %s/%s", base, hx)
+            except Exception as exc:
+                logger.info("  ERR %s/%s (%s)", base, hx, exc)
+    return None
 
-    # The manifest URL is {domain}/{64-hex} at the root, and objects.url is the
-    # bare domain with a domain-wide signature — so objects are flat at the root,
-    # keyed by a 32-byte content hash. We don't yet know which hash field in the
-    # record is the key, so probe every swept candidate as a flat root path
-    # (uppercase, matching the manifest URL); add lowercase + a couple of
-    # sharded forms for the two highest-priority candidates as insurance.
-    all_hashes = [h for h in (entry.hash, *entry.alt_hashes) if h]
-    candidates: list[str] = []
-    for i, h in enumerate(all_hashes):
-        for path in ([f"/{h}"] if i >= 2 else
-                     [f"/{h}", f"/{h.lower()}",
-                      f"/{h[:2]}/{h}", f"/{h[:2].lower()}/{h.lower()}"]):
-            if path not in candidates:
-                candidates.append(path)
-    # Fixed prefixes as a last resort, top candidate only.
-    if all_hashes:
-        for p in ("objects", "data"):
-            path = f"/{p}/{all_hashes[0]}"
-            if path not in candidates:
-                candidates.append(path)
 
-    last_status = "no attempts"
-    data: bytes | None = None
-    for path in candidates:
-        url = f"{base}{path}"
-        if sigs:
-            url = f"{url}?{sigs}"
+def _maybe_decompress(data: bytes, hint: str = "") -> bytes:
+    """zstd/zlib-decompress *data* if it carries a known magic."""
+    if data[:4] == _ZSTD_MAGIC:
         try:
-            data = _http_get(url)
-            logger.info("  ✓ 200  %s%s  (%d B)", base, path, len(data))
-            break
-        except urllib.error.HTTPError as exc:
-            last_status = f"HTTP {exc.code}"
-            if exc.code == 403:
-                logger.warning("  403 %s%s — signature/path mismatch", base, path)
-            elif exc.code != 404:
-                logger.info("  %d %s%s", exc.code, base, path)
-            else:
-                logger.debug("  404 %s%s", base, path)
-            continue
-        except Exception as exc:
-            last_status = str(exc)
-            logger.info("  ERR %s%s (%s)", base, path, exc)
-            continue
-
-    if data is None:
-        tried = "\n".join(f"    {base}{p}" for p in candidates)
-        raise RuntimeError(
-            f"Could not download object for {entry.local_name} "
-            f"(hash={entry.hash[:24]}). Last status: {last_status}.\n"
-            f"Tried {len(candidates)} URL forms:\n{tried}"
-        )
-
-    # Diagnostic: the keyed object is often a small "recipe" that lists the
-    # content chunks, not the file itself. Log enough to decode its layout.
-    logger.info(
-        "Object for %s: %d B  head=%s%s",
-        entry.local_name, len(data), data[:160].hex().upper(),
-        "" if len(data) <= 160 else f"  tail={data[-32:].hex().upper()}",
-    )
-
-    comp = (entry.compression or "").lower()
-    if data[:4] == _ZSTD_MAGIC or comp in ("zstd", "zstandard"):
-        if data[:4] != _ZSTD_MAGIC:
-            return data
-        import zstandard as zstd_mod
-        return zstd_mod.ZstdDecompressor().decompress(data, max_length=entry.size or -1)
-    if comp in ("deflate", "zlib"):
+            import zstandard as zstd_mod
+        except ImportError:
+            raise RuntimeError("'zstandard' required to decompress objects.")
+        return zstd_mod.ZstdDecompressor().decompress(data, max_length=-1)
+    if data[:2] == b"\x1f\x8b":
+        import gzip
+        return gzip.decompress(data)
+    if hint in ("deflate", "zlib"):
         return zlib.decompress(data)
     return data
+
+
+# A recipe object is a RIFF-style container of [tag:4][size:u32][body] chunks.
+# "BKHD" carries a 16-byte content-chunk hash (single-chunk files); "HIRC" lists
+# the chunk hashes for multi-chunk files.
+_RECIPE_MAGIC = b"BKHD"
+
+def _iter_riff_chunks(data: bytes):
+    pos = 0
+    while pos + 8 <= len(data):
+        tag = data[pos:pos + 4]
+        size = struct.unpack_from("<I", data, pos + 4)[0]
+        body = data[pos + 8:pos + 8 + size]
+        yield tag, body
+        pos += 8 + size
+
+
+def _recipe_chunk_hashes(recipe: bytes) -> list[str]:
+    """Extract content-chunk hashes (16-byte, hex) from a BKHD/HIRC recipe.
+
+    Logs the raw chunk bodies so the exact HIRC entry stride can be confirmed
+    from a real multi-chunk file.
+    """
+    hashes: list[str] = []
+    for tag, body in _iter_riff_chunks(recipe):
+        logger.info("  recipe chunk %r: %d B  body[:64]=%s",
+                    tag.decode("latin-1", "replace"), len(body), body[:64].hex().upper())
+        if tag == b"BKHD" and len(body) >= 16:
+            # 16-byte content hash sits at the end of the 40-byte header body.
+            hashes.append(body[-16:].hex().upper())
+        elif tag == b"HIRC":
+            # Unknown exact layout yet — dump the whole table (tens of KB at
+            # most) so the entry stride can be read off a real multi-chunk file.
+            # Not harvested into chunk fetches yet (would be hundreds of probes);
+            # decode the stride from this dump first.
+            logger.info("  HIRC full hex (%d B): %s", len(body),
+                        body.hex().upper() if len(body) <= 65536 else
+                        body[:65536].hex().upper() + "…")
+    return hashes
+
+
+def _resolve_object(build: BuildInfo, raw: bytes, label: str,
+                    compression: str) -> bytes:
+    """Turn a fetched CDN object into the real file bytes.
+
+    If it's a BKHD/HIRC recipe, fetch and concatenate the referenced content
+    chunks; otherwise decompress/return as-is.
+    """
+    if raw[:4] != _RECIPE_MAGIC:
+        return _maybe_decompress(raw, compression)
+
+    logger.info("Object [%s] is a BKHD recipe (%d B) — resolving chunks.", label, len(raw))
+    chunk_hashes = _recipe_chunk_hashes(raw)
+    logger.info("Recipe [%s] references %d chunk hash(es): %s",
+                label, len(chunk_hashes), chunk_hashes[:8])
+    if not chunk_hashes:
+        logger.warning("No chunk hashes parsed from recipe [%s] — returning raw.", label)
+        return raw
+
+    parts: list[bytes] = []
+    for i, ch in enumerate(chunk_hashes):
+        got = _fetch_object_by_hashes(build, [ch], f"{label} chunk {i}")
+        if got is None:
+            logger.error("Chunk %d (%s) for [%s] not found at CDN root.", i, ch, label)
+            continue
+        cdata, _ = got
+        logger.info("  chunk %d [%s]: %d B  head=%s", i, label, len(cdata),
+                    cdata[:48].hex().upper())
+        parts.append(_maybe_decompress(cdata, compression))
+    out = b"".join(parts)
+    logger.info("Reassembled [%s]: %d chunk(s) → %d B  head=%r",
+                label, len(parts), len(out), out[:80])
+    return out
+
+
+def _download_object(build: BuildInfo, entry: _ManifestEntry) -> bytes:
+    """Download one content-addressed object (resolving recipe indirection)."""
+    hashes = [h for h in (entry.hash, *entry.alt_hashes) if h]
+    got = _fetch_object_by_hashes(build, hashes, entry.local_name)
+    if got is None:
+        raise RuntimeError(
+            f"Could not download object for {entry.local_name} "
+            f"(hash={entry.hash[:24]}). All {len(hashes)} candidates 404'd."
+        )
+    raw, _win = got
+    logger.info(
+        "Object for %s: %d B  head=%s%s",
+        entry.local_name, len(raw), raw[:160].hex().upper(),
+        "" if len(raw) <= 160 else f"  tail={raw[-32:].hex().upper()}",
+    )
+    return _resolve_object(build, raw, entry.local_name, entry.compression)
+
 
 def _download_via_manifest(build: BuildInfo, out_dir: Path) -> dict[str, Path]:
     """Manifest → per-file content hash → CDN object. Returns what it got."""
