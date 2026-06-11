@@ -113,10 +113,11 @@ class BuildInfo(NamedTuple):
 
 class _ManifestEntry(NamedTuple):
     local_name:      str   # output filename (e.g. "global.ini")
-    hash:            str   # hex CDN object identifier
-    size:            int   # uncompressed size
+    hash:            str   # hex CDN object identifier (32-byte content hash)
+    size:            int   # uncompressed size (0 = unknown)
     compressed_size: int
     compression:     str
+    alt_hashes:      tuple = ()   # fallback hash candidates at other record offsets
 
 # ── Session cache ─────────────────────────────────────────────────────────────
 
@@ -500,18 +501,17 @@ def _cf_object_prefix(objects_sigs: str) -> str | None:
     return _decode_cf_policy(objects_sigs) or _decode_url_prefix(objects_sigs)
 
 def _hash_path_forms(hash_hex: str) -> list[str]:
-    """Candidate path *suffixes* for a content hash (relative to the CDN prefix).
+    """Candidate path *suffixes* for a content hash (relative to the CDN root).
 
-    Content-addressed stores vary in how they shard the hash into a path, so we
-    enumerate the common layouts and let the probe report which returns 200.
+    The manifest's own URL is ``{domain}/{64-hex}`` (flat, at the domain root),
+    so the primary form is the bare hash; case + a little sharding are kept as
+    cheap insurance.
     """
     h = hash_hex
     forms = [
         h, h.lower(),
         f"{h[:2]}/{h}", f"{h[:2].lower()}/{h.lower()}",
-        f"{h[:2]}/{h[2:4]}/{h}", f"{h[:2].lower()}/{h[2:4].lower()}/{h.lower()}",
     ]
-    # de-dup, keep order
     seen: set[str] = set()
     return [f for f in forms if not (f in seen or seen.add(f))]
 
@@ -810,18 +810,33 @@ def _download_manifest(build: BuildInfo, cache_dir: Path | None = None) -> bytes
     return data
 
 def _parse_p4kmani(data: bytes) -> list[_ManifestEntry]:
-    """Parse a binary P4K-MANI\\x01 manifest; return matched target entries."""
+    """Parse a binary P4K-MANI\\x01 manifest; return matched target entries.
+
+    The hash section is a flat array of fixed-size records, one per file, indexed
+    by the file index (f0) stored in the tree. Each object is fetched from the
+    CDN as ``{objects.url}/{record_hash_hex}`` — the same 32-byte content-hash
+    scheme the manifest itself uses (its URL is a 64-hex hash at the domain root).
+
+    The record stride is derived from the section size so we don't hard-code a
+    guess: (manifest_size - header - tree) / file_count. For the observed builds
+    that is exactly 204 bytes/record, with the 32-byte content hash at offset 0.
+    """
     HS        = _P4KMANI_HS
     tree_size = struct.unpack_from("<Q", data, 0x18)[0]
     file_cnt  = struct.unpack_from("<Q", data, 0x20)[0]
     HASH_BASE = HS + tree_size
-    STRIDE    = 40
-    _MAX_SIZE = 10 ** 9
+    hash_bytes = len(data) - HASH_BASE
+    STRIDE    = hash_bytes // file_cnt if file_cnt else 0
 
     logger.info("P4K-MANI: tree=%d B  files=%d  hash_base=0x%x  total=%d B",
                 tree_size, file_cnt, HASH_BASE, len(data))
+    logger.info("P4K-MANI hash section: %d B / %d files = stride %d B (rem %d)",
+                hash_bytes, file_cnt, STRIDE, hash_bytes % file_cnt if file_cnt else 0)
     logger.info("P4K-MANI hash section first 64 bytes: %s",
                 data[HASH_BASE:HASH_BASE + 64].hex().upper())
+    if STRIDE < 32:
+        logger.warning("P4K-MANI: derived stride %d < 32 — falling back to 40.", STRIDE)
+        STRIDE = 40
 
     path_to_local: dict[str, str] = {}
     for local_name, candidates in _MANIFEST_TARGETS.items():
@@ -831,18 +846,10 @@ def _parse_p4kmani(data: bytes) -> list[_ManifestEntry]:
     found: list[_ManifestEntry] = []
     found_names: set[str] = set()
 
-    def _hash_entry(f0: int) -> tuple[str, str, int, int]:
+    def _record(f0: int) -> bytes:
         off = HASH_BASE + f0 * STRIDE
-        if off + STRIDE > len(data):
-            return ("", "", 0, 0)
-        raw = data[off:off + min(64, len(data) - off)]
-        h16 = raw[:16].hex().upper() if len(raw) >= 16 else ""
-        h32 = raw[:32].hex().upper() if len(raw) >= 32 else h16
-        comp   = struct.unpack_from("<Q", data, off + 16)[0]
-        uncomp = struct.unpack_from("<Q", data, off + 24)[0]
-        if comp   > _MAX_SIZE: comp   = 0
-        if uncomp > _MAX_SIZE: uncomp = 0
-        return h16, h32, comp, uncomp
+        end = off + STRIDE
+        return data[off:end] if end <= len(data) else b""
 
     def _walk(off: int, parent: str) -> None:
         while True:
@@ -862,19 +869,24 @@ def _parse_p4kmani(data: bytes) -> list[_ManifestEntry]:
                 local = path_to_local.get(full.lower())
                 if local and local not in found_names:
                     found_names.add(local)
-                    h16, h32, comp, uncomp = _hash_entry(f0)
-                    logger.info(
-                        "P4K-MANI match: %r path=%r f0=%d h16=%s h32=%s comp=%d uncomp=%d",
-                        local, full, f0, h16, h32, comp, uncomp,
+                    rec = _record(f0)
+                    primary = rec[:32].hex().upper()
+                    # Candidate hashes at a few leading offsets, in case the
+                    # record carries a small prefix before the content hash.
+                    alts = tuple(
+                        rec[o:o + 32].hex().upper()
+                        for o in (0, 4, 8, 16)
+                        if len(rec) >= o + 32 and rec[o:o + 32].hex().upper() != primary
                     )
-                    # Stride is 40 B = 16-byte hash + two u64 sizes + u64 spare,
-                    # so the content id is the 16-byte value (h16). h32 bleeds
-                    # the size fields into the hash and is wrong for this layout
-                    # — kept in the log only as a cross-check.
+                    logger.info(
+                        "P4K-MANI match: %r path=%r f0=%d stride=%d\n"
+                        "    record[0:96]=%s\n    hash(off0)=%s",
+                        local, full, f0, STRIDE, rec[:96].hex().upper(), primary,
+                    )
                     found.append(_ManifestEntry(
-                        local_name=local,
-                        hash=h16,
-                        size=uncomp, compressed_size=comp, compression="zstd",
+                        local_name=local, hash=primary,
+                        size=0, compressed_size=0, compression="zstd",
+                        alt_hashes=alts,
                     ))
             if f3 == 0xFFFFFFFF:
                 break
@@ -940,24 +952,26 @@ def _download_object(build: BuildInfo, entry: _ManifestEntry) -> bytes:
     """
     base = build.objects_url.rstrip("/")
     sigs = build.objects_sigs
-    prefix = _cf_object_prefix(sigs)
 
-    # Build ordered candidate path list: signed-policy prefix first (most
-    # likely correct), then common fixed prefixes; each crossed with the hash
-    # sharding forms.
-    prefixes: list[str] = []
-    if prefix:
-        prefixes.append(prefix)
-    for p in ("/", "/objects/", "/data/", "/gamedata/", "/sc/"):
-        if p not in prefixes:
-            prefixes.append(p)
-
+    # The manifest URL is {domain}/{64-hex} at the root, and objects.url is the
+    # bare domain with a domain-wide signature — so the object is at the root,
+    # keyed by its content hash. Probe the primary hash first, then the
+    # alt-offset candidates (in case the record has a leading prefix), each as
+    # a flat root path plus light sharding insurance.
+    all_hashes = [entry.hash, *entry.alt_hashes]
     candidates: list[str] = []
-    for p in prefixes:
-        for suffix in _hash_path_forms(entry.hash):
-            path = f"{p.rstrip('/')}/{suffix}"
+    for h in all_hashes:
+        if not h:
+            continue
+        for suffix in _hash_path_forms(h):
+            path = f"/{suffix}"
             if path not in candidates:
                 candidates.append(path)
+    # Fixed prefixes as a last resort, primary hash only.
+    for p in ("objects", "data"):
+        path = f"/{p}/{entry.hash}"
+        if path not in candidates:
+            candidates.append(path)
 
     last_status = "no attempts"
     data: bytes | None = None
