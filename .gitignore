@@ -49,14 +49,5 @@ $RECYCLE.BIN/
 # ── Auth token cache (session tokens — never commit these) ────────────────────
 .auth/
 
-# ── Terraform / Hetzner build infra (state + keys — never commit these) ───────
-infra/hetzner/.terraform/
-infra/hetzner/*.tfstate
-infra/hetzner/*.tfstate.*
-infra/hetzner/*.tfvars
-infra/hetzner/.build-ssh-key
-infra/hetzner/.build-ssh-key.pub
-infra/hetzner/crash.log
-
 # ── Logs ──────────────────────────────────────────────────────────────────────
 *.log

@@ -17,6 +17,7 @@ import os
 import platform
 import stat
 import sys
+import urllib.error
 import urllib.request
 import zipfile
 from pathlib import Path
@@ -27,7 +28,9 @@ _REPO_ROOT = Path(__file__).resolve().parent
 _SMART_CITIZEN_DIR = _REPO_ROOT / ".smart-citizen"
 _TOOLS_DIR = _SMART_CITIZEN_DIR / "assets" / "unp4k"
 
-_GITHUB_API = "https://api.github.com/repos/dolkensp/unp4k/releases/latest"
+_GITHUB_API     = "https://api.github.com/repos/dolkensp/unp4k/releases/latest"
+_GITHUB_LATEST  = "https://github.com/dolkensp/unp4k/releases/latest"
+_GITHUB_DL_BASE = "https://github.com/dolkensp/unp4k/releases/download"
 
 # Maps (os, arch) → (unp4k zip name prefix, unforge zip name prefix, binary names inside)
 # Linux builds are framework-dependent DLLs that need `dotnet` to run.
@@ -91,8 +94,39 @@ def make_invocation(binary: Path, *args: str) -> list[str]:
 
 def _fetch_release_info() -> dict:
     logger.info("Fetching latest unp4k release info from GitHub...")
-    with urllib.request.urlopen(_GITHUB_API, timeout=30) as resp:
-        return json.loads(resp.read())
+    try:
+        with urllib.request.urlopen(_GITHUB_API, timeout=30) as resp:
+            return json.loads(resp.read())
+    except (urllib.error.HTTPError, urllib.error.URLError) as exc:
+        # api.github.com may be rate-limited (hosted CI) or firewalled —
+        # fall back to resolving the tag from the releases/latest redirect.
+        logger.warning("GitHub API unavailable (%s) — resolving release via redirect.", exc)
+        return _release_info_via_redirect()
+
+
+def _release_info_via_redirect() -> dict:
+    """Build a release-info dict without the GitHub API.
+
+    https://github.com/.../releases/latest redirects to .../releases/tag/<tag>;
+    asset URLs are then deterministic: .../releases/download/<tag>/<name>.
+    The synthesized asset list covers every name ensure_tools() may try; a
+    name that doesn't actually exist upstream just 404s and the next
+    candidate is tried.
+    """
+    with urllib.request.urlopen(_GITHUB_LATEST, timeout=30) as resp:
+        final_url = resp.url
+    tag = final_url.rstrip("/").rsplit("/", 1)[-1]
+    if not tag or "/" in tag:
+        raise RuntimeError(f"Could not resolve latest unp4k tag from {final_url!r}")
+    logger.info("Resolved latest unp4k release via redirect: %s", tag)
+    assets = [
+        {"name": name, "browser_download_url": f"{_GITHUB_DL_BASE}/{tag}/{name}"}
+        for tool in ("unp4k", "unforge", "unp4k-suite", "unforge-suite")
+        for os_tag in ("win", "linux")
+        for arch in ("x64", "x86", "arm64")
+        for name in (f"{tool}-{os_tag}-{arch}-{tag}.zip",)
+    ]
+    return {"tag_name": tag, "assets": assets}
 
 
 def _download_zip(url: str, label: str) -> bytes:
@@ -159,17 +193,30 @@ def ensure_tools(force: bool = False) -> tuple[Path, Path]:
     _TOOLS_DIR.mkdir(parents=True, exist_ok=True)
 
     for tool, dll_name in [("unp4k", "unp4k.dll"), ("unforge", "unforge.cli.dll")]:
-        zip_name = f"{tool}-{os_tag}-{arch_tag}-{version}.zip"
-        if zip_name not in assets:
-            # Try suite as fallback
-            zip_name = f"{tool}-suite-{os_tag}-{arch_tag}-{version}.zip"
-        if zip_name not in assets:
+        candidates = [
+            f"{tool}-{os_tag}-{arch_tag}-{version}.zip",
+            f"{tool}-suite-{os_tag}-{arch_tag}-{version}.zip",
+        ]
+        data = None
+        for zip_name in candidates:
+            url = assets.get(zip_name)
+            if not url:
+                continue
+            try:
+                data = _download_zip(url, zip_name)
+                break
+            except urllib.error.HTTPError as exc:
+                # Synthesized (API-less) asset lists may name files that don't
+                # exist upstream — a 404 just means "try the next candidate".
+                if exc.code == 404:
+                    logger.debug("Asset %s not found (404) — trying next.", zip_name)
+                    continue
+                raise
+        if data is None:
             raise RuntimeError(
                 f"No release asset found for {tool} ({os_tag}/{arch_tag}).\n"
-                f"Available: {sorted(assets)}"
+                f"Tried: {candidates}\nAvailable: {sorted(assets)}"
             )
-        url = assets[zip_name]
-        data = _download_zip(url, zip_name)
         extracted = _extract_zip_to(data, _TOOLS_DIR)
         logger.info("Extracted %s: %s", zip_name, ", ".join(extracted))
 

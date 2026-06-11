@@ -71,12 +71,14 @@ Every release records the exact versions it was built from:
 
 Two flows, by design:
 
-### 1. Full build (local machine or Hetzner — produces a `build/{p4cl}` branch)
+### 1. Full build (local machine or hosted runner — produces a `build/{p4cl}` branch)
 
 Generates everything from the game data. Needs game files: either a local
 Star Citizen install (`Data.p4k`) or `--download` (RSI CDN, credentials
-required). `./runall.sh` chains all steps; each one is also runnable on its
-own (see Usage).
+required). Runs on Windows **and** Linux — on Linux the unp4k/unforge DLL
+builds (github.com/dolkensp/unp4k) are fetched at setup time and run via the
+`dotnet` runtime. `./runall.sh` chains all steps; each one is also runnable
+on its own (see Usage).
 
 1. Extract the English `global.ini` + DataForge XMLs (from `Data.p4k`, or
    download `global.ini` + `Game2.dcb` from the CDN)
@@ -107,7 +109,7 @@ the matching `build/{p4cl}` branch into `main`.
 | **Update community translations** | Checks upstream repos for new commits; re-merges and commits when something changed. Run summary shows stored vs. upstream versions. |
 | **Translate enhancement texts** | Applies the glossaries to the generated texts and rebuilds the `*_all*` variants. |
 | **Promote build to main** | Opens a PR (or auto-merges) `build/{p4cl}` → `main` when that build is LIVE. |
-| **Build on Hetzner** | Full pipeline on an ephemeral Hetzner server (Terraform), via RSI CDN download. See [infra/hetzner/](infra/hetzner/README.md). |
+| **Download build (hosted)** | Full pipeline on a GitHub-hosted runner (`ubuntu-latest` or `windows-latest`), via RSI CDN download — no game install needed. See [docs/download-runner.md](docs/download-runner.md). |
 
 ### Self-hosted Windows runner (one-time setup)
 
@@ -204,9 +206,12 @@ See [NOTICE](NOTICE) for Smart Citizen attribution (Apache 2.0).
 
 ## Requirements
 
-- **Full build, local**: Windows + .NET Framework 4.x (`unp4k.exe`/`unforge.exe`),
+- **Full build, local Windows**: .NET Framework 4.x (`unp4k.exe`/`unforge.exe`),
   Star Citizen install or RSI credentials for `--download`
-- **Full build, Hetzner**: nothing local — see [infra/hetzner/](infra/hetzner/README.md)
+- **Full build, local Linux/macOS**: `dotnet` runtime (unp4k/unforge DLL builds,
+  fetched automatically at setup) + RSI credentials for `--download`
+- **Full build, hosted runner**: nothing local — see
+  [docs/download-runner.md](docs/download-runner.md)
 - **Translation refresh (CI)**: plain Python 3.11, no game files
 
 ## License

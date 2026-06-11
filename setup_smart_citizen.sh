@@ -25,3 +25,15 @@ fi
 echo ""
 echo "✓ smart-citizen ready at: $SMART_CITIZEN_DIR"
 echo ""
+
+# Fetch the unp4k/unforge builds for this platform (github.com/dolkensp/unp4k).
+# No-op on Windows (the .exes are bundled with Smart Citizen) and on re-runs.
+# On Linux/macOS this downloads the DLL builds, which run via `dotnet`.
+echo "Ensuring unp4k/unforge binaries for this platform..."
+if command -v python3 &> /dev/null; then
+    PYBIN=python3
+else
+    PYBIN=python
+fi
+"$PYBIN" "${SCRIPT_DIR}/setup_tools.py"
+echo ""

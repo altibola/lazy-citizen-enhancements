@@ -11,7 +11,11 @@ It bundles and drives unp4k/unforge (MIT, github.com/dolkensp/unp4k) to:
   * extract + unforge the DataForge ``Game2.dcb`` into entity XMLs, keeping only
     the subtrees the enhancement generator reads.
 
-Requires .NET Framework 4.x on the host (unforge.exe is a .NET executable).
+Runtime requirement (unp4k/unforge are .NET programs):
+  * Windows: .NET Framework 4.x (bundled unp4k.exe/unforge.exe are self-hosting)
+  * Linux/macOS: the `dotnet` runtime — the platform DLL builds from
+    github.com/dolkensp/unp4k are fetched by setup_tools.py and run as
+    `dotnet unp4k.dll ...` / `dotnet unforge.cli.dll ...`.
 """
 from __future__ import annotations
 
@@ -25,6 +29,8 @@ import sys
 import tempfile
 import time
 from pathlib import Path
+
+import setup_tools
 
 logger = logging.getLogger(__name__)
 
@@ -74,13 +80,29 @@ DATAFORGE_KEEP_SUBPATHS: tuple[str, ...] = (
 
 
 # ── unp4k / unforge resolution ──────────────────────────────────────────────
+# Windows: the .exe bundled with the Smart Citizen checkout.
+# Linux/macOS: the DLL builds downloaded by setup_tools.py (run via `dotnet`).
+# Both live in .smart-citizen/assets/unp4k/ — setup_tools.get_binary_paths()
+# picks the right pair for the current platform.
 
 def resolve_unp4k_exe() -> Path:
-    return SMART_CITIZEN_DIR / "assets" / "unp4k" / "unp4k.exe"
+    return setup_tools.get_binary_paths()[0]
 
 
 def resolve_unforge_exe() -> Path:
-    return SMART_CITIZEN_DIR / "assets" / "unp4k" / "unforge.exe"
+    return setup_tools.get_binary_paths()[1]
+
+
+# Platform-appropriate hint for the "unforge produced nothing" diagnostic.
+_DOTNET_HINT = (
+    "This typically means .NET Framework 4.x isn't installed or is blocked "
+    "by antivirus. Install the latest .NET Framework runtime from Microsoft."
+    if sys.platform == "win32" else
+    "This typically means the `dotnet` runtime isn't installed (current unp4k "
+    "builds need .NET 10). Install it with your package manager (e.g. "
+    "`sudo apt install -y dotnet-runtime-10.0`) or via "
+    "https://dot.net/v1/dotnet-install.sh (--channel 10.0)."
+)
 
 
 def _get_subprocess_kwargs() -> dict:
@@ -174,19 +196,19 @@ def extract_global_ini(p4k_path: Path, output_path: Path, unp4k_exe: Path) -> bo
     ``data/Localization/english/global.ini`` to *output_path*.
     """
     if not unp4k_exe.exists():
-        raise FileNotFoundError(f"unp4k.exe not found at: {unp4k_exe}")
+        raise FileNotFoundError(f"unp4k binary not found at: {unp4k_exe}")
     if not p4k_path.exists():
         raise FileNotFoundError(f"Data.p4k not found at: {p4k_path}")
 
     with _local_tmp() as tmp_dir:
         logger.info(f"unp4k: extracting global.ini (cwd={tmp_dir})")
         result = subprocess.run(
-            [str(unp4k_exe), str(p4k_path), "global.ini"],
+            setup_tools.make_invocation(unp4k_exe, str(p4k_path), "global.ini"),
             cwd=tmp_dir, timeout=300, **_get_subprocess_kwargs()
         )
         if result.returncode != 0:
             raise RuntimeError(
-                f"unp4k.exe exited with code {result.returncode}.\n\n"
+                f"unp4k exited with code {result.returncode}.\n\n"
                 f"{result.stderr or result.stdout}"
             )
 
@@ -216,9 +238,9 @@ def extract_dataforge(
     The resulting layout matches what the generator expects:
     ``dataforge_cache_dir/raw/libs/foundry/records/<subtree>/...``.
     """
-    for exe, name in [(unp4k_exe, "unp4k.exe"), (unforge_exe, "unforge.exe")]:
+    for exe, name in [(unp4k_exe, "unp4k"), (unforge_exe, "unforge")]:
         if not exe.exists():
-            raise FileNotFoundError(f"{name} not found at: {exe}")
+            raise FileNotFoundError(f"{name} binary not found at: {exe}")
     if not p4k_path.exists():
         raise FileNotFoundError(f"Data.p4k not found at: {p4k_path}")
 
@@ -228,12 +250,12 @@ def extract_dataforge(
         # Step 1: extract Game2.dcb
         logger.info("unp4k: extracting .dcb")
         result = subprocess.run(
-            [str(unp4k_exe), str(p4k_path), ".dcb"],
+            setup_tools.make_invocation(unp4k_exe, str(p4k_path), ".dcb"),
             cwd=tmp_dir, timeout=600, **_get_subprocess_kwargs()
         )
         if result.returncode != 0:
             raise RuntimeError(
-                f"unp4k.exe failed (code {result.returncode}):\n"
+                f"unp4k failed (code {result.returncode}):\n"
                 f"{result.stderr or result.stdout}"
             )
         del result
@@ -251,7 +273,7 @@ def extract_dataforge(
         # Step 2: unforge → entity XMLs
         logger.info(f"unforge: {dcb_path}")
         result = subprocess.run(
-            [str(unforge_exe), str(dcb_path)],
+            setup_tools.make_invocation(unforge_exe, str(dcb_path)),
             timeout=1800, **_get_subprocess_kwargs()
         )
         _stdout = (result.stdout or "").strip()
@@ -262,7 +284,7 @@ def extract_dataforge(
             logger.info(f"unforge stderr ({len(_stderr)} bytes, truncated): {_stderr[:2000]}")
         if result.returncode != 0:
             raise RuntimeError(
-                f"unforge.exe failed (code {result.returncode}):\n"
+                f"unforge failed (code {result.returncode}):\n"
                 f"{_stderr or _stdout or '(no output)'}"
             )
         del result
@@ -280,9 +302,7 @@ def extract_dataforge(
                 # No output and no libs/ — classic missing-.NET signature.
                 diagnostic = (
                     "\n\nNo output from unforge and no libs/ directory produced. "
-                    "This typically means .NET Framework 4.x isn't installed or "
-                    "is blocked by antivirus. Install the latest .NET Framework "
-                    "runtime from Microsoft and try again."
+                    + _DOTNET_HINT
                 )
             raise FileNotFoundError(
                 "unforge ran but libs/ directory was not created — unexpected output structure."
@@ -326,7 +346,7 @@ def extract_dataforge_from_dcb(
     to extract_dataforge() so the rest of the pipeline is unaffected.
     """
     if not unforge_exe.exists():
-        raise FileNotFoundError(f"unforge.exe not found at: {unforge_exe}")
+        raise FileNotFoundError(f"unforge binary not found at: {unforge_exe}")
     if not dcb_path.exists():
         raise FileNotFoundError(f"Game2.dcb not found at: {dcb_path}")
 
@@ -339,7 +359,7 @@ def extract_dataforge_from_dcb(
 
         logger.info(f"unforge: {tmp_dcb}")
         result = subprocess.run(
-            [str(unforge_exe), str(tmp_dcb)],
+            setup_tools.make_invocation(unforge_exe, str(tmp_dcb)),
             timeout=1800, **_get_subprocess_kwargs()
         )
         _stdout = (result.stdout or "").strip()
@@ -350,7 +370,7 @@ def extract_dataforge_from_dcb(
             logger.info(f"unforge stderr (truncated): {_stderr[:2000]}")
         if result.returncode != 0:
             raise RuntimeError(
-                f"unforge.exe failed (code {result.returncode}):\n"
+                f"unforge failed (code {result.returncode}):\n"
                 f"{_stderr or _stdout or '(no output)'}"
             )
         del result
@@ -361,8 +381,7 @@ def extract_dataforge_from_dcb(
         if not (libs_dir / "libs").exists():
             diagnostic = (
                 "\n\nNo output from unforge and no libs/ directory produced. "
-                "This typically means .NET Framework 4.x isn't installed. "
-                "Install the latest .NET Framework runtime from Microsoft."
+                + _DOTNET_HINT
             ) if not (_stdout or _stderr) else (
                 f"\n\nunforge stdout:\n{_stdout[:1500] or '(empty)'}"
                 f"\n\nunforge stderr:\n{_stderr[:1500] or '(empty)'}"
