@@ -103,8 +103,20 @@ class _Device(NamedTuple):
 
 class BuildInfo(NamedTuple):
     version:  str
-    p4k_url:  str   # signed CDN URL for the full p4k
+    p4k_url:  str   # signed CDN URL for the base p4k archive
     p4k_size: int
+    manifest_url: str = ""   # fully-signed P4K-MANI manifest URL
+    objects_url:  str = ""   # CDN base URL for per-object content-addressed downloads
+    objects_sigs: str = ""   # CloudFront auth query params (no leading "?")
+    raw_release:  dict = {}  # the full games/release `data` dict (for diagnostics)
+
+
+class _ManifestEntry(NamedTuple):
+    local_name:      str   # output filename (e.g. "global.ini")
+    hash:            str   # hex CDN object identifier
+    size:            int   # uncompressed size
+    compressed_size: int
+    compression:     str
 
 # ── Session cache ─────────────────────────────────────────────────────────────
 
@@ -286,6 +298,11 @@ def get_p4k_url(session: _Session, claims: object, channel: str = "LIVE") -> Bui
 
     version = str(rel.get("versionLabel", "unknown"))
 
+    # Dump the full release structure once — this is the single most useful
+    # diagnostic for figuring out the CDN object-URL layout. Signature values
+    # are long and sensitive, so they're truncated; keys and structure are not.
+    _dump_release_structure(rel)
+
     def _entry(key: str) -> dict:
         v = rel.get(key)
         return v if isinstance(v, dict) else {}
@@ -296,15 +313,67 @@ def get_p4k_url(session: _Session, claims: object, channel: str = "LIVE") -> Bui
         sigs = e.get("signatures", "")
         return f"{url}?{sigs}" if url and sigs else url
 
-    p4k_full = _signed("p4kBase")
+    p4k_full      = _signed("p4kBase")
+    manifest_full = _signed("manifest")
+    objects_raw   = _entry("objects")
+    objects_url   = objects_raw.get("url", "").rstrip("/")
+    objects_sigs  = objects_raw.get("signatures", "")
 
-    if not p4k_full:
-        raise AuthError(f"No p4kBase.url in release response. Keys: {list(rel.keys())}")
+    if not p4k_full and not manifest_full:
+        raise AuthError(
+            f"No p4kBase.url or manifest.url in release response. "
+            f"Keys: {list(rel.keys())}"
+        )
 
-    p4k_path = p4k_full.split("?")[0]
-    logger.info("version=%s  p4k=%s", version, p4k_path)
+    logger.info(
+        "version=%s  p4k=%s  manifest=%s  objects_base=%s",
+        version,
+        p4k_full.split("?")[0] if p4k_full else "(none)",
+        manifest_full.split("?")[0] if manifest_full else "(none)",
+        objects_url or "(none)",
+    )
 
-    return BuildInfo(version=version, p4k_url=p4k_full, p4k_size=0)
+    return BuildInfo(
+        version=version, p4k_url=p4k_full, p4k_size=0,
+        manifest_url=manifest_full,
+        objects_url=objects_url, objects_sigs=objects_sigs,
+        raw_release=rel,
+    )
+
+
+def _dump_release_structure(rel: dict, _max_val: int = 180) -> None:
+    """Log the complete shape of the games/release `data` dict.
+
+    Recursively prints keys, value types and (truncated) values so we can see
+    exactly how `objects`, `manifest`, `p4kBase` and any patch entries are
+    structured — without committing to a guessed URL format first.
+    """
+    def _short(v: object) -> str:
+        s = v if isinstance(v, str) else json.dumps(v, default=str)
+        return s if len(s) <= _max_val else f"{s[:_max_val]}… ({len(s)} chars)"
+
+    def _walk(obj: object, prefix: str) -> None:
+        if isinstance(obj, dict):
+            logger.info("release%s = <dict keys=%s>", prefix, list(obj.keys()))
+            for k, v in obj.items():
+                if isinstance(v, (dict, list)):
+                    _walk(v, f"{prefix}.{k}")
+                else:
+                    logger.info("release%s.%s : %s = %s",
+                                prefix, k, type(v).__name__, _short(v))
+        elif isinstance(obj, list):
+            logger.info("release%s = <list len=%d>", prefix, len(obj))
+            for i, v in enumerate(obj[:5]):
+                _walk(v, f"{prefix}[{i}]") if isinstance(v, (dict, list)) \
+                    else logger.info("release%s[%d] : %s = %s",
+                                     prefix, i, type(v).__name__, _short(v))
+
+    logger.info("───── games/release structure dump ─────")
+    try:
+        _walk(rel, "")
+    except Exception as exc:  # diagnostics must never break the run
+        logger.warning("release-structure dump failed: %s", exc)
+    logger.info("──────────────────────────────────────")
 
 # ── Authenticate (with session caching) ──────────────────────────────────────
 
@@ -342,6 +411,13 @@ def authenticate(username: str, password: str, channel: str = "LIVE",
 
 # ── HTTP helpers ──────────────────────────────────────────────────────────────
 
+def _http_get(url: str, extra_headers: dict | None = None) -> bytes:
+    req = urllib.request.Request(
+        url, headers={"User-Agent": _USER_AGENT, **(extra_headers or {})},
+    )
+    with urllib.request.urlopen(req, timeout=120) as resp:
+        return resp.read()
+
 def _http_head(url: str) -> int:
     """Return Content-Length from a HEAD request (0 if unknown)."""
     req = urllib.request.Request(
@@ -359,6 +435,85 @@ def _http_range(url: str, start: int, end: int) -> bytes:
     )
     with urllib.request.urlopen(req, timeout=600) as resp:
         return resp.read()
+
+# ── CloudFront signed-URL path decoding ───────────────────────────────────────
+# The `objects` CDN URL is CloudFront-signed. The signature's policy defines
+# the valid URL space; an object request must fall inside it. We decode the
+# policy to learn the path prefix the object hash should hang off of.
+
+def _decode_cf_policy(objects_sigs: str) -> str | None:
+    """Return the path prefix from a CloudFront custom-policy (Policy= param)."""
+    try:
+        params = dict(urllib.parse.parse_qsl(objects_sigs, keep_blank_values=True))
+        raw_b64 = params.get("Policy", "")
+        if not raw_b64:
+            return None
+        padded = raw_b64.replace("-", "+").replace("_", "/").replace("~", "=")
+        padded += "=" * (-len(padded) % 4)
+        policy = json.loads(base64.b64decode(padded))
+        resource = policy["Statement"][0]["Resource"]
+        path = urllib.parse.urlparse(resource).path
+        prefix = path.rstrip("*").rstrip("?")
+        if prefix and not prefix.endswith("/"):
+            prefix += "/"
+        logger.info("CloudFront Policy → Resource=%r  path prefix=%r", resource, prefix)
+        return prefix
+    except Exception as exc:
+        logger.debug("Could not decode CloudFront Policy: %s", exc)
+        return None
+
+def _decode_url_prefix(objects_sigs: str) -> str | None:
+    """Return the path prefix from a CloudFront canned-policy (URLPrefix= param)."""
+    try:
+        params = dict(urllib.parse.parse_qsl(objects_sigs, keep_blank_values=True))
+        raw = params.get("URLPrefix", "")
+        if not raw:
+            return None
+        logger.info("URLPrefix raw value (first 160 chars): %r", raw[:160])
+        # May be a plain URL (parse_qsl already %xx-decoded) or base64url-encoded.
+        for candidate in (raw, _maybe_b64url(raw)):
+            if not candidate:
+                continue
+            parsed = urllib.parse.urlparse(candidate)
+            if parsed.scheme in ("http", "https") and parsed.path:
+                path = parsed.path
+                if not path.endswith("/"):
+                    path += "/"
+                logger.info("CloudFront URLPrefix → path prefix: %r", path)
+                return path
+        logger.info("URLPrefix not recognisable as URL: %r", raw[:80])
+        return None
+    except Exception as exc:
+        logger.debug("Could not decode URLPrefix: %s", exc)
+        return None
+
+def _maybe_b64url(raw: str) -> str | None:
+    try:
+        padded = raw.replace("-", "+").replace("_", "/").replace("~", "=")
+        padded += "=" * (-len(padded) % 4)
+        return base64.b64decode(padded).decode("utf-8", errors="replace")
+    except Exception:
+        return None
+
+def _cf_object_prefix(objects_sigs: str) -> str | None:
+    """Best available path prefix for content-addressed objects (or None)."""
+    return _decode_cf_policy(objects_sigs) or _decode_url_prefix(objects_sigs)
+
+def _hash_path_forms(hash_hex: str) -> list[str]:
+    """Candidate path *suffixes* for a content hash (relative to the CDN prefix).
+
+    Content-addressed stores vary in how they shard the hash into a path, so we
+    enumerate the common layouts and let the probe report which returns 200.
+    """
+    h = hash_hex
+    forms = [
+        h, h.lower(),
+        f"{h[:2]}/{h}", f"{h[:2].lower()}/{h.lower()}",
+        f"{h[:2]}/{h[2:4]}/{h}", f"{h[:2].lower()}/{h[2:4].lower()}/{h.lower()}",
+    ]
+    # de-dup, keep order
+    seen: set[str] = set()
+    return [f for f in forms if not (f in seen or seen.add(f))]
 
 # ── ZIP/p4k range extraction ──────────────────────────────────────────────────
 
@@ -557,12 +712,16 @@ def _p4k_extract(p4k_url: str, out_dir: Path) -> dict[str, Path]:
 
     missing = set(_MANIFEST_TARGETS) - set(file_entries)
     if missing:
-        logger.warning("Files not found in p4k CD: %s", missing)
+        logger.warning("Files not found in base p4k CD: %s", missing)
     if not file_entries:
-        raise FileNotFoundError(
-            "None of the target files found in the p4k central directory. "
-            "The p4k may use a different internal path layout."
+        # The base p4k is keyed by major release and frequently lacks the
+        # current localization / DataForge files (those ship via the manifest
+        # object layer). Return empty so the caller can fall back.
+        logger.warning(
+            "No target files in the base p4k central directory — "
+            "the manifest object layer is required for this build."
         )
+        return {}
 
     # 5. Download + decrypt + decompress each file
     results: dict[str, Path] = {}
@@ -612,6 +771,262 @@ def _p4k_extract(p4k_url: str, out_dir: Path) -> dict[str, Path]:
 
     return results
 
+# ── P4K-MANI manifest parsing ─────────────────────────────────────────────────
+# RSI Launcher 2.0 builds ship a binary "P4K-MANI\x01" manifest describing the
+# current build's file tree. Each file references a content hash; the actual
+# bytes live as content-addressed objects on the `objects` CDN. This is where
+# frequently-updated files (global.ini, Game2.dcb) come from — not the base p4k.
+
+_P4KMANI_MAGIC = b"P4K-MANI\x01"
+_P4KMANI_HS    = 0x28   # header size = 40 bytes
+
+def _decompress_manifest(data: bytes) -> bytes:
+    if data[:2] == b"\x1f\x8b":
+        import gzip
+        return gzip.decompress(data)
+    if data[:4] == _ZSTD_MAGIC:
+        try:
+            import zstandard as zstd
+        except ImportError:
+            raise RuntimeError("Manifest is zstd-compressed but 'zstandard' not installed.")
+        return zstd.ZstdDecompressor().decompress(data)
+    return data
+
+def _download_manifest(build: BuildInfo, cache_dir: Path | None = None) -> bytes:
+    if not build.manifest_url:
+        raise RuntimeError("No manifest URL in BuildInfo")
+    hash_part = build.manifest_url.split("?")[0].rsplit("/", 1)[-1]
+    if cache_dir:
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        cache_file = cache_dir / f"manifest_{hash_part}.bin"
+        if cache_file.exists():
+            logger.info("Manifest from cache: %s", cache_file.name)
+            return cache_file.read_bytes()
+    logger.info("Downloading manifest (%s)...", hash_part[:24])
+    data = _http_get(build.manifest_url)
+    logger.info("Manifest: %d bytes (first 16: %s)", len(data), data[:16].hex().upper())
+    if cache_dir:
+        cache_file.write_bytes(data)
+    return data
+
+def _parse_p4kmani(data: bytes) -> list[_ManifestEntry]:
+    """Parse a binary P4K-MANI\\x01 manifest; return matched target entries."""
+    HS        = _P4KMANI_HS
+    tree_size = struct.unpack_from("<Q", data, 0x18)[0]
+    file_cnt  = struct.unpack_from("<Q", data, 0x20)[0]
+    HASH_BASE = HS + tree_size
+    STRIDE    = 40
+    _MAX_SIZE = 10 ** 9
+
+    logger.info("P4K-MANI: tree=%d B  files=%d  hash_base=0x%x  total=%d B",
+                tree_size, file_cnt, HASH_BASE, len(data))
+    logger.info("P4K-MANI hash section first 64 bytes: %s",
+                data[HASH_BASE:HASH_BASE + 64].hex().upper())
+
+    path_to_local: dict[str, str] = {}
+    for local_name, candidates in _MANIFEST_TARGETS.items():
+        for c in candidates:
+            path_to_local[_norm_path(c)] = local_name
+
+    found: list[_ManifestEntry] = []
+    found_names: set[str] = set()
+
+    def _hash_entry(f0: int) -> tuple[str, str, int, int]:
+        off = HASH_BASE + f0 * STRIDE
+        if off + STRIDE > len(data):
+            return ("", "", 0, 0)
+        raw = data[off:off + min(64, len(data) - off)]
+        h16 = raw[:16].hex().upper() if len(raw) >= 16 else ""
+        h32 = raw[:32].hex().upper() if len(raw) >= 32 else h16
+        comp   = struct.unpack_from("<Q", data, off + 16)[0]
+        uncomp = struct.unpack_from("<Q", data, off + 24)[0]
+        if comp   > _MAX_SIZE: comp   = 0
+        if uncomp > _MAX_SIZE: uncomp = 0
+        return h16, h32, comp, uncomp
+
+    def _walk(off: int, parent: str) -> None:
+        while True:
+            if len(found_names) == len(_MANIFEST_TARGETS):
+                return
+            if off < HS or off + 16 > HS + tree_size:
+                break
+            f0, nlen, f2, f3 = struct.unpack_from("<IIII", data, off)
+            if nlen == 0 or nlen > 512 or off + 16 + nlen > HS + tree_size:
+                break
+            name = data[off + 16:off + 16 + nlen].decode("ascii", errors="replace")
+            full = parent + name
+            if f0 == 0xFFFFFFFF:
+                if f2 != 0xFFFFFFFF:
+                    _walk(f2 + HS, full)
+            else:
+                local = path_to_local.get(full.lower())
+                if local and local not in found_names:
+                    found_names.add(local)
+                    h16, h32, comp, uncomp = _hash_entry(f0)
+                    logger.info(
+                        "P4K-MANI match: %r path=%r f0=%d h16=%s h32=%s comp=%d uncomp=%d",
+                        local, full, f0, h16, h32, comp, uncomp,
+                    )
+                    # Stride is 40 B = 16-byte hash + two u64 sizes + u64 spare,
+                    # so the content id is the 16-byte value (h16). h32 bleeds
+                    # the size fields into the hash and is wrong for this layout
+                    # — kept in the log only as a cross-check.
+                    found.append(_ManifestEntry(
+                        local_name=local,
+                        hash=h16,
+                        size=uncomp, compressed_size=comp, compression="zstd",
+                    ))
+            if f3 == 0xFFFFFFFF:
+                break
+            off = f3 + HS
+
+    _, _nlen, root_f2, _ = struct.unpack_from("<IIII", data, HS)
+    if root_f2 != 0xFFFFFFFF:
+        _walk(root_f2 + HS, "")
+    else:
+        logger.warning("P4K-MANI: root f2=0xFFFFFFFF — tree empty?")
+    return found
+
+def _parse_json_manifest(data: bytes) -> list[_ManifestEntry]:
+    data = _decompress_manifest(data)
+    payload = json.loads(data)
+    file_list = (payload.get("files") or payload.get("entries") or []
+                 if isinstance(payload, dict) else payload)
+    logger.info("JSON manifest: %d entries", len(file_list))
+    path_to_local: dict[str, str] = {}
+    for local_name, candidates in _MANIFEST_TARGETS.items():
+        for c in candidates:
+            path_to_local[_norm_path(c)] = local_name
+    found: list[_ManifestEntry] = []
+    found_names: set[str] = set()
+    for entry in file_list:
+        if not isinstance(entry, dict):
+            continue
+        raw = entry.get("localPath") or entry.get("path") or entry.get("name") or ""
+        norm = _norm_path(raw)
+        for prefix in ("starcitizen\\live\\", "starcitizen\\ptu\\", "starcitizen\\"):
+            if norm.startswith(prefix):
+                norm = norm[len(prefix):]
+                break
+        local = path_to_local.get(norm)
+        if local and local not in found_names:
+            found_names.add(local)
+            found.append(_ManifestEntry(
+                local_name=local,
+                hash=str(entry.get("hash") or entry.get("sha256") or ""),
+                size=int(entry.get("size") or 0),
+                compressed_size=int(entry.get("compressedSize") or 0),
+                compression=str(entry.get("compression") or ""),
+            ))
+            logger.info("JSON manifest match: %r hash=%s", local, found[-1].hash[:24])
+    return found
+
+def _parse_manifest(data: bytes) -> list[_ManifestEntry]:
+    logger.info("Manifest probe: magic=%s ascii=%r",
+                data[:16].hex().upper(), data[:16].decode("latin-1", errors="replace"))
+    if data[:len(_P4KMANI_MAGIC)] == _P4KMANI_MAGIC:
+        logger.info("Binary P4K-MANI manifest detected.")
+        return _parse_p4kmani(data)
+    logger.info("Non-P4K-MANI manifest — trying JSON.")
+    return _parse_json_manifest(data)
+
+# ── CDN content-addressed object download ─────────────────────────────────────
+
+def _download_object(build: BuildInfo, entry: _ManifestEntry) -> bytes:
+    """Download one content-addressed object, probing URL formats.
+
+    Logs the HTTP status of every candidate so that, even on total failure, the
+    run reveals which path layout the CDN expects.
+    """
+    base = build.objects_url.rstrip("/")
+    sigs = build.objects_sigs
+    prefix = _cf_object_prefix(sigs)
+
+    # Build ordered candidate path list: signed-policy prefix first (most
+    # likely correct), then common fixed prefixes; each crossed with the hash
+    # sharding forms.
+    prefixes: list[str] = []
+    if prefix:
+        prefixes.append(prefix)
+    for p in ("/", "/objects/", "/data/", "/gamedata/", "/sc/"):
+        if p not in prefixes:
+            prefixes.append(p)
+
+    candidates: list[str] = []
+    for p in prefixes:
+        for suffix in _hash_path_forms(entry.hash):
+            path = f"{p.rstrip('/')}/{suffix}"
+            if path not in candidates:
+                candidates.append(path)
+
+    last_status = "no attempts"
+    data: bytes | None = None
+    for path in candidates:
+        url = f"{base}{path}"
+        if sigs:
+            url = f"{url}?{sigs}"
+        try:
+            data = _http_get(url)
+            logger.info("  ✓ 200  %s%s  (%d B)", base, path, len(data))
+            break
+        except urllib.error.HTTPError as exc:
+            last_status = f"HTTP {exc.code}"
+            if exc.code == 403:
+                logger.warning("  403 %s%s — signature/path mismatch", base, path)
+            else:
+                logger.info("  %d %s%s", exc.code, base, path)
+            continue
+        except Exception as exc:
+            last_status = str(exc)
+            logger.info("  ERR %s%s (%s)", base, path, exc)
+            continue
+
+    if data is None:
+        tried = "\n".join(f"    {base}{p}" for p in candidates)
+        raise RuntimeError(
+            f"Could not download object for {entry.local_name} "
+            f"(hash={entry.hash[:24]}). Last status: {last_status}.\n"
+            f"Tried {len(candidates)} URL forms:\n{tried}"
+        )
+
+    comp = (entry.compression or "").lower()
+    if data[:4] == _ZSTD_MAGIC or comp in ("zstd", "zstandard"):
+        if data[:4] != _ZSTD_MAGIC:
+            return data
+        import zstandard as zstd_mod
+        return zstd_mod.ZstdDecompressor().decompress(data, max_length=entry.size or -1)
+    if comp in ("deflate", "zlib"):
+        return zlib.decompress(data)
+    return data
+
+def _download_via_manifest(build: BuildInfo, out_dir: Path) -> dict[str, Path]:
+    """Manifest → per-file content hash → CDN object. Returns what it got."""
+    if build.objects_sigs:
+        if _cf_object_prefix(build.objects_sigs) is None:
+            params = dict(urllib.parse.parse_qsl(build.objects_sigs))
+            logger.info("objects_sigs param keys: %s", list(params.keys()))
+
+    manifest = _download_manifest(build, cache_dir=out_dir)
+    entries = _parse_manifest(manifest)
+    if not entries:
+        logger.warning("Manifest parsed but no target files matched.")
+        return {}
+
+    results: dict[str, Path] = {}
+    for entry in entries:
+        if not entry.hash:
+            logger.warning("No hash for %r — skipping.", entry.local_name)
+            continue
+        try:
+            raw = _download_object(build, entry)
+            dest = out_dir / entry.local_name
+            dest.write_bytes(raw)
+            logger.info("Saved %s → %s (%d B)", entry.local_name, dest, len(raw))
+            results[entry.local_name] = dest
+        except Exception as exc:
+            logger.error("Object download failed for %r: %s", entry.local_name, exc)
+    return results
+
 # ── Public API ────────────────────────────────────────────────────────────────
 
 def download_pipeline_inputs(
@@ -621,24 +1036,95 @@ def download_pipeline_inputs(
     channel: str = "LIVE",
     mfa_code: str | None = None,
 ) -> tuple[str, Path, Path | None]:
-    """Authenticate and download global.ini + Game2.dcb from the RSI CDN p4k.
+    """Authenticate and download global.ini + Game2.dcb from the RSI CDN.
 
-    Uses HTTP Range requests to extract only the needed files without
-    downloading the full archive (which is 50+ GB).
+    Two strategies, in order:
+      1. Manifest object layer (primary) — the current build's files as
+         content-addressed CDN objects. This is where global.ini / Game2.dcb
+         actually live for modern builds.
+      2. Base p4k range extraction (fallback) — works only when the target
+         files happen to be in the major-release base archive.
 
     Returns (game_version, path_to_global_ini, path_to_game2_dcb_or_None).
-    Game2.dcb is optional — if absent from the p4k, returns None.
     """
     build = authenticate(username, password, channel, mfa_code)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    results = _p4k_extract(build.p4k_url, out_dir)
+    results: dict[str, Path] = {}
+
+    # 1. Manifest object layer (primary path for current builds).
+    if build.manifest_url:
+        logger.info("Attempting manifest object download (primary)...")
+        try:
+            results = _download_via_manifest(build, out_dir)
+        except Exception as exc:
+            logger.warning("Manifest download path failed: %s", exc)
+    else:
+        logger.info("No manifest URL in release — skipping manifest path.")
+
+    # 2. Base p4k range extraction (fallback).
+    if "global.ini" not in results and build.p4k_url:
+        logger.info("Falling back to base p4k range extraction...")
+        try:
+            p4k_results = _p4k_extract(build.p4k_url, out_dir)
+            for k, v in p4k_results.items():
+                results.setdefault(k, v)
+        except Exception as exc:
+            logger.warning("Base p4k extraction failed: %s", exc)
 
     if "global.ini" not in results:
-        err_msg = "global.ini not found in p4k central directory"
-        raise FileNotFoundError(err_msg)
+        raise FileNotFoundError(
+            "Could not obtain global.ini from either the manifest object layer "
+            "or the base p4k. See the games/release structure dump and the "
+            "per-URL probe results above to determine the correct CDN object "
+            "path format."
+        )
 
     if "Game2.dcb" not in results:
-        logger.warning("Game2.dcb not found in p4k — continuing without it.")
+        logger.warning("Game2.dcb not obtained — DataForge generation will be skipped.")
 
     return build.version, results["global.ini"], results.get("Game2.dcb")
+
+
+if __name__ == "__main__":
+    import argparse
+    import getpass
+    import os
+
+    logging.basicConfig(
+        level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+        datefmt="%H:%M:%S",
+    )
+    ap = argparse.ArgumentParser(
+        description="Authenticate to RSI and download global.ini + Game2.dcb, "
+                    "or just dump the games/release structure (--diagnose).",
+    )
+    ap.add_argument("--channel", default="LIVE")
+    ap.add_argument("--out", type=Path, default=Path("out/cdn_downloads"))
+    ap.add_argument("--rsi-mfa-code", default=None)
+    ap.add_argument("--diagnose", action="store_true",
+                    help="Authenticate and dump the release/manifest structure "
+                         "without downloading game objects.")
+    args = ap.parse_args()
+
+    user = os.environ.get("RSI_USERNAME", "").strip()
+    pw   = os.environ.get("RSI_PASSWORD", "").strip()
+    if not user:
+        user = input("RSI username (email): ").strip()
+    if not pw:
+        pw = getpass.getpass("RSI password: ").strip()
+
+    if args.diagnose:
+        info = authenticate(user, pw, args.channel, args.rsi_mfa_code)
+        logger.info("Diagnose complete: version=%s", info.version)
+        if info.manifest_url:
+            try:
+                manifest = _download_manifest(info, cache_dir=args.out)
+                _parse_manifest(manifest)
+            except Exception as exc:
+                logger.error("Manifest fetch/parse failed: %s", exc)
+    else:
+        ver, gi, dcb = download_pipeline_inputs(
+            user, pw, args.out, args.channel, args.rsi_mfa_code,
+        )
+        logger.info("Done: version=%s global.ini=%s dcb=%s", ver, gi, dcb)
