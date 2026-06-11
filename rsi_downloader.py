@@ -45,7 +45,8 @@ logger = logging.getLogger(__name__)
 
 _RSI_API_BASE = "https://robertsspaceindustries.com/api/launcher/v3"
 _LAUNCHER_VER = "2.0.0"
-_USER_AGENT   = "lazy-citizen-enhancements/1.0"
+_USER_AGENT   = "RSI Launcher/2.0.0"
+_ORIGIN       = "https://robertsspaceindustries.com"
 
 _ERR_MFA_REQUIRED = "ErrMultiStepRequired"
 _ERR_CAPTCHA      = "ErrCaptchaRequiredLauncher"
@@ -165,6 +166,7 @@ def _rsi_post(endpoint: str, payload: dict | None = None,
         "Content-Type": "application/json",
         "User-Agent":   _USER_AGENT,
         "Accept":       "application/json",
+        "Origin":       _ORIGIN,
     }
     if session:
         headers[session.header_key] = session.header_value
