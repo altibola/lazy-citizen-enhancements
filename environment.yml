@@ -1,0 +1,7 @@
+name: lce
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11      # aligns with Smart Citizen's runtime (rmtree onexc/onerror @3.12)
+  - lxml>=5.0        # only runtime dependency of the enhancement generator
+  - zstandard>=0.21  # zstd decompression for P4K range extraction (--download)

@@ -1,0 +1,137 @@
+name: Build on Windows (self-hosted)
+
+# ON-DEMAND ONLY (workflow_dispatch) — no schedule.
+#
+# Runs STEP 1 of the build (extract + generate + merge) on a self-hosted
+# Windows runner — a machine with Star Citizen installed. This is the only
+# step that needs the game files + .NET Framework (unp4k.exe/unforge.exe);
+# the later steps (glossary translation, promotion) can then run online on
+# the pushed build/{p4cl} branch.
+#
+# Runner requirements (one-time):
+#   - Self-hosted runner registered with labels [self-hosted, Windows]
+#     (Settings → Actions → Runners → New self-hosted runner)
+#   - Git for Windows (provides the bash shell used below)
+#   - Star Citizen installed
+# The first run bootstraps .micromamba and .smart-citizen into the runner's
+# persistent workspace; later runs reuse them (and the DataForge cache).
+#
+# The Data.p4k path comes from, in order:
+#   1. the p4k_path input
+#   2. the SC_P4K_PATH repository variable (Settings → Variables)
+
+on:
+  workflow_dispatch:
+    inputs:
+      p4k_path:
+        description: 'Path to Data.p4k (default: SC_P4K_PATH repo variable)'
+        required: false
+        default: ''
+      lang:
+        description: 'Single language to process (default: all, incl. english)'
+        required: false
+        default: ''
+      translate:
+        description: 'Also run the glossary translation (*_all* variants)'
+        required: false
+        default: 'true'
+        type: choice
+        options: ['true', 'false']
+      push_branch:
+        description: 'Push branch build/{p4cl} and open the PR'
+        required: false
+        default: 'true'
+        type: choice
+        options: ['true', 'false']
+
+concurrency:
+  group: windows-build      # the game files / caches are shared — one at a time
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: [self-hosted, Windows]
+    timeout-minutes: 180
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    defaults:
+      run:
+        shell: bash          # Git Bash — all repo scripts target it
+
+    steps:
+      # ── 1. Checkout (credentials persisted for the push in step 6) ──────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # ── 2. Resolve the Data.p4k path ─────────────────────────────────────────
+      - name: Resolve Data.p4k path
+        id: p4k
+        run: |
+          P4K="${{ inputs.p4k_path }}"
+          if [ -z "$P4K" ]; then
+            P4K="${{ vars.SC_P4K_PATH }}"
+          fi
+          if [ -z "$P4K" ]; then
+            echo "::error::No p4k path. Pass the p4k_path input or set the SC_P4K_PATH repository variable."
+            exit 1
+          fi
+          if [ ! -f "$P4K" ]; then
+            echo "::error::Data.p4k not found at: $P4K"
+            exit 1
+          fi
+          echo "path=$P4K" >> "$GITHUB_OUTPUT"
+          echo "Using Data.p4k: $P4K"
+
+      # ── 3. Bootstrap env (first run only — workspace persists on the runner) ─
+      - name: Bootstrap micromamba env + Smart Citizen
+        run: |
+          if [ ! -d .micromamba ]; then
+            echo "First run on this runner — bootstrapping..."
+            chmod +x bootstrap.sh
+            ./bootstrap.sh
+          else
+            echo ".micromamba present — reusing."
+          fi
+          chmod +x setup_smart_citizen.sh run.sh translate.sh runall.sh
+          ./setup_smart_citizen.sh
+
+      # ── 4. Pipeline: extract + generate + merge ──────────────────────────────
+      - name: Run pipeline
+        run: |
+          if [ -n "${{ inputs.lang }}" ]; then
+            ./run.sh --p4k "${{ steps.p4k.outputs.path }}" --lang "${{ inputs.lang }}"
+          else
+            ./run.sh --p4k "${{ steps.p4k.outputs.path }}"
+          fi
+        env:
+          PYTHONIOENCODING: utf-8
+
+      # ── 5. Glossary translation (*_all* variants) ────────────────────────────
+      - name: Translate enhancement texts
+        if: inputs.translate == 'true'
+        run: ./translate.sh
+        env:
+          PYTHONIOENCODING: utf-8
+
+      # ── 6. Branch build/{p4cl} + PR ──────────────────────────────────────────
+      - name: Push build branch and open PR
+        if: inputs.push_branch == 'true'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          .micromamba/envs/lce/python.exe create_pr.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # ── 7. Version manifest in the run summary ───────────────────────────────
+      - name: Publish version manifest to run summary
+        if: always()
+        run: |
+          if [ -f VERSIONS.md ]; then
+            cat VERSIONS.md >> "$GITHUB_STEP_SUMMARY"
+          fi

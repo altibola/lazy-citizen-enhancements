@@ -1,0 +1,102 @@
+name: Translate enhancement texts
+
+# ON-DEMAND ONLY (workflow_dispatch) — no schedule.
+#
+# Translates the generated enhancement texts (stat-block labels, crafting
+# lines) to the target languages using the committed glossaries, producing
+# the fully-localized variants, e.g.:
+#   data/Localization/portuguese_(brazil)_danielgmota_all/global.ini
+#
+# Run it after:
+#   - editing translations/glossaries/*.json  (label translations)
+#   - editing translations/overrides/*.ini    (per-key custom translations)
+#   - a pipeline run refreshed the enhancement INIs on the branch
+#
+# Intermediate artifacts committed for customization/inspection:
+#   enhancements/<lang>/enhancements_translated/*.ini  (post-glossary INIs)
+#   translations/pending/<glossary>.json               (terms still untranslated
+#                                                       — copy into the glossary)
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to run on (default: repository default branch)'
+        required: false
+        default: ''
+      lang:
+        description: 'Single language to translate (default: all configured)'
+        required: false
+        default: ''
+
+jobs:
+  translate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      # ── 1. Checkout ──────────────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch || github.event.repository.default_branch }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # ── 2. Python (stdlib only — no extra deps needed) ───────────────────────
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # ── 3. Translate ─────────────────────────────────────────────────────────
+      - name: Translate enhancement texts
+        run: |
+          if [ -n "${{ inputs.lang }}" ]; then
+            python translate_enhancements.py --lang "${{ inputs.lang }}"
+          else
+            python translate_enhancements.py
+          fi
+        env:
+          PYTHONIOENCODING: utf-8
+
+      # ── 4. Coverage report in the run summary ────────────────────────────────
+      - name: Publish coverage to run summary
+        run: |
+          {
+            echo "## Enhancement translation coverage"
+            echo ""
+            for f in translations/pending/*.json; do
+              [ -f "$f" ] || continue
+              GLOSSARY=$(basename "$f" .json)
+              COUNT=$(python -c "import json;print(len(json.load(open('$f',encoding='utf-8'))['untranslated']))")
+              echo "- Glossary \`${GLOSSARY}\`: **${COUNT}** untranslated term(s)"
+              if [ "$COUNT" != "0" ]; then
+                echo ""
+                echo '```json'
+                cat "$f"
+                echo '```'
+              fi
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # ── 5. Commit results ─────────────────────────────────────────────────────
+      - name: Commit translated variants
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add data/ enhancements/ translations/ VERSIONS.md README.md
+          if git diff --staged --quiet; then
+            echo "Translations unchanged — nothing to commit."
+            exit 0
+          fi
+
+          BRANCH=$(git rev-parse --abbrev-ref HEAD)
+          git commit -m "chore(i18n): translate enhancement texts on ${BRANCH}
+
+          Glossary-based translation of generated stat blocks into the
+          fully-localized variants (data/Localization/*_all*/global.ini).
+
+          [skip ci]"
+          git push

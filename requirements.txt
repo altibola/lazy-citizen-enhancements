@@ -1,0 +1,4 @@
+# Optional / documentation only. The recommended path is the isolated
+# micromamba env created by bootstrap.ps1 (see environment.yml).
+# This file is for users who already have their own Python interpreter.
+lxml>=5.0
