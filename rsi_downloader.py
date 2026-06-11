@@ -475,6 +475,23 @@ def _decode_url_prefix(objects_sigs: str) -> str | None:
         return None
 
 
+def _p4k_path_prefix(p4k_url: str) -> str | None:
+    """Extract the directory prefix from the p4k signed URL.
+
+    p4k_url looks like:
+      https://cdn.../base/sc-alpha-4.6.0/sc-alpha-4.6.0-11228648-2.p4k?...
+
+    Returns "/base/sc-alpha-4.6.0/" so we can try that prefix for objects.
+    """
+    try:
+        path = urllib.parse.urlparse(p4k_url.split("?")[0]).path
+        prefix = path.rsplit("/", 1)[0] + "/"  # directory of the p4k file
+        logger.info("p4k path prefix: %r", prefix)
+        return prefix
+    except Exception:
+        return None
+
+
 def _cf_path_candidates(objects_sigs: str, h16: str) -> list[str]:
     """Return ordered list of URL path strings to try for a CDN object hash.
 
@@ -721,7 +738,14 @@ def _download_object(build: BuildInfo, file_hash: str,
     """
     base = build.objects_url.rstrip("/")
     sigs = build.objects_sigs
-    candidates = _cf_path_candidates(sigs, file_hash)
+
+    # Derive candidates: versioned prefix from p4k URL takes priority
+    p4k_prefix = _p4k_path_prefix(build.p4k_url) if build.p4k_url else None
+    candidates: list[str] = []
+    if p4k_prefix:
+        for h in (file_hash, file_hash.lower()):
+            candidates.append(f"{p4k_prefix}{h}")
+    candidates += _cf_path_candidates(sigs, file_hash)
 
     last_exc: Exception | None = None
     for path in candidates:
