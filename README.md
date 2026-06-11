@@ -2,7 +2,6 @@
 
 [![Update community translations](https://github.com/altibola/lazy-citizen-enhancements/actions/workflows/check-translations.yml/badge.svg?branch=main)](https://github.com/altibola/lazy-citizen-enhancements/actions/workflows/check-translations.yml)
 [![Translate enhancement texts](https://github.com/altibola/lazy-citizen-enhancements/actions/workflows/translate-enhancements.yml/badge.svg?branch=main)](https://github.com/altibola/lazy-citizen-enhancements/actions/workflows/translate-enhancements.yml)
-[![Build on Windows](https://github.com/altibola/lazy-citizen-enhancements/actions/workflows/build-on-windows.yml/badge.svg?branch=main)](https://github.com/altibola/lazy-citizen-enhancements/actions/workflows/build-on-windows.yml)
 [![Promote build to main](https://github.com/altibola/lazy-citizen-enhancements/actions/workflows/promote-build.yml/badge.svg?branch=main)](https://github.com/altibola/lazy-citizen-enhancements/actions/workflows/promote-build.yml)
 
 Generates enhanced `global.ini` localization files for Star Citizen by merging
@@ -105,22 +104,10 @@ the matching `build/{p4cl}` branch into `main`.
 
 | Workflow | What it does |
 |---|---|
-| **Build on Windows (self-hosted)** | Step 1 (extract + generate + merge) on a self-hosted Windows runner with Star Citizen installed; optionally translates and pushes `build/{p4cl}` + PR. |
+| **Download build (hosted)** | Full pipeline on a GitHub-hosted runner (`ubuntu-latest` or `windows-latest`), via RSI CDN download — no game install needed. See [docs/download-runner.md](docs/download-runner.md). |
 | **Update community translations** | Checks upstream repos for new commits; re-merges and commits when something changed. Run summary shows stored vs. upstream versions. |
 | **Translate enhancement texts** | Applies the glossaries to the generated texts and rebuilds the `*_all*` variants. |
 | **Promote build to main** | Opens a PR (or auto-merges) `build/{p4cl}` → `main` when that build is LIVE. |
-| **Download build (hosted)** | Full pipeline on a GitHub-hosted runner (`ubuntu-latest` or `windows-latest`), via RSI CDN download — no game install needed. See [docs/download-runner.md](docs/download-runner.md). |
-
-### Self-hosted Windows runner (one-time setup)
-
-On the machine with Star Citizen installed: register a runner under
-*Settings → Actions → Runners → New self-hosted runner* (labels
-`self-hosted, Windows`), make sure Git for Windows is installed, and set the
-repository variable `SC_P4K_PATH` (*Settings → Secrets and variables →
-Variables*) to the `Data.p4k` path, e.g.
-`E:\starcitizen\StarCitizen\LIVE\Data.p4k`. The first run bootstraps
-`.micromamba`/`.smart-citizen` into the runner workspace; later runs reuse
-them and the DataForge cache.
 
 ## Translating the generated texts (`*_all` variants)
 

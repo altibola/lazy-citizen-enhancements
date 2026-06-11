@@ -51,18 +51,17 @@ Actions → **Download build (hosted)** → *Run workflow*. Inputs:
 ## Installing the workflow file
 
 > [!IMPORTANT]
-> The automation that produced this branch cannot commit files under
-> `.github/workflows/` (the integration token lacks the GitHub `workflow`
-> scope). Two manual steps remain, both needing an account/token with that
-> scope:
+> The automation cannot commit files under `.github/workflows/` (the
+> integration token lacks the GitHub `workflow` scope). One manual step
+> remains, needing an account/token with that scope:
 >
-> 1. **Add** the YAML below as `.github/workflows/download-build.yml`.
-> 2. **Delete** `.github/workflows/build-on-hetzner.yml` (the Hetzner infra
->    it drove no longer exists on this branch). The `HCLOUD_TOKEN` repository
->    secret can be removed as well.
-
-`workflow_dispatch` only becomes runnable once the file exists on the
-repository's **default branch** (`main`).
+> **Add** the YAML below as `.github/workflows/download-build.yml` on
+> **`main`**. Quick link:
+> <https://github.com/altibola/lazy-citizen-enhancements/new/main?filename=.github/workflows/download-build.yml>
+>
+> (The old *Build on Hetzner* and *Build on Windows (self-hosted)* workflows
+> were already removed; the `HCLOUD_TOKEN` secret and `SC_P4K_PATH` variable
+> can be deleted from the repository settings as well.)
 
 ```yaml
 name: Download build (hosted)
