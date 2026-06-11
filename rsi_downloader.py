@@ -500,20 +500,6 @@ def _cf_object_prefix(objects_sigs: str) -> str | None:
     """Best available path prefix for content-addressed objects (or None)."""
     return _decode_cf_policy(objects_sigs) or _decode_url_prefix(objects_sigs)
 
-def _hash_path_forms(hash_hex: str) -> list[str]:
-    """Candidate path *suffixes* for a content hash (relative to the CDN root).
-
-    The manifest's own URL is ``{domain}/{64-hex}`` (flat, at the domain root),
-    so the primary form is the bare hash; case + a little sharding are kept as
-    cheap insurance.
-    """
-    h = hash_hex
-    forms = [
-        h, h.lower(),
-        f"{h[:2]}/{h}", f"{h[:2].lower()}/{h.lower()}",
-    ]
-    seen: set[str] = set()
-    return [f for f in forms if not (f in seen or seen.add(f))]
 
 # ── ZIP/p4k range extraction ──────────────────────────────────────────────────
 
@@ -870,23 +856,32 @@ def _parse_p4kmani(data: bytes) -> list[_ManifestEntry]:
                 if local and local not in found_names:
                     found_names.add(local)
                     rec = _record(f0)
-                    primary = rec[:32].hex().upper()
-                    # Candidate hashes at a few leading offsets, in case the
-                    # record carries a small prefix before the content hash.
-                    alts = tuple(
-                        rec[o:o + 32].hex().upper()
-                        for o in (0, 4, 8, 16)
-                        if len(rec) >= o + 32 and rec[o:o + 32].hex().upper() != primary
-                    )
+                    # The 204-byte record holds two 32-byte hashes: HASH_A at
+                    # offset 8 (uncompressed content hash) and HASH_B at offset
+                    # 72, after the constant 0x1904C55C sub-record marker
+                    # (compressed-blob hash — the likely CDN object key). Sweep
+                    # all 4-byte-aligned offsets, trying 72 and 8 first, so the
+                    # probe finds whichever the CDN uses.
+                    prio = [72, 8, 68, 76, 64, 80, 40, 0, 4, 16]
+                    offsets = prio + [o for o in range(0, len(rec) - 31, 4)
+                                      if o not in prio]
+                    seen: set[str] = set()
+                    cands: list[str] = []
+                    for o in offsets:
+                        h = rec[o:o + 32].hex().upper()
+                        if len(h) == 64 and h not in seen:
+                            seen.add(h)
+                            cands.append(h)
                     logger.info(
                         "P4K-MANI match: %r path=%r f0=%d stride=%d\n"
-                        "    record[0:96]=%s\n    hash(off0)=%s",
-                        local, full, f0, STRIDE, rec[:96].hex().upper(), primary,
+                        "    record[0:104]=%s\n    hashA(off8)=%s  hashB(off72)=%s",
+                        local, full, f0, STRIDE, rec[:104].hex().upper(),
+                        rec[8:40].hex().upper(), rec[72:104].hex().upper(),
                     )
                     found.append(_ManifestEntry(
-                        local_name=local, hash=primary,
+                        local_name=local, hash=cands[0] if cands else "",
                         size=0, compressed_size=0, compression="zstd",
-                        alt_hashes=alts,
+                        alt_hashes=tuple(cands[1:]),
                     ))
             if f3 == 0xFFFFFFFF:
                 break
@@ -954,24 +949,25 @@ def _download_object(build: BuildInfo, entry: _ManifestEntry) -> bytes:
     sigs = build.objects_sigs
 
     # The manifest URL is {domain}/{64-hex} at the root, and objects.url is the
-    # bare domain with a domain-wide signature — so the object is at the root,
-    # keyed by its content hash. Probe the primary hash first, then the
-    # alt-offset candidates (in case the record has a leading prefix), each as
-    # a flat root path plus light sharding insurance.
-    all_hashes = [entry.hash, *entry.alt_hashes]
+    # bare domain with a domain-wide signature — so objects are flat at the root,
+    # keyed by a 32-byte content hash. We don't yet know which hash field in the
+    # record is the key, so probe every swept candidate as a flat root path
+    # (uppercase, matching the manifest URL); add lowercase + a couple of
+    # sharded forms for the two highest-priority candidates as insurance.
+    all_hashes = [h for h in (entry.hash, *entry.alt_hashes) if h]
     candidates: list[str] = []
-    for h in all_hashes:
-        if not h:
-            continue
-        for suffix in _hash_path_forms(h):
-            path = f"/{suffix}"
+    for i, h in enumerate(all_hashes):
+        for path in ([f"/{h}"] if i >= 2 else
+                     [f"/{h}", f"/{h.lower()}",
+                      f"/{h[:2]}/{h}", f"/{h[:2].lower()}/{h.lower()}"]):
             if path not in candidates:
                 candidates.append(path)
-    # Fixed prefixes as a last resort, primary hash only.
-    for p in ("objects", "data"):
-        path = f"/{p}/{entry.hash}"
-        if path not in candidates:
-            candidates.append(path)
+    # Fixed prefixes as a last resort, top candidate only.
+    if all_hashes:
+        for p in ("objects", "data"):
+            path = f"/{p}/{all_hashes[0]}"
+            if path not in candidates:
+                candidates.append(path)
 
     last_status = "no attempts"
     data: bytes | None = None
@@ -987,8 +983,10 @@ def _download_object(build: BuildInfo, entry: _ManifestEntry) -> bytes:
             last_status = f"HTTP {exc.code}"
             if exc.code == 403:
                 logger.warning("  403 %s%s — signature/path mismatch", base, path)
-            else:
+            elif exc.code != 404:
                 logger.info("  %d %s%s", exc.code, base, path)
+            else:
+                logger.debug("  404 %s%s", base, path)
             continue
         except Exception as exc:
             last_status = str(exc)
