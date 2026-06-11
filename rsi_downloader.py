@@ -408,26 +408,45 @@ def _decode_url_prefix(objects_sigs: str) -> str | None:
     """Extract path prefix from a CloudFront canned-policy URLPrefix param.
 
     RSI's canned-policy sigs look like:
-        URLPrefix=<base64url>&Expires=<ts>&Signature=<b64>&KeyName=<id>
+        URLPrefix=<value>&Expires=<ts>&Signature=<b64>&KeyName=<id>
 
-    URLPrefix is a base64url-encoded URL (e.g. base64("https://cdn.../gamedata/")).
-    We decode it and return the path component (e.g. "/gamedata/").
+    URLPrefix may be:
+      - A plain URL: https://cdn.../gamedata/ (parse_qsl already URL-decodes it)
+      - A base64url-encoded URL (CloudFront custom variant)
+
+    Returns the path component (e.g. "/gamedata/"), or None if undecodable.
     """
     try:
         params = dict(urllib.parse.parse_qsl(objects_sigs, keep_blank_values=True))
         raw = params.get("URLPrefix", "")
         if not raw:
             return None
-        padded = raw.replace("-", "+").replace("_", "/")
+
+        logger.info("URLPrefix raw value (first 120 chars): %r", raw[:120])
+
+        # Try 1: treat as a plain URL (parse_qsl already URL-decodes %xx)
+        parsed = urllib.parse.urlparse(raw)
+        if parsed.scheme in ("http", "https") and parsed.path:
+            path = parsed.path
+            if not path.endswith("/"):
+                path += "/"
+            logger.info("CloudFront URLPrefix (plain URL) → path prefix: %r", path)
+            return path
+
+        # Try 2: base64url-decode (CloudFront uses - → +, _ → /, ~ → =)
+        padded = raw.replace("-", "+").replace("_", "/").replace("~", "=")
         padded += "=" * (-len(padded) % 4)
         decoded = base64.b64decode(padded).decode("utf-8", errors="replace")
-        path = urllib.parse.urlparse(decoded).path
-        if not path:
-            return None
-        if not path.endswith("/"):
-            path += "/"
-        logger.info("CloudFront URLPrefix decoded → path prefix: %r", path)
-        return path
+        parsed2 = urllib.parse.urlparse(decoded)
+        if parsed2.scheme in ("http", "https") and parsed2.path:
+            path = parsed2.path
+            if not path.endswith("/"):
+                path += "/"
+            logger.info("CloudFront URLPrefix (base64url) → path prefix: %r", path)
+            return path
+
+        logger.info("URLPrefix not recognisable as URL (plain or b64): %r", raw[:80])
+        return None
     except Exception as exc:
         logger.debug("Could not decode URLPrefix: %s", exc)
         return None
