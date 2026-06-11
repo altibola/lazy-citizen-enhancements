@@ -862,7 +862,9 @@ def _parse_p4kmani(data: bytes) -> list[_ManifestEntry]:
                     # (compressed-blob hash — the likely CDN object key). Sweep
                     # all 4-byte-aligned offsets, trying 72 and 8 first, so the
                     # probe finds whichever the CDN uses.
-                    prio = [72, 8, 68, 76, 64, 80, 40, 0, 4, 16]
+                    # Offset 12 is the confirmed CDN object key for current
+                    # builds (the 32-byte content hash); others kept for slack.
+                    prio = [12, 72, 8, 68, 76, 64, 80, 40, 0, 4, 16]
                     offsets = prio + [o for o in range(0, len(rec) - 31, 4)
                                       if o not in prio]
                     seen: set[str] = set()
@@ -1000,6 +1002,14 @@ def _download_object(build: BuildInfo, entry: _ManifestEntry) -> bytes:
             f"(hash={entry.hash[:24]}). Last status: {last_status}.\n"
             f"Tried {len(candidates)} URL forms:\n{tried}"
         )
+
+    # Diagnostic: the keyed object is often a small "recipe" that lists the
+    # content chunks, not the file itself. Log enough to decode its layout.
+    logger.info(
+        "Object for %s: %d B  head=%s%s",
+        entry.local_name, len(data), data[:160].hex().upper(),
+        "" if len(data) <= 160 else f"  tail={data[-32:].hex().upper()}",
+    )
 
     comp = (entry.compression or "").lower()
     if data[:4] == _ZSTD_MAGIC or comp in ("zstd", "zstandard"):
