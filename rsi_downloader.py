@@ -404,18 +404,49 @@ def _decode_cf_policy(objects_sigs: str) -> str | None:
         logger.debug("Could not decode CloudFront Policy: %s", exc)
         return None
 
+def _decode_url_prefix(objects_sigs: str) -> str | None:
+    """Extract path prefix from a CloudFront canned-policy URLPrefix param.
+
+    RSI's canned-policy sigs look like:
+        URLPrefix=<base64url>&Expires=<ts>&Signature=<b64>&KeyName=<id>
+
+    URLPrefix is a base64url-encoded URL (e.g. base64("https://cdn.../gamedata/")).
+    We decode it and return the path component (e.g. "/gamedata/").
+    """
+    try:
+        params = dict(urllib.parse.parse_qsl(objects_sigs, keep_blank_values=True))
+        raw = params.get("URLPrefix", "")
+        if not raw:
+            return None
+        padded = raw.replace("-", "+").replace("_", "/")
+        padded += "=" * (-len(padded) % 4)
+        decoded = base64.b64decode(padded).decode("utf-8", errors="replace")
+        path = urllib.parse.urlparse(decoded).path
+        if not path:
+            return None
+        if not path.endswith("/"):
+            path += "/"
+        logger.info("CloudFront URLPrefix decoded → path prefix: %r", path)
+        return path
+    except Exception as exc:
+        logger.debug("Could not decode URLPrefix: %s", exc)
+        return None
+
+
 def _cf_path_candidates(objects_sigs: str, h16: str) -> list[str]:
     """Return ordered list of URL path strings to try for a CDN object hash.
 
     Every path starts with "/" so it appends cleanly to the base URL
     (which has no trailing slash).
 
-    First tries the path derived from the CloudFront Policy (most likely correct),
-    then falls back to common prefixes used by RSI's CDN.
+    Tries in order:
+      1. Path from CloudFront custom-policy (Policy= param)
+      2. Path from CloudFront canned-policy URLPrefix= param
+      3. Common RSI CDN path pattern fallbacks
     """
     candidates: list[str] = []
 
-    # 1. Policy-derived prefix (highest confidence)
+    # 1. Custom-policy: Policy= param carries the Resource URL pattern
     prefix = _decode_cf_policy(objects_sigs)
     if prefix:
         for h in (h16, h16.lower()):
@@ -423,7 +454,16 @@ def _cf_path_candidates(objects_sigs: str, h16: str) -> list[str]:
             if c not in candidates:
                 candidates.append(c)
 
-    # 2. Common RSI CDN path patterns, all with a leading "/"
+    # 2. Canned-policy: URLPrefix= is a base64url-encoded URL prefix
+    if not candidates:
+        prefix = _decode_url_prefix(objects_sigs)
+        if prefix:
+            for h in (h16, h16.lower()):
+                c = f"{prefix}{h}"
+                if c not in candidates:
+                    candidates.append(c)
+
+    # 3. Common RSI CDN path patterns, all with a leading "/"
     for pfx in ("/", "/gamedata/", "/objects/", "/sc/", "/data/"):
         for h in (h16, h16.lower()):
             path = f"{pfx}{h}"
@@ -701,6 +741,8 @@ def download_pipeline_inputs(
     # Log CloudFront Policy so we can diagnose URL issues
     if build.objects_sigs:
         prefix = _decode_cf_policy(build.objects_sigs)
+        if prefix is None:
+            prefix = _decode_url_prefix(build.objects_sigs)
         if prefix is None:
             sigs_params = dict(urllib.parse.parse_qsl(build.objects_sigs))
             logger.info("objects_sigs keys: %s  (Expires=%s)",
