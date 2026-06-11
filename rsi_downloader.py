@@ -362,76 +362,125 @@ def _http_range(url: str, start: int, end: int) -> bytes:
 
 # ── ZIP/p4k range extraction ──────────────────────────────────────────────────
 
-_ZIP_EOCD_SIG   = 0x06054b50
-_ZIP64_EOCD_SIG = 0x06064b50
-_ZIP64_LOC_SIG  = 0x07064b50
-_ZIP_CD_SIG     = 0x02014b50
-_ZIP_LOCAL_SIG  = 0x04034b50
-_ZSTD_MAGIC     = b"\x28\xb5\x2f\xfd"
+# RSI p4k files are CryEngine pak archives (ZIP-based) with a simple XOR
+# cipher applied to every byte.  The key (5033620A repeated) is the same one
+# used by the open-source unp4k tool.  The cipher is positional: byte at
+# absolute file offset `i` is XOR'd with key[i % 4].
+_P4K_XOR_KEY    = bytes([0x50, 0x33, 0x62, 0x0A])
+
+# Plain ZIP signatures (pre-XOR)
+_ZIP_EOCD_SIG   = 0x06054b50   # PK\x05\x06
+_ZIP64_EOCD_SIG = 0x06064b50   # PK\x06\x06
+_ZIP64_LOC_SIG  = 0x07064b50   # PK\x06\x07
+_ZIP_CD_SIG     = 0x02014b50   # PK\x01\x02
+_ZIP_LOCAL_SIG  = 0x04034b50   # PK\x03\x04
+
+_ZSTD_MAGIC = b"\x28\xb5\x2f\xfd"
 
 
-def _find_eocd(tail: bytes) -> int:
-    """Find the EOCD record offset within tail bytes (scan backwards)."""
+def _p4k_xor(data: bytes, file_offset: int) -> bytes:
+    """Apply (or remove) the p4k XOR cipher at the given absolute file offset."""
+    key = _P4K_XOR_KEY
+    return bytes(b ^ key[(file_offset + i) % 4] for i, b in enumerate(data))
+
+
+def _detect_p4k_xor(header8: bytes) -> bool:
+    """Return True if the first 8 file bytes look like XOR-encrypted ZIP."""
+    # PK\x03\x04 (local file header) or PK\x06\x06 (ZIP64 EOCD) after XOR
+    decrypted = _p4k_xor(header8[:4], 0)
+    plain_sig = decrypted == b"PK\x03\x04" or decrypted == b"PK\x05\x06"
+    logger.info(
+        "p4k first 8 bytes (raw): %s  →  XOR-decoded first 4: %s  (XOR=%s)",
+        header8[:8].hex().upper(),
+        decrypted.hex().upper(),
+        plain_sig,
+    )
+    return plain_sig
+
+
+def _find_eocd(tail: bytes, xor_offset: int, use_xor: bool) -> int:
+    """Scan backwards in tail for the EOCD record, decoding XOR if needed."""
     sig = _ZIP_EOCD_SIG.to_bytes(4, "little")
     pos = len(tail) - 22
     while pos >= 0:
-        if tail[pos : pos + 4] == sig:
-            comment_len = struct.unpack_from("<H", tail, pos + 20)[0]
-            if pos + 22 + comment_len == len(tail):
+        chunk = tail[pos : pos + 4]
+        if use_xor:
+            chunk = _p4k_xor(chunk, xor_offset + pos)
+        if chunk == sig:
+            clen_raw = tail[pos + 20 : pos + 22]
+            if use_xor:
+                clen_raw = _p4k_xor(clen_raw, xor_offset + pos + 20)
+            comment_len = struct.unpack("<H", clen_raw)[0]
+            if pos + 22 + comment_len <= len(tail):
                 return pos
         pos -= 1
     raise RuntimeError(
-        "ZIP End-of-Central-Directory not found in last 64 KB of p4k. "
-        "The file may be incomplete or not a valid ZIP/p4k."
+        "p4k: End-of-Central-Directory not found in last 64 KB. "
+        f"XOR tried: {use_xor}. "
+        "The p4k may use a format we don't yet support."
     )
 
 
 def _p4k_extract(p4k_url: str, out_dir: Path) -> dict[str, Path]:
     """Extract target files from a remote p4k via HTTP Range requests.
 
-    The p4k format is ZIP-compatible (RSI uses zstd or deflate for entries).
+    RSI p4k = CryEngine pak = XOR-encrypted ZIP (key: 5033620A repeated).
     We only download what we need:
       1. HEAD → total file size
-      2. Last 64 KB → EOCD (+ ZIP64 structures)
-      3. Central Directory → file offsets
-      4. Each file's compressed data → decompress → write
+      2. First 8 bytes → detect XOR
+      3. Last 64 KB → EOCD (+ ZIP64 structures)
+      4. Central Directory → file offsets
+      5. Each file's compressed data → decrypt → decompress → write
     """
-    TAIL = 65536 + 22   # enough for EOCD + max ZIP comment
+    TAIL = 65536 + 22
 
     # 1. Total size
     total = _http_head(p4k_url)
     if not total:
         raise RuntimeError(
-            "p4k server returned no Content-Length. "
-            "Cannot do range-based extraction without knowing file size."
+            "p4k server returned no Content-Length; "
+            "cannot do range extraction without file size."
         )
     logger.info("p4k total size: %d bytes (%.2f GB)", total, total / 1e9)
 
-    # 2. Read tail, find EOCD
-    tail_start = max(0, total - TAIL)
-    tail = _http_range(p4k_url, tail_start, total - 1)
-    eocd_pos = _find_eocd(tail)
-    eocd = tail[eocd_pos:]
+    # 2. Detect XOR
+    header8  = _http_range(p4k_url, 0, 7)
+    use_xor  = _detect_p4k_xor(header8)
 
+    # 3. Fetch tail, find EOCD
+    tail_start = max(0, total - TAIL)
+    tail_raw   = _http_range(p4k_url, tail_start, total - 1)
+    eocd_pos   = _find_eocd(tail_raw, tail_start, use_xor)
+
+    def _read_tail(off: int, size: int) -> bytes:
+        raw = tail_raw[off : off + size]
+        return _p4k_xor(raw, tail_start + off) if use_xor else raw
+
+    eocd = _read_tail(eocd_pos, 22)
     cd_size   = struct.unpack_from("<I", eocd, 12)[0]
     cd_offset = struct.unpack_from("<I", eocd, 16)[0]
 
-    # ZIP64: values == 0xFFFFFFFF → read from ZIP64 EOCD
+    # ZIP64
     if cd_size == 0xFFFFFFFF or cd_offset == 0xFFFFFFFF:
         loc_pos = eocd_pos - 20
-        if loc_pos >= 0 and tail[loc_pos : loc_pos + 4] == _ZIP64_LOC_SIG.to_bytes(4, "little"):
-            z64_off = struct.unpack_from("<Q", tail, loc_pos + 8)[0]
-            z64_hdr = _http_range(p4k_url, z64_off, z64_off + 55)
-            if struct.unpack_from("<I", z64_hdr, 0)[0] == _ZIP64_EOCD_SIG:
-                cd_size   = struct.unpack_from("<Q", z64_hdr, 40)[0]
-                cd_offset = struct.unpack_from("<Q", z64_hdr, 48)[0]
-                logger.info("ZIP64 EOCD: cd_offset=%d cd_size=%d", cd_offset, cd_size)
+        if loc_pos >= 0:
+            loc = _read_tail(loc_pos, 4)
+            if struct.unpack_from("<I", loc, 0)[0] == _ZIP64_LOC_SIG:
+                loc20 = _read_tail(loc_pos, 20)
+                z64_off = struct.unpack_from("<Q", loc20, 8)[0]
+                z64_raw = _http_range(p4k_url, z64_off, z64_off + 55)
+                z64 = _p4k_xor(z64_raw, z64_off) if use_xor else z64_raw
+                if struct.unpack_from("<I", z64, 0)[0] == _ZIP64_EOCD_SIG:
+                    cd_size   = struct.unpack_from("<Q", z64, 40)[0]
+                    cd_offset = struct.unpack_from("<Q", z64, 48)[0]
+                    logger.info("ZIP64 EOCD: cd_offset=%d cd_size=%d", cd_offset, cd_size)
 
     logger.info("Central directory: offset=%d size=%d (%.1f MB)",
                 cd_offset, cd_size, cd_size / 1e6)
 
-    # 3. Fetch central directory
-    cd = _http_range(p4k_url, cd_offset, cd_offset + cd_size - 1)
+    # 4. Fetch + decode central directory
+    cd_raw = _http_range(p4k_url, cd_offset, cd_offset + cd_size - 1)
+    cd = _p4k_xor(cd_raw, cd_offset) if use_xor else cd_raw
 
     # Build normalised-path → local-name lookup
     path_to_local: dict[str, str] = {}
@@ -439,7 +488,7 @@ def _p4k_extract(p4k_url: str, out_dir: Path) -> dict[str, Path]:
         for c in candidates:
             path_to_local[_norm_path(c)] = local_name
 
-    # 4. Parse CD entries
+    # Parse CD entries
     FileEntry = tuple[int, int, int, int]   # (local_off, comp_size, uncomp_size, method)
     file_entries: dict[str, FileEntry] = {}
 
@@ -506,7 +555,7 @@ def _p4k_extract(p4k_url: str, out_dir: Path) -> dict[str, Path]:
             "The p4k may use a different internal path layout."
         )
 
-    # 5. Download + decompress each file
+    # 5. Download + decrypt + decompress each file
     results: dict[str, Path] = {}
     for local_name, (local_off, comp_size, uncomp_size, method) in file_entries.items():
         logger.info(
@@ -514,14 +563,16 @@ def _p4k_extract(p4k_url: str, out_dir: Path) -> dict[str, Path]:
             local_name, comp_size, uncomp_size,
         )
 
-        # Local file header: fixed 30 bytes + variable fname + extra
-        lhdr = _http_range(p4k_url, local_off, local_off + 29)
+        # Read local file header (30 fixed bytes) to get variable-length fields
+        lhdr_raw = _http_range(p4k_url, local_off, local_off + 29)
+        lhdr = _p4k_xor(lhdr_raw, local_off) if use_xor else lhdr_raw
         lh_fname_len = struct.unpack_from("<H", lhdr, 26)[0]
         lh_extra_len = struct.unpack_from("<H", lhdr, 28)[0]
         data_start   = local_off + 30 + lh_fname_len + lh_extra_len
 
-        raw = _http_range(p4k_url, data_start, data_start + comp_size - 1)
-        logger.info("  fetched %d B", len(raw))
+        raw_enc = _http_range(p4k_url, data_start, data_start + comp_size - 1)
+        raw = _p4k_xor(raw_enc, data_start) if use_xor else raw_enc
+        logger.info("  fetched %d B (XOR decrypted=%s)", len(raw), use_xor)
 
         # Decompress — check zstd magic first (RSI uses it regardless of method code)
         if raw[:4] == _ZSTD_MAGIC:
