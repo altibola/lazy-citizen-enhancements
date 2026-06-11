@@ -539,6 +539,8 @@ def _parse_p4kmani(data: bytes) -> list[_ManifestEntry]:
 
     logger.info("P4K-MANI: tree=%d B  files=%d  hash_base=0x%x",
                 tree_size, file_count, HASH_BASE)
+    logger.info("P4K-MANI hash section first 64 bytes: %s",
+                data[HASH_BASE : HASH_BASE + 64].hex().upper())
 
     # Build lookup: normalised trie path → local output name.
     # Each local name may have multiple candidate paths; we accept any of them
@@ -551,16 +553,25 @@ def _parse_p4kmani(data: bytes) -> list[_ManifestEntry]:
     found: list[_ManifestEntry] = []
     found_names: set[str] = set()   # local names already collected
 
-    def _hash_entry(f0: int) -> tuple[str, int, int]:
+    def _hash_entry(f0: int) -> tuple[str, str, int, int]:
+        """Return (h16, h32, comp, uncomp).
+
+        h16 = first 16 bytes as hex (stride-40 interpretation).
+        h32 = first 32 bytes as hex (stride-48/56 interpretation, or h16+next16).
+        Both are returned so the downloader can try whichever matches the CDN.
+        """
         off = HASH_BASE + f0 * STRIDE
         if off + STRIDE > len(data):
-            return ("", 0, 0)
-        h16    = data[off:off + 16].hex().upper()
+            return ("", "", 0, 0)
+        raw64 = data[off : off + min(64, len(data) - off)]
+        h16   = raw64[:16].hex().upper() if len(raw64) >= 16 else ""
+        h32   = raw64[:32].hex().upper() if len(raw64) >= 32 else h16
         comp   = struct.unpack_from("<Q", data, off + 16)[0]
         uncomp = struct.unpack_from("<Q", data, off + 24)[0]
         if comp   > _MAX_SIZE: comp   = 0
         if uncomp > _MAX_SIZE: uncomp = 0
-        return h16, comp, uncomp
+        logger.debug("hash_entry f0=%d off=0x%x raw(64B)=%s", f0, off, raw64.hex().upper())
+        return h16, h32, comp, uncomp
 
     def _walk(off: int, parent_path: str) -> None:
         while True:
@@ -583,12 +594,18 @@ def _parse_p4kmani(data: bytes) -> list[_ManifestEntry]:
                 local = path_to_local.get(norm)
                 if local and local not in found_names:
                     found_names.add(local)
-                    h16, comp, uncomp = _hash_entry(f0)
-                    logger.info("P4K-MANI match: %r  path=%r  f0=%d  h16=%s  comp=%d  uncomp=%d",
-                                local, full, f0, h16, comp, uncomp)
+                    h16, h32, comp, uncomp = _hash_entry(f0)
+                    logger.info(
+                        "P4K-MANI match: %r  path=%r  f0=%d"
+                        "  h16=%s  h32=%s  comp=%d  uncomp=%d",
+                        local, full, f0, h16, h32, comp, uncomp,
+                    )
                     found.append(_ManifestEntry(
-                        local_name=local, hash=h16, size=uncomp,
-                        compressed_size=comp, compression="zstd",
+                        local_name=local,
+                        hash=h32 if h32 and len(h32) == 64 else h16,
+                        size=uncomp,
+                        compressed_size=comp,
+                        compression="zstd",
                     ))
 
             if f3 == 0xFFFFFFFF:
