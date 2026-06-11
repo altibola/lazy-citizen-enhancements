@@ -134,6 +134,8 @@ jobs:
 
       # ── 5. Bootstrap env (skipped when restored from cache) ─────────────────
       - name: Bootstrap micromamba env + Smart Citizen
+        env:
+          PYTHONIOENCODING: utf-8
         run: |
           if [ ! -f .micromamba/bin/micromamba ] && [ ! -f .micromamba/bin/micromamba.exe ]; then
             echo "No cached env — bootstrapping..."
