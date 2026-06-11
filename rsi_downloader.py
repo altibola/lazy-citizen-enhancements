@@ -792,10 +792,12 @@ def download_pipeline_inputs(
     build = authenticate(username, password, channel, mfa_code)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    logger.info("BuildInfo: version=%s  manifest=%s  objects=%s",
+    p4k_path = build.p4k_url.split("?")[0] if build.p4k_url else "(none)"
+    logger.info("BuildInfo: version=%s  manifest=%s  objects=%s  p4k_path=%s",
                 build.version,
                 build.manifest_url.split("?")[0] if build.manifest_url else "(none)",
-                build.objects_url or "(none)")
+                build.objects_url or "(none)",
+                p4k_path)
 
     # Log CloudFront Policy so we can diagnose URL issues
     if build.objects_sigs:
