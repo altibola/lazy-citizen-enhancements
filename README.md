@@ -12,10 +12,15 @@ missions, components).
 
 <!-- VERSION-STATUS:START -->
 
-_No version check has run yet — this table is filled automatically by the
-pipeline and the **Update community translations** workflow (game build +
-pinned upstream commit of every translation source, compared against
-upstream HEAD)._
+_Last verified: **2026-06-12 17:10 UTC** — refreshed automatically by the pipeline and the **Update community translations** workflow._
+
+| Source | Pinned (this repo) | Upstream HEAD | Status |
+|---|---|---|---|
+| Game build (P4CL) | `11952564` (LIVE) | — | — |
+| french — `Dymerz/StarCitizen-Localization@main` | [`0ad8cda`](https://github.com/Dymerz/StarCitizen-Localization/commit/0ad8cdad1e790c30f88fbc4d188b44795533234a) | `0ad8cda` | ✅ up to date (pinned at build) |
+| portuguese_br — `Dymerz/StarCitizen-Localization@main` | [`0ad8cda`](https://github.com/Dymerz/StarCitizen-Localization/commit/0ad8cdad1e790c30f88fbc4d188b44795533234a) | `0ad8cda` | ✅ up to date (pinned at build) |
+| portuguese_br_alt — `danielgmota/StarCitizen-Localization@develop` | [`e06f30d`](https://github.com/danielgmota/StarCitizen-Localization/commit/e06f30dd9556ca02098a057fc0a04e80fbaca4a4) | `e06f30d` | ✅ up to date (pinned at build) |
+| spanish — `Dymerz/StarCitizen-Localization@main` | [`0ad8cda`](https://github.com/Dymerz/StarCitizen-Localization/commit/0ad8cdad1e790c30f88fbc4d188b44795533234a) | `0ad8cda` | ✅ up to date (pinned at build) |
 
 <!-- VERSION-STATUS:END -->
 
@@ -38,7 +43,15 @@ anywhere else it targets **LIVE**.
 
 <!-- DOWNLOADS:START -->
 
-_No builds published yet — the table is generated automatically after the first pipeline run (`versions_report.py`)._
+Current build: **`11952564`** (LIVE) — this table is regenerated automatically by the pipeline (`versions_report.py`); see [VERSIONS.md](VERSIONS.md) for the full input/output version manifest.
+
+| Language | Game build | Enhanced file |
+|---|---|---|
+| English | `11952564` (LIVE) | [global.ini](data/Localization/english/global.ini) |
+| French (France) | `11952564` (LIVE) | [global.ini](data/Localization/french_%28france%29/global.ini) |
+| Portuguese (Brazil) — danielgmota | `11952564` (LIVE) | [global.ini](data/Localization/portuguese_%28brazil%29_danielgmota/global.ini) |
+| Portuguese (Brazil) — dymerz | `11952564` (LIVE) | [global.ini](data/Localization/portuguese_%28brazil%29_dymerz/global.ini) |
+| Spanish (Spain) | `11952564` (LIVE) | [global.ini](data/Localization/spanish_%28spain%29/global.ini) |
 
 <!-- DOWNLOADS:END -->
 

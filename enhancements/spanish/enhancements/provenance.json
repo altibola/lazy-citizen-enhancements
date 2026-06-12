@@ -1,0 +1,49 @@
+{
+  "build": "11952564",
+  "language": "spanish",
+  "generated_at": "2026-06-12T14:10:42",
+  "inputs": {
+    "base_en.ini": {
+      "sha256": "76e6854da35a13b99fa83a53bdd87c56be0d17e7715239806a3f84602c82e902",
+      "path": "D:\\projects\\lazy-citizen-enhancements\\enhancements\\base_en.ini"
+    },
+    "base.ini": {
+      "url": "https://raw.githubusercontent.com/Dymerz/StarCitizen-Localization/main/data/Localization/spanish_(spain)/global.ini",
+      "sha256": "2d9c52107200b04bdbac7e432103f0cd173a385a38b30d81336eaf73088c32bf",
+      "owner": "Dymerz",
+      "repo": "StarCitizen-Localization",
+      "branch": "main",
+      "commit": "0ad8cdad1e790c30f88fbc4d188b44795533234a",
+      "permalink": "https://github.com/Dymerz/StarCitizen-Localization/blob/0ad8cdad1e790c30f88fbc4d188b44795533234a/data/Localization/spanish_(spain)/global.ini"
+    }
+  },
+  "outputs": {
+    "ships_desc_enhancements.ini": {
+      "sha256": "8473c4f431c390412246112de3cd3b9fb104b90ac97ecf0f21d3621a2fe10fed"
+    },
+    "components_desc_enhancements.ini": {
+      "sha256": "b8546b8b7f75180d7a045dc212ec24e9374a15238bdefaba37cc09d90b094dae"
+    },
+    "ship_weapons_desc_enhancements.ini": {
+      "sha256": "ef89283997826667dccb9779c09882ca7c462d011544d826039015aef2cd7785"
+    },
+    "fps_weapons_desc_enhancements.ini": {
+      "sha256": "bc52de5500d77e8dbc1a124fdc495d37c0ac16db30d7ef606e4a60b725657c21"
+    },
+    "mission_rewards_enhancements.ini": {
+      "sha256": "7ec62c0d2144850d22065c0f381c1c62ab5ed497f1d80bf5e6c8e374210f7284"
+    },
+    "commodity_crafting_enhancements.ini": {
+      "sha256": "4197ef6a593fe10dc481ea30f108b6c8f570c452045bf76e8f36d767e0d40ebd"
+    },
+    "journal_enhancements.ini": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "missile_enhancements.ini": {
+      "sha256": "cc6d087027f4361ba8af5bf3abb5adbaa0b868f1008336f4858888c1aeea6b7d"
+    },
+    "global.ini": {
+      "sha256": "08adcb6abcec78c24888cfdda8e03a194927bb57c350a2635634182a78a734ea"
+    }
+  }
+}

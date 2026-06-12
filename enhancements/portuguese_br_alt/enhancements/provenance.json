@@ -1,0 +1,49 @@
+{
+  "build": "11952564",
+  "language": "portuguese_br_alt",
+  "generated_at": "2026-06-12T14:10:14",
+  "inputs": {
+    "base_en.ini": {
+      "sha256": "76e6854da35a13b99fa83a53bdd87c56be0d17e7715239806a3f84602c82e902",
+      "path": "D:\\projects\\lazy-citizen-enhancements\\enhancements\\base_en.ini"
+    },
+    "base.ini": {
+      "url": "https://raw.githubusercontent.com/danielgmota/StarCitizen-Localization/develop/data/Localization/portuguese_(brazil)/global.ini",
+      "sha256": "0b35ba113df0b32ee5c3068b370cca67ab80ef44d43f222aa10352c557b7f30e",
+      "owner": "danielgmota",
+      "repo": "StarCitizen-Localization",
+      "branch": "develop",
+      "commit": "e06f30dd9556ca02098a057fc0a04e80fbaca4a4",
+      "permalink": "https://github.com/danielgmota/StarCitizen-Localization/blob/e06f30dd9556ca02098a057fc0a04e80fbaca4a4/data/Localization/portuguese_(brazil)/global.ini"
+    }
+  },
+  "outputs": {
+    "ships_desc_enhancements.ini": {
+      "sha256": "0c4e7148f00037154dcee6eb6dfdaa2a89e09076c04b62bb05f47ac80bd359e9"
+    },
+    "components_desc_enhancements.ini": {
+      "sha256": "682ff1a612df6c23f436f5b93397c879558f5f020f870420ad1ac7c506002155"
+    },
+    "ship_weapons_desc_enhancements.ini": {
+      "sha256": "de1a21d09d047801b96260b18d0c3f90e46d7471ef7e8fbaf25eef6a66fdcff9"
+    },
+    "fps_weapons_desc_enhancements.ini": {
+      "sha256": "8721842c72db187479c142f8cd87ec3483fcdc972f0bb82ff761acc3c329b066"
+    },
+    "mission_rewards_enhancements.ini": {
+      "sha256": "dbd10b649bbf1e94a3f5127e8004197f5009fd271a5b86c1fbcaa241c0a990c0"
+    },
+    "commodity_crafting_enhancements.ini": {
+      "sha256": "b34c6b7bfb3769f2e0e2f762c2c8a8454b26f5ff59f098fd871934da1fd423e3"
+    },
+    "journal_enhancements.ini": {
+      "sha256": "e04ce4c3a21beae6f604dcc900b7bd70cc5f041238860aa6eda65722a6afa1bf"
+    },
+    "missile_enhancements.ini": {
+      "sha256": "adf2f7df7e3265acee672d5a26aae746d1c5eb13a6f50375acafe89184549979"
+    },
+    "global.ini": {
+      "sha256": "5079d9adc0203fb0159afc66692d144926b981ca82514a7e404e462be8e4b3e6"
+    }
+  }
+}
