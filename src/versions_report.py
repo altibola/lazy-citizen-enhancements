@@ -151,6 +151,7 @@ def build_status_section(rows: list[dict] | None = None,
     version = _load_json(ENH_DIR / "version.json")
     game_build = version.get("version", "unknown")
     environment = version.get("environment", "unknown")
+    display_version = version.get("display_version", f"{environment.lower()}-{game_build}")
     checked_at = checked_at or _time.strftime("%Y-%m-%d %H:%M UTC", _time.gmtime())
 
     if rows is None:
@@ -179,7 +180,7 @@ def build_status_section(rows: list[dict] | None = None,
     lines.append("")
     lines.append("| Source | Pinned (this repo) | Upstream HEAD | Status |")
     lines.append("|---|---|---|---|")
-    lines.append(f"| Game build (P4CL) | `{game_build}` ({environment}) | — | — |")
+    lines.append(f"| Game build (P4CL) | `{display_version}` <br/> `(P4CL: {game_build})` | — | — |")
     for r in rows:
         stored = f"[`{r['stored'][:7]}`]({r['url']})" if r.get("stored") and r.get("url") \
                  else (f"`{r['stored'][:7]}`" if r.get("stored") else "_(none)_")
@@ -211,6 +212,7 @@ def build_report() -> str:
     version = _load_json(ENH_DIR / "version.json")
     game_build = version.get("version", "unknown")
     environment = version.get("environment", "unknown")
+    display_version = version.get("display_version", f"{environment.lower()}-{game_build}")
 
     lines: list[str] = []
     lines.append("# Versions")
@@ -223,6 +225,7 @@ def build_report() -> str:
     lines.append("")
     lines.append("| Field | Value |")
     lines.append("|---|---|")
+    lines.append(f"| Public Version | `{display_version}` |")
     lines.append(f"| Build (P4CL) | `{game_build}` |")
     lines.append(f"| Environment | `{environment}` |")
 

@@ -583,11 +583,27 @@ def main(argv: list[str] | None = None) -> int:
         game_version = args.game_version or _detect_game_version(p4k)
         environment = _detect_environment(p4k)
         
+        # Determine the user-friendly display version (e.g., 4.8.0-live-11952564)
+        display_version = f"{environment.lower()}-{game_version}"
+        manifest = p4k.parent / "build_manifest.id"
+        if manifest.exists():
+            try:
+                payload = json.loads(manifest.read_text(encoding="utf-8"))
+                inner = payload.get("Data", payload)
+                branch = str(inner.get("Branch", "")).strip()
+                if branch:
+                    if branch.startswith("sc-alpha-"):
+                        branch = branch[len("sc-alpha-"):]
+                    display_version = f"{branch}-{environment.lower()}-{game_version}"
+            except Exception:
+                pass
+
         # Ensure output directory exists and write version.json
         out_dir.mkdir(parents=True, exist_ok=True)
         version_file = out_dir / "version.json"
         version_data = {
             "version": game_version,
+            "display_version": display_version,
             "environment": environment
         }
         version_file.write_text(json.dumps(version_data, indent=2), encoding="utf-8")
