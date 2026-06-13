@@ -47,6 +47,16 @@ ARGS=()
 for arg in "$@"; do
     case "$arg" in
         --no-pr) NO_PR=true ;;
+        --use-launcher-version)
+            echo "Consultando a versão no log do RSI Launcher..."
+            LAUNCHER_VER=$(PY "$SCRIPT_DIR/get_launcher_version.py" --raw)
+            if [ -n "$LAUNCHER_VER" ] && [ "$LAUNCHER_VER" != "None" ]; then
+                echo "Versão do Launcher detectada: $LAUNCHER_VER"
+                ARGS+=("--display-version" "$LAUNCHER_VER")
+            else
+                echo "Aviso: Não foi possível detectar a versão pelo launcher. Usando detecção padrão."
+            fi
+            ;;
         *)       ARGS+=("$arg") ;;
     esac
 done
