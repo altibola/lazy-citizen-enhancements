@@ -1,0 +1,7 @@
+name: lce
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11      # aligns with Smart Citizen's runtime (rmtree onexc/onerror @3.12)
+  - lxml>=5.0        # only runtime dependency of the enhancement generator
+  - nodejs>=20.0     # needed for portable npx INI validation

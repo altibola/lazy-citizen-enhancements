@@ -1,0 +1,40 @@
+name: Validate global.ini
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'data/Localization/**/global.ini'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'data/Localization/**/global.ini'
+
+jobs:
+  validate-entries:
+    name: Validate global.ini Entries
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+
+    - name: Validate Portuguese (Brazil)
+      run: npx @dymerz/starcitizen-ini-utils validate --ci --fail-on-error --reference-type local --local-path "data/Localization/english/global.ini" "data/Localization/portuguese_(brazil)/global.ini"
+
+    - name: Validate Portuguese (Brazil) All
+      if: hashFiles('data/Localization/portuguese_(brazil)_all/global.ini') != ''
+      run: npx @dymerz/starcitizen-ini-utils validate --ci --fail-on-error --reference-type local --local-path "data/Localization/english/global.ini" "data/Localization/portuguese_(brazil)_all/global.ini"
+
+    - name: Validate French
+      run: npx @dymerz/starcitizen-ini-utils validate --ci --fail-on-error --reference-type local --local-path "data/Localization/english/global.ini" "data/Localization/french_(france)/global.ini"
+
+    - name: Validate Spanish
+      run: npx @dymerz/starcitizen-ini-utils validate --ci --fail-on-error --reference-type local --local-path "data/Localization/english/global.ini" "data/Localization/spanish_(spain)/global.ini"

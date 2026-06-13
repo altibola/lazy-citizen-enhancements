@@ -1,0 +1,129 @@
+name: Build from local extraction
+
+# ON-DEMAND — Use quando você já rodou o pipeline localmente e quer que o
+# GitHub Actions faça o restante (traduções comunitárias + PR) sem precisar
+# configurar credenciais RSI.
+#
+# Fluxo típico:
+#   1. Localmente: .\run-local.ps1            (extrai p4k + gera enhancements)
+#   2. Git commit + push dos arquivos em enhancements/
+#   3. Dispatch este workflow → baixa traduções, cria PR
+#
+# Alternativamente: use --skip-extract se já tiver o enhancements/ do patch
+# anterior e só quiser atualizar as traduções comunitárias.
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch com os arquivos extraídos (padrão: branch default)'
+        required: false
+        default: ''
+      lang:
+        description: 'Língua específica (vazio = todas)'
+        required: false
+        default: ''
+      translate:
+        description: 'Também rodar tradução por glossário (*_all variants)'
+        required: false
+        default: 'true'
+        type: choice
+        options: ['true', 'false']
+      push_branch:
+        description: 'Criar branch build/{p4cl} e abrir PR'
+        required: false
+        default: 'true'
+        type: choice
+        options: ['true', 'false']
+
+jobs:
+  build-from-extraction:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      # ── 1. Checkout ──────────────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.branch || github.event.repository.default_branch }}
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # ── 2. Verificar que o enhancements/version.json existe ──────────────────
+      - name: Guard — enhancements/version.json must exist
+        id: guard
+        run: |
+          if [ ! -f "enhancements/version.json" ]; then
+            echo "::error::enhancements/version.json não encontrado neste branch."
+            echo "Rode .\run-local.ps1 localmente e faça commit+push dos arquivos em enhancements/"
+            exit 1
+          fi
+          VERSION=$(python -c "import json; d=json.load(open('enhancements/version.json')); print(d.get('version','?'))")
+          ENV=$(python -c "import json; d=json.load(open('enhancements/version.json')); print(d.get('environment','LIVE'))")
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "environment=${ENV}" >> "$GITHUB_OUTPUT"
+          echo "Game build: ${VERSION} (${ENV})"
+
+      # ── 3. Python ────────────────────────────────────────────────────────────
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install Python dependencies
+        run: pip install lxml zstandard
+
+      # ── 4. Smart Citizen tools (para merge) ──────────────────────────────────
+      - name: Set up Smart Citizen tools
+        run: |
+          chmod +x setup_smart_citizen.sh
+          ./setup_smart_citizen.sh
+
+      # ── 5. Pipeline: --skip-extract (reutiliza base_en.ini + dataforge cache) ─
+      #   Baixa traduções comunitárias atualizadas e remerge com os
+      #   *_enhancements.ini já presentes no branch.
+      - name: Re-run pipeline (skip extraction, update translations)
+        run: |
+          ARGS=(--skip-extract --skip-generate)
+          if [ -n "${{ inputs.lang }}" ]; then
+            ARGS+=(--lang "${{ inputs.lang }}")
+          fi
+          python run_pipeline.py "${ARGS[@]}"
+        env:
+          PYTHONIOENCODING: utf-8
+
+      # ── 6. Tradução por glossário (*_all variants) ────────────────────────────
+      - name: Translate enhancement texts
+        if: inputs.translate == 'true'
+        run: |
+          if [ -n "${{ inputs.lang }}" ]; then
+            python translate_enhancements.py --lang "${{ inputs.lang }}"
+          else
+            python translate_enhancements.py
+          fi
+        env:
+          PYTHONIOENCODING: utf-8
+
+      # ── 7. Criar branch build/{p4cl} + PR ────────────────────────────────────
+      - name: Push build branch and open PR
+        if: inputs.push_branch == 'true'
+        run: python create_pr.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PYTHONIOENCODING: utf-8
+
+      # ── 8. Resumo ─────────────────────────────────────────────────────────────
+      - name: Publish version manifest to run summary
+        if: always()
+        run: |
+          {
+            echo "## Build ${{ steps.guard.outputs.version }} (${{ steps.guard.outputs.environment }})"
+            echo ""
+            if [ -f VERSIONS.md ]; then cat VERSIONS.md; fi
+          } >> "$GITHUB_STEP_SUMMARY"

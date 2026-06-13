@@ -1,0 +1,143 @@
+name: Promote build to main
+
+# ON-DEMAND ONLY (workflow_dispatch) — no schedule for now.
+#
+# When a PTU build ships to LIVE, run this workflow with the build number
+# (P4CL). It finds the matching build/{p4cl} branch and opens a PR to main
+# (or auto-merges, if requested).
+#
+# Version traceability: before promoting, the run summary shows the version
+# manifest of the branch being promoted — game build, the original community
+# translation commits, and what the enhancement generator consumed.
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_number:
+        description: 'P4CL build number to promote (e.g. 11952564)'
+        required: true
+      auto_merge:
+        description: 'Auto-merge instead of opening a PR'
+        required: false
+        default: 'false'
+        type: choice
+        options: ['false', 'true']
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      # ── 1. Checkout with full history ────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # ── 2. Check whether a build/* branch exists for this build ─────────────
+      - name: Find build branch
+        id: find
+        run: |
+          BUILD="${{ inputs.build_number }}"
+          BRANCH="build/${BUILD}"
+          if git ls-remote --exit-code --heads origin "${BRANCH}"; then
+            echo "branch=${BRANCH}" >> "$GITHUB_OUTPUT"
+            echo "exists=true"      >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "::error::No branch ${BRANCH} found. Nothing to promote."
+            exit 1
+          fi
+
+      # ── 3. Show the version manifest of the branch being promoted ────────────
+      - name: Publish branch version manifest to run summary
+        run: |
+          BRANCH="${{ steps.find.outputs.branch }}"
+          git fetch origin "${BRANCH}"
+
+          {
+            echo "## Promoting \`${BRANCH}\` → \`main\`"
+            echo ""
+            if git cat-file -e "origin/${BRANCH}:VERSIONS.md" 2>/dev/null; then
+              git show "origin/${BRANCH}:VERSIONS.md"
+            else
+              echo "_No VERSIONS.md on this branch (older pipeline run)._"
+              echo ""
+              echo '```json'
+              git show "origin/${BRANCH}:enhancements/version.json" 2>/dev/null \
+                || echo "(no version.json either)"
+              echo '```'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # ── 4. Check that main's version differs (avoid duplicate promotions) ────
+      - name: Check main version
+        id: mainver
+        run: |
+          git fetch origin main
+          VERSION=$(git show origin/main:enhancements/version.json 2>/dev/null \
+                    | python -c "import sys,json; d=json.load(sys.stdin); print(d.get('version',''))" \
+                    || echo "")
+          BUILD="${{ inputs.build_number }}"
+          if [ "$VERSION" = "$BUILD" ]; then
+            echo "already_merged=true" >> "$GITHUB_OUTPUT"
+            echo "main is already at build ${BUILD} — nothing to do."
+          else
+            echo "already_merged=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # ── 5. Open a PR or auto-merge ───────────────────────────────────────────
+      - name: Create or auto-merge PR
+        if: steps.mainver.outputs.already_merged == 'false'
+        run: |
+          BUILD="${{ inputs.build_number }}"
+          BRANCH="${{ steps.find.outputs.branch }}"
+
+          # Original translation versions consumed by the branch being promoted —
+          # included in the PR body / merge commit for traceability.
+          VERSIONS_BODY=$(git show "origin/${BRANCH}:enhancements/version.json" 2>/dev/null \
+            | python -c "
+          import sys, json
+          d = json.load(sys.stdin)
+          print(f\"- Game build: \`{d.get('version')}\` ({d.get('environment')})\")
+          for lang, sha in sorted(d.get('translations', {}).items()):
+              print(f'- {lang}: original source commit \`{sha}\`')
+          " || echo "- (version.json not found on branch)")
+
+          if [ "${{ inputs.auto_merge }}" = "true" ]; then
+            git config user.name  "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git checkout main
+            git merge --no-ff "origin/${BRANCH}" \
+              -m "chore: promote build ${BUILD} from PTU to LIVE
+
+          Merging ${BRANCH} into main.
+
+          Source versions:
+          ${VERSIONS_BODY}
+
+          [skip ci]"
+            python src/git_push_clean.py
+            echo "Auto-merged ${BRANCH} into main."
+          else
+            gh pr create \
+              --title "[LIVE] Promote build ${BUILD} to main" \
+              --body "$(cat <<EOF
+          Build \`${BUILD}\` has shipped to **LIVE**. This PR merges \`${BRANCH}\` into \`main\`.
+
+          ## Source versions
+          ${VERSIONS_BODY}
+
+          See \`VERSIONS.md\` on the branch for the full input/output manifest
+          (original translation commits + what the enhancement generator consumed).
+          EOF
+          )" \
+              --base main \
+              --head "${BRANCH}"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,53 @@
+# ── Isolated Python env (recreated by bootstrap.ps1) ──────────────────────────
+.micromamba/
+
+# ── Pipeline outputs ───────────────────────────────────────────────────────────
+enhancements/dataforge/
+enhancements/tmp/
+tmp/
+
+# ── Smart Citizen checkout (fetched at build time) ──────────────────────────
+.smart-citizen/
+
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pkl
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# ── Virtual environments (alternative setups) ─────────────────────────────────
+.venv/
+venv/
+env/
+.conda/
+
+# ── Windows ───────────────────────────────────────────────────────────────────
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# ── IDE / editors ─────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.swp
+*.swo
+*~
+.DS_Store
+
+# ── Auth token cache (session tokens — never commit these) ────────────────────
+.auth/
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+*.log

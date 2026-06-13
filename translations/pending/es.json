@@ -1,0 +1,4 @@
+{
+  "_comment": "Terms found in generated enhancement texts that no glossary rule matched. To translate them, copy entries into translations/glossaries/es.json as [\"term\", \"translation\"] rules and re-run translate_enhancements.py.",
+  "untranslated": []
+}
