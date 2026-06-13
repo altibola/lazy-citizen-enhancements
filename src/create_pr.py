@@ -170,12 +170,8 @@ def main() -> int:
     
     # 4. Cria/Troca para o branch da versão
     print(f"\nCriando/Mudando para o branch '{new_branch}'...")
-    # Verifica se o branch já existe
-    branches_res = run_git(["branch", "--list", new_branch])
-    if branches_res.stdout.strip():
-        run_git(["checkout", new_branch])
-    else:
-        run_git(["checkout", "-b", new_branch])
+    # Força a recriação do branch a partir do ponto atual mantendo arquivos não-comitados
+    run_git(["checkout", "-B", new_branch])
         
     # 5. Adiciona e commita as alterações
     print("Commitando modificações...")
