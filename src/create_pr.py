@@ -191,15 +191,12 @@ def main() -> int:
     commit_msg = f"Update translations and stats for Star Citizen {game_version}"
     run_git(["commit", "-m", commit_msg], check=False)
     
-    # Recria o branch com um único commit sem pai antes de enviar
-    tree_sha = run_git(["rev-parse", "HEAD^{tree}"]).stdout.strip()
-    commit_res = run_git(["commit-tree", tree_sha, "-m", commit_msg])
-    if commit_res.returncode == 0:
-        run_git(["reset", "--hard", commit_res.stdout.strip()])
-    
     # 6. Realiza o push para a origem
-    print(f"Realizando push limpo (sem histórico) para origin/{new_branch}...")
-    push_res = run_git(["push", "-f", "origin", new_branch], check=False)
+    print(f"Realizando push para origin/{new_branch}...")
+    push_res = run_git(["push", "-u", "origin", new_branch], check=False)
+    if push_res.returncode != 0:
+        # Se falhar porque a branch divergiu, tenta force push seguro
+        push_res = run_git(["push", "--force-with-lease", "origin", new_branch], check=False)
     if push_res.returncode != 0:
         print(f"Erro ao empurrar o branch: {push_res.stderr}")
         return 1
