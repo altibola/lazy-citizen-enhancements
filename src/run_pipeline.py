@@ -506,6 +506,10 @@ def main(argv: list[str] | None = None) -> int:
                              "folder prefix (auto-detected from build_manifest.id "
                              "when omitted). Required with --skip-extract if you "
                              "want a specific version folder.")
+    parser.add_argument("--display-version", default=None,
+                        help="Override the public display version string (e.g. "
+                             "'4.8.1'). If provided, the final version will be "
+                             "formatted as '<display>-<env>-<p4cl>'.")
     parser.add_argument("--lang", action="append", default=None,
                         help=f"Language to process (repeatable; default: all). "
                              f"Known: {', '.join(lang_sources.available_languages())}.")
@@ -585,18 +589,21 @@ def main(argv: list[str] | None = None) -> int:
         
         # Determine the user-friendly display version (e.g., 4.8.0-live-11952564)
         display_version = f"{environment.lower()}-{game_version}"
-        manifest = p4k.parent / "build_manifest.id"
-        if manifest.exists():
-            try:
-                payload = json.loads(manifest.read_text(encoding="utf-8"))
-                inner = payload.get("Data", payload)
-                branch = str(inner.get("Branch", "")).strip()
-                if branch:
-                    if branch.startswith("sc-alpha-"):
-                        branch = branch[len("sc-alpha-"):]
-                    display_version = f"{branch}-{environment.lower()}-{game_version}"
-            except Exception:
-                pass
+        if args.display_version:
+            display_version = f"{args.display_version}-{environment.lower()}-{game_version}"
+        else:
+            manifest = p4k.parent / "build_manifest.id"
+            if manifest.exists():
+                try:
+                    payload = json.loads(manifest.read_text(encoding="utf-8"))
+                    inner = payload.get("Data", payload)
+                    branch = str(inner.get("Branch", "")).strip()
+                    if branch:
+                        if branch.startswith("sc-alpha-"):
+                            branch = branch[len("sc-alpha-"):]
+                        display_version = f"{branch}-{environment.lower()}-{game_version}"
+                except Exception:
+                    pass
 
         # Ensure output directory exists and write version.json
         out_dir.mkdir(parents=True, exist_ok=True)
