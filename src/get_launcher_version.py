@@ -24,7 +24,12 @@ def get_launcher_version(environment="LIVE"):
     # regex para capturar a versão (ex: 4.8.1-live.11952564)
     # Procuramos pela palavra chave (Installing ou Verifying), depois Star Citizen, 
     # depois o ambiente, e então a string de versão.
-    pattern = re.compile(rf"\[Pipeline\] (?:Verifying|Installing) Star Citizen {environment.upper()} ([\w\.-]+) at")
+    if environment.upper() == "ANY":
+        env_pattern = r"\w+"
+    else:
+        env_pattern = environment.upper()
+        
+    pattern = re.compile(rf"\[Pipeline\] (?:Verifying|Installing) Star Citizen {env_pattern} ([\w\.-]+) at")
     
     last_version = None
     
@@ -44,18 +49,23 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="Pega a versão do jogo pelo log do RSI Launcher.")
     parser.add_argument("--env", default="LIVE", help="Ambiente (LIVE, PTU, HOTFIX, etc)")
+    parser.add_argument("--raw", action="store_true", help="Saída crua apenas com o display version (ex: 4.8.1)")
     args = parser.parse_args()
     
     version = get_launcher_version(args.env)
     if version:
-        print(f"Versão mais recente detectada para {args.env}: {version}")
-        # Formata para o padrão LCE (ex: 4.8.1-live.11952564 -> 4.8.1-LIVE-11952564)
         parts = version.split('-')
-        if len(parts) >= 2:
-            display_version = parts[0]
-            # Extraindo p4cl (os ultimos digitos apos o ponto)
-            p4cl = parts[-1].split('.')[-1]
-            lce_format = f"{display_version}-{args.env.upper()}-{p4cl}"
-            print(f"Formato LCE: {lce_format}")
+        display_version = parts[0] if len(parts) >= 1 else version
+        
+        if args.raw:
+            print(display_version)
+        else:
+            print(f"Versão mais recente detectada para {args.env}: {version}")
+            if len(parts) >= 2:
+                # Extraindo p4cl (os ultimos digitos apos o ponto)
+                p4cl = parts[-1].split('.')[-1]
+                lce_format = f"{display_version}-{args.env.upper()}-{p4cl}"
+                print(f"Formato LCE: {lce_format}")
     else:
-        print(f"Não foi possível encontrar a versão para o ambiente {args.env} nos logs do launcher.")
+        if not args.raw:
+            print(f"Não foi possível encontrar a versão para o ambiente {args.env} nos logs do launcher.")
