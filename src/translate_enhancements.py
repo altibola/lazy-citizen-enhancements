@@ -58,6 +58,7 @@ ENHANCEMENT_TRANSLATIONS: dict[str, dict[str, str]] = {
     "french":            {"glossary": "fr",    "suffix": "_all"},
     "spanish":           {"glossary": "es",    "suffix": "_all"},
     "portuguese_br":     {"glossary": "pt_br", "suffix": "_all"},
+    "italian":           {"glossary": "it",    "suffix": "_all"},
 }
 
 # Label candidates the pending-report looks for: "Word(s):" after a literal

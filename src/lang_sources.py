@@ -22,16 +22,22 @@ LANGUAGE_GITHUB_INFO: dict[str, dict] = {
         "path": "data/Localization/french_(france)/global.ini",
     },
     "spanish": {
-        "owner": "Dymerz",
-        "repo":  "StarCitizen-Localization",
+        "owner": "Thord82",
+        "repo":  "Star_citizen_ES",
         "branch": "main",
-        "path": "data/Localization/spanish_(spain)/global.ini",
+        "path": "global.ini",
     },
     "portuguese_br": {
         "owner": "danielgmota",
         "repo":  "StarCitizen-Localization",
         "branch": "develop",
         "path": "data/Localization/portuguese_(brazil)/global.ini",
+    },
+    "italian": {
+        "owner": "Dymerz",
+        "repo":  "StarCitizen-Localization",
+        "branch": "main",
+        "path": "data/Localization/italian_(italy)/global.ini",
     },
 }
 
@@ -52,6 +58,7 @@ SC_LANGUAGE_IDS: dict[str, str] = {
     "french": "french_(france)",
     "spanish": "spanish_(spain)",
     "portuguese_br": "portuguese_(brazil)",
+    "italian": "italian_(italy)",
 }
 
 # Default language when none is specified (for single-language mode)

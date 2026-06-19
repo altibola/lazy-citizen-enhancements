@@ -1,9 +1,9 @@
 {
-  "url": "https://raw.githubusercontent.com/Dymerz/StarCitizen-Localization/main/data/Localization/spanish_(spain)/global.ini",
-  "sha256": "2d9c52107200b04bdbac7e432103f0cd173a385a38b30d81336eaf73088c32bf",
-  "owner": "Dymerz",
-  "repo": "StarCitizen-Localization",
+  "url": "https://raw.githubusercontent.com/Thord82/Star_citizen_ES/main/global.ini",
+  "sha256": "5181b3b49ab5df1d0de35ba6e1960a11b4fe278bc76e91c088dc7b2b9f64a70b",
+  "owner": "Thord82",
+  "repo": "Star_citizen_ES",
   "branch": "main",
-  "commit": "ea747a48b33cde88487a0612aeba1f93ab835070",
-  "permalink": "https://github.com/Dymerz/StarCitizen-Localization/blob/ea747a48b33cde88487a0612aeba1f93ab835070/data/Localization/spanish_(spain)/global.ini"
+  "commit": "56d99dc9c8e75e20d6291419c742aa7d0d1c61ca",
+  "permalink": "https://github.com/Thord82/Star_citizen_ES/blob/56d99dc9c8e75e20d6291419c742aa7d0d1c61ca/global.ini"
 }

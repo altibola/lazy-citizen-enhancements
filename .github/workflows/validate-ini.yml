@@ -38,3 +38,6 @@ jobs:
 
     - name: Validate Spanish
       run: npx @dymerz/starcitizen-ini-utils validate --ci --fail-on-error --reference-type local --local-path "data/Localization/english/global.ini" "data/Localization/spanish_(spain)/global.ini"
+
+    - name: Validate Italian
+      run: npx @dymerz/starcitizen-ini-utils validate --ci --fail-on-error --reference-type local --local-path "data/Localization/english/global.ini" "data/Localization/italian_(italy)/global.ini"

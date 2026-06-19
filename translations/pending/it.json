@@ -1,0 +1,205 @@
+{
+  "_comment": "Terms found in generated enhancement texts that no glossary rule matched. To translate them, copy entries into translations/glossaries/it.json as [\"term\", \"translation\"] rules and re-run translate_enhancements.py.",
+  "untranslated": [
+    {
+      "term": "Ammo:",
+      "occurrences": 396
+    },
+    {
+      "term": "Absolute Portata:",
+      "occurrences": 248
+    },
+    {
+      "term": "Regen:",
+      "occurrences": 157
+    },
+    {
+      "term": "Coolers:",
+      "occurrences": 156
+    },
+    {
+      "term": "Power:",
+      "occurrences": 156
+    },
+    {
+      "term": "Full Dmg to:",
+      "occurrences": 150
+    },
+    {
+      "term": "Cooldown:",
+      "occurrences": 149
+    },
+    {
+      "term": "Min Danno:",
+      "occurrences": 144
+    },
+    {
+      "term": "Max Distortion:",
+      "occurrences": 138
+    },
+    {
+      "term": "Drop:",
+      "occurrences": 138
+    },
+    {
+      "term": "Cost/Shot:",
+      "occurrences": 86
+    },
+    {
+      "term": "Cooling Rate:",
+      "occurrences": 75
+    },
+    {
+      "term": "Power Output:",
+      "occurrences": 75
+    },
+    {
+      "term": "Max HP:",
+      "occurrences": 71
+    },
+    {
+      "term": "Downed Delay:",
+      "occurrences": 71
+    },
+    {
+      "term": "Damaged Delay:",
+      "occurrences": 71
+    },
+    {
+      "term": "Resist:",
+      "occurrences": 71
+    },
+    {
+      "term": "Damage:",
+      "occurrences": 64
+    },
+    {
+      "term": "Blast Radius:",
+      "occurrences": 64
+    },
+    {
+      "term": "Spool:",
+      "occurrences": 63
+    },
+    {
+      "term": "Fuel/Gm:",
+      "occurrences": 63
+    },
+    {
+      "term": "QT Fuel Use:",
+      "occurrences": 63
+    },
+    {
+      "term": "Accel:",
+      "occurrences": 63
+    },
+    {
+      "term": "Cal Rate:",
+      "occurrences": 63
+    },
+    {
+      "term": "Required:",
+      "occurrences": 63
+    },
+    {
+      "term": "Aim Assist Portata:",
+      "occurrences": 61
+    },
+    {
+      "term": "Ping Cooldown:",
+      "occurrences": 61
+    },
+    {
+      "term": "Detection Mode:",
+      "occurrences": 61
+    },
+    {
+      "term": "Lifetime:",
+      "occurrences": 61
+    },
+    {
+      "term": "Arm Time:",
+      "occurrences": 61
+    },
+    {
+      "term": "Arm Dist:",
+      "occurrences": 61
+    },
+    {
+      "term": "Min Detonate:",
+      "occurrences": 61
+    },
+    {
+      "term": "Lock Portata:",
+      "occurrences": 59
+    },
+    {
+      "term": "Turrets:",
+      "occurrences": 49
+    },
+    {
+      "term": "Guns:",
+      "occurrences": 28
+    },
+    {
+      "term": "Damage-Map Rate:",
+      "occurrences": 22
+    },
+    {
+      "term": "HP/Ammo:",
+      "occurrences": 22
+    },
+    {
+      "term": "Ramp:",
+      "occurrences": 22
+    },
+    {
+      "term": "AFFILIAZIONI NOTE:",
+      "occurrences": 21
+    },
+    {
+      "term": "VALUTAZIONE RISCHIO:",
+      "occurrences": 18
+    },
+    {
+      "term": "ULTIMA POSIZIONE NOTA:",
+      "occurrences": 14
+    },
+    {
+      "term": "Optimal Charge Window:",
+      "occurrences": 12
+    },
+    {
+      "term": "Resistance:",
+      "occurrences": 12
+    },
+    {
+      "term": "Inert Filter:",
+      "occurrences": 12
+    },
+    {
+      "term": "Size:",
+      "occurrences": 11
+    },
+    {
+      "term": "Grade:",
+      "occurrences": 11
+    },
+    {
+      "term": "Bomb Slots:",
+      "occurrences": 11
+    },
+    {
+      "term": "Material Efficiency:",
+      "occurrences": 11
+    },
+    {
+      "term": "ULTIMA POSIZIONE CONOSCIUTA:",
+      "occurrences": 7
+    },
+    {
+      "term": "VALUTAZIONE DEL RISCHIO:",
+      "occurrences": 3
+    }
+  ]
+}
