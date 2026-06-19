@@ -12,14 +12,15 @@ missions, components).
 
 <!-- VERSION-STATUS:START -->
 
-_Last verified: **2026-06-19 18:03 UTC** — refreshed automatically by the pipeline and the **Update community translations** workflow._
+_Last verified: **2026-06-19 20:09 UTC** — refreshed automatically by the pipeline and the **Update community translations** workflow._
 
 | Source | Pinned (this repo) | Upstream HEAD | Status |
 |---|---|---|---|
 | Game build (P4CL) | `4.8.0-live-12061511` <br/> `(P4CL: 12061511)` | — | — |
 | french — `Dymerz/StarCitizen-Localization@main` | [`ea747a4`](https://github.com/Dymerz/StarCitizen-Localization/commit/ea747a48b33cde88487a0612aeba1f93ab835070) | `ea747a4` | ✅ up to date (pinned at build) |
+| italian — `Dymerz/StarCitizen-Localization@main` | [`ea747a4`](https://github.com/Dymerz/StarCitizen-Localization/commit/ea747a48b33cde88487a0612aeba1f93ab835070) | `ea747a4` | ✅ up to date (pinned at build) |
 | portuguese_br — `danielgmota/StarCitizen-Localization@develop` | [`e9d908a`](https://github.com/danielgmota/StarCitizen-Localization/commit/e9d908a19b2203e551a2d190dfa96d77234c1957) | `e9d908a` | ✅ up to date (pinned at build) |
-| spanish — `Dymerz/StarCitizen-Localization@main` | [`ea747a4`](https://github.com/Dymerz/StarCitizen-Localization/commit/ea747a48b33cde88487a0612aeba1f93ab835070) | `ea747a4` | ✅ up to date (pinned at build) |
+| spanish — `Thord82/Star_citizen_ES@main` | [`56d99dc`](https://github.com/Thord82/Star_citizen_ES/commit/56d99dc9c8e75e20d6291419c742aa7d0d1c61ca) | `56d99dc` | ✅ up to date (pinned at build) |
 
 <!-- VERSION-STATUS:END -->
 
@@ -49,6 +50,8 @@ Current build: **`12061511`** (LIVE) — this table is regenerated automatically
 | English | `12061511` (LIVE) | [global.ini](data/Localization/english/global.ini) |
 | French (France) | `12061511` (LIVE) | [global.ini](data/Localization/french_%28france%29/global.ini) |
 | French (France) — stats translated | `12061511` (LIVE) | [global.ini](data/Localization/french_%28france%29_all/global.ini) |
+| Italian (Italy) | `12061511` (LIVE) | [global.ini](data/Localization/italian_%28italy%29/global.ini) |
+| Italian (Italy) — stats translated | `12061511` (LIVE) | [global.ini](data/Localization/italian_%28italy%29_all/global.ini) |
 | Portuguese (Brazil) | `12061511` (LIVE) | [global.ini](data/Localization/portuguese_%28brazil%29/global.ini) |
 | Portuguese (Brazil) — stats translated | `12061511` (LIVE) | [global.ini](data/Localization/portuguese_%28brazil%29_all/global.ini) |
 | Spanish (Spain) | `12061511` (LIVE) | [global.ini](data/Localization/spanish_%28spain%29/global.ini) |
