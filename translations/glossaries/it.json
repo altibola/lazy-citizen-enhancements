@@ -7,79 +7,668 @@
     "Per personalizzare la traduzione COMPLETA di una chiave specifica: translations/overrides/it.ini."
   ],
   "ignore": [
-    "min base",
-    "NOME:",
-    "SISTEMA:",
-    "NOTE:",
-    "DPS:",
-    "IR:",
-    "SCM:",
-    "QD:",
-    "EM:",
+    "Boost:",
     "CS:",
+    "DPS:",
+    "Drives:",
+    "EM:",
+    "IR:",
+    "MRacks:",
+    "Max:",
+    "NOME:",
+    "NOTE:",
+    "QD:",
+    "Rep:",
+    "Resist.:",
     "S1:",
     "S2:",
     "S3:",
     "S4:",
-    "Boost:",
-    "MRacks:",
-    "Drives:",
-    "Max:",
+    "SCM:",
+    "SISTEMA:",
     "Signatures:",
-    "Resist.:"
+    "min base"
   ],
   "rules": [
-    ["--- STATS ---", "--- STATISTICHE ---"],
-    [">> Crafting:", ">> Fabbricazione:"],
-    ["min express", "min espresso"],
-    [" items", " oggetti"],
-    [" types", " tipi"],
-
-    ["Crew:", "Equipaggio:"],
-    ["Length:", "Lunghezza:"],
-    ["Class:", "Classe:"],
-    ["Role:", "Ruolo:"],
-    ["Insurance:", "Assicurazione:"],
-    ["Shields:", "Scudi:"],
-    ["Armor HP:", "HP Corazza:"],
-    ["Dmg Mult:", "Moltiplicatore Danni:"],
-    ["Deflect:", "Deflessione:"],
-
-    ["Component HP:", "HP Componente:"],
-    ["Weight:", "Peso:"],
-    ["Overheat Temp:", "Temp. Surriscaldamento:"],
-    ["Power Req:", "Energia Richiesta:"],
-    ["Power Draw:", "Consumo Energia:"],
-    ["Thermal Draw:", "Emissione Termica:"],
-    ["Cooling Req:", "Raffreddamento Richiesto:"],
-    ["EM Sig (Active):", "Segnale EM (Attivo):"],
-    ["IR Sig (Active):", "Segnale IR (Attivo):"],
-
-    ["Speed (SCM/Boost):", "Velocità (SCM/Boost):"],
-    ["QD Speed:", "Velocità QD:"],
-    ["Fuel (Hyd/QD):", "Carburante (Idr/QD):"],
-    ["Fuel Usage (QD):", "Consumo Carb. (QD):"],
-    ["Pitch/Yaw/Roll:", "Beccheggio/Imbardata/Rollio:"],
-
-    ["DPS (Sustained):", "DPS (Sostenuto):"],
-    ["DPS (Burst):", "DPS (Raffica):"],
-    ["Alpha Dmg:", "Danno Alpha:"],
-    ["RoF:", "Cadenza di Fuoco:"],
-    ["Range:", "Portata:"],
-    ["Dmg (Phys/Dist):", "Danno (Fis/Dist):"],
-    ["Dmg (Laser/Dist):", "Danno (Laser/Dist):"],
-    ["Dmg (Plsm/Dist):", "Danno (Plsm/Dist):"],
-    ["Dmg (Elec/Dist):", "Danno (Elet/Dist):"],
-    ["Velocity:", "Velocità Proiettile:"],
-    ["Ammo Cap:", "Capacità Munizioni:"],
-    ["Reload:", "Ricarica:"],
-    ["Speed:", "Velocità:"],
-    ["Signal:", "Segnale:"],
-    ["Dmg:", "Danno:"],
-
-    ["Magazine Size:", "Dimensione Caricatore:"],
-    ["Fire Rate:", "Cadenza di Fuoco:"],
-    ["Modes:", "Modalità:"],
-    ["Effective Range:", "Portata Efficace:"]
+    [
+      "--- STATS ---",
+      "--- STATISTICHE ---"
+    ],
+    [
+      ">> Crafting:",
+      ">> Fabbricazione:"
+    ],
+    [
+      "min express",
+      "min espresso"
+    ],
+    [
+      " items",
+      " oggetti"
+    ],
+    [
+      " types",
+      " tipi"
+    ],
+    [
+      "Crew:",
+      "Equipaggio:"
+    ],
+    [
+      "Length:",
+      "Lunghezza:"
+    ],
+    [
+      "Class:",
+      "Classe:"
+    ],
+    [
+      "Role:",
+      "Ruolo:"
+    ],
+    [
+      "Insurance:",
+      "Assicurazione:"
+    ],
+    [
+      "Shields:",
+      "Scudi:"
+    ],
+    [
+      "Armor HP:",
+      "HP Corazza:"
+    ],
+    [
+      "Dmg Mult:",
+      "Moltiplicatore Danni:"
+    ],
+    [
+      "Deflect:",
+      "Deflessione:"
+    ],
+    [
+      "Component HP:",
+      "HP Componente:"
+    ],
+    [
+      "Weight:",
+      "Peso:"
+    ],
+    [
+      "Overheat Temp:",
+      "Temp. Surriscaldamento:"
+    ],
+    [
+      "Power Req:",
+      "Energia Richiesta:"
+    ],
+    [
+      "Power Draw:",
+      "Consumo Energia:"
+    ],
+    [
+      "Thermal Draw:",
+      "Emissione Termica:"
+    ],
+    [
+      "Cooling Req:",
+      "Raffreddamento Richiesto:"
+    ],
+    [
+      "EM Sig (Active):",
+      "Segnale EM (Attivo):"
+    ],
+    [
+      "IR Sig (Active):",
+      "Segnale IR (Attivo):"
+    ],
+    [
+      "Speed (SCM/Boost):",
+      "Velocità (SCM/Boost):"
+    ],
+    [
+      "QD Speed:",
+      "Velocità QD:"
+    ],
+    [
+      "Fuel (Hyd/QD):",
+      "Carburante (Idr/QD):"
+    ],
+    [
+      "Fuel Usage (QD):",
+      "Consumo Carb. (QD):"
+    ],
+    [
+      "Pitch/Yaw/Roll:",
+      "Beccheggio/Imbardata/Rollio:"
+    ],
+    [
+      "DPS (Sustained):",
+      "DPS (Sostenuto):"
+    ],
+    [
+      "DPS (Burst):",
+      "DPS (Raffica):"
+    ],
+    [
+      "Alpha Dmg:",
+      "Danno Alpha:"
+    ],
+    [
+      "RoF:",
+      "Cadenza di Fuoco:"
+    ],
+    [
+      "Range:",
+      "Portata:"
+    ],
+    [
+      "Dmg (Phys/Dist):",
+      "Danno (Fis/Dist):"
+    ],
+    [
+      "Dmg (Laser/Dist):",
+      "Danno (Laser/Dist):"
+    ],
+    [
+      "Dmg (Plsm/Dist):",
+      "Danno (Plsm/Dist):"
+    ],
+    [
+      "Dmg (Elec/Dist):",
+      "Danno (Elet/Dist):"
+    ],
+    [
+      "Velocity:",
+      "Velocità Proiettile:"
+    ],
+    [
+      "Ammo Cap:",
+      "Capacità Munizioni:"
+    ],
+    [
+      "Reload:",
+      "Ricarica:"
+    ],
+    [
+      "Speed:",
+      "Velocità:"
+    ],
+    [
+      "Signal:",
+      "Segnale:"
+    ],
+    [
+      "Dmg:",
+      "Danno:"
+    ],
+    [
+      "Magazine Size:",
+      "Dimensione Caricatore:"
+    ],
+    [
+      "Fire Rate:",
+      "Cadenza di Fuoco:"
+    ],
+    [
+      "Modes:",
+      "Modalità:"
+    ],
+    [
+      "Effective Range:",
+      "Portata Efficace:"
+    ],
+    [
+      "POTENTIAL BLUEPRINTS",
+      "PROGETTI POTENZIALI"
+    ],
+    [
+      "MISSION DETAILS",
+      "DETTAGLI MISSIONE"
+    ],
+    [
+      "ITEM REWARDS",
+      "RICOMPENSE OGGETTI"
+    ],
+    [
+      "BLUEPRINT DATA",
+      "DATI PROGETTO"
+    ],
+    [
+      "Mission Type:</EM4> Standard",
+      "Tipo di Missione:</EM4> Standard"
+    ],
+    [
+      "Mission Type:</EM4> Chain, Starter",
+      "Tipo di Missione:</EM4> Catena, Iniziale"
+    ],
+    [
+      "Mission Type:</EM4> Chain",
+      "Tipo di Missione:</EM4> Catena"
+    ],
+    [
+      "Blueprint Reward:</EM4> Guaranteed",
+      "Ricompensa Progetto:</EM4> Garantita"
+    ],
+    [
+      "Blueprint Reward:</EM4> Optional",
+      "Ricompensa Progetto:</EM4> Opzionale"
+    ],
+    [
+      "Difficulty (1-7):",
+      "Difficoltà (1-7):"
+    ],
+    [
+      "Combat ",
+      "Combattimento "
+    ],
+    [
+      "Complexity ",
+      "Complessità "
+    ],
+    [
+      "Risk ",
+      "Rischio "
+    ],
+    [
+      "Knowledge ",
+      "Conoscenza "
+    ],
+    [
+      "Failure Penalty:",
+      "Penalità di Fallimento:"
+    ],
+    [
+      "Reputation XP:",
+      "XP Reputazione:"
+    ],
+    [
+      "Jr. Contractor:",
+      "Appaltatore Junior:"
+    ],
+    [
+      "Contractor:",
+      "Appaltatore:"
+    ],
+    [
+      "Sr. Contractor:",
+      "Appaltatore Senior:"
+    ],
+    [
+      "Veteran Contractor:",
+      "Appaltatore Veterano:"
+    ],
+    [
+      "Rookie:",
+      "Recluta:"
+    ],
+    [
+      "Veteran:",
+      "Veterano:"
+    ],
+    [
+      "Hero:",
+      "Eroe:"
+    ],
+    [
+      "Champion:",
+      "Campione:"
+    ],
+    [
+      "Legend:",
+      "Leggenda:"
+    ],
+    [
+      "Enemies:",
+      "Nemici:"
+    ],
+    [
+      "Hostiles:",
+      "Ostili:"
+    ],
+    [
+      "Friendlies:",
+      "Alleati:"
+    ],
+    [
+      "Non-hostiles:",
+      "Non ostili:"
+    ],
+    [
+      "Unknown:",
+      "Sconosciuto:"
+    ],
+    [
+      "Neutral:",
+      "Neutro:"
+    ],
+    [
+      "Hostile Wave",
+      "Ondata ostile"
+    ],
+    [
+      "Salvageable Ships",
+      "Navi da recupero"
+    ],
+    [
+      "Engagement Type:",
+      "Tipo di Ingaggio:"
+    ],
+    [
+      "Mission Type:",
+      "Tipo di Missione:"
+    ],
+    [
+      "Blueprint Reward:",
+      "Ricompensa Progetto:"
+    ],
+    [
+      "Head Contractor:",
+      "Appaltatore Capo:"
+    ],
+    [
+      "Jr. Security Contractor:",
+      "Appaltatore della Sicurezza Junior:"
+    ],
+    [
+      "Sr. Security Contractor:",
+      "Appaltatore della Sicurezza Senior:"
+    ],
+    [
+      "Security Contractor:",
+      "Appaltatore della Sicurezza:"
+    ],
+    [
+      "Elite Contractor:",
+      "Appaltatore Elite:"
+    ],
+    [
+      "Security Trainee:",
+      "Apprendista della Sicurezza:"
+    ],
+    [
+      "Probationary Guild Member:",
+      "Membro Apprendista della Gilda:"
+    ],
+    [
+      "Low Level Assassin:",
+      "Assassino di Basso Livello:"
+    ],
+    [
+      "High Value Assassin:",
+      "Assassino di Alto Valore:"
+    ],
+    [
+      "Elite Assassin:",
+      "Assassino Elite:"
+    ],
+    [
+      "Applicant:",
+      "Candidato:"
+    ],
+    [
+      "Trainee:",
+      "Apprendista:"
+    ],
+    [
+      "Fracture:",
+      "Frattura:"
+    ],
+    [
+      "Extraction:",
+      "Estrazione:"
+    ],
+    [
+      "Repair:",
+      "Riparazione:"
+    ],
+    [
+      "Salvage:",
+      "Recupero:"
+    ],
+    [
+      "Modifiers:",
+      "Modificatori:"
+    ],
+    [
+      "Tier 1:",
+      "Livello 1:"
+    ],
+    [
+      "Tier 2:",
+      "Livello 2:"
+    ],
+    [
+      "Unique",
+      "Unica"
+    ],
+    [
+      "Standard",
+      "Standard"
+    ],
+    [
+      "Chain",
+      "Catena"
+    ],
+    [
+      "Starter",
+      "Iniziale"
+    ],
+    [
+      "Guaranteed",
+      "Garantita"
+    ],
+    [
+      "Optional",
+      "Opzionale"
+    ],
+    [
+      "Absolute Range:",
+      "Portata Assoluta:"
+    ],
+    [
+      "Aim Assist Range:",
+      "Portata Mira Assistita:"
+    ],
+    [
+      "Lock Range:",
+      "Portata di Aggancio:"
+    ],
+    [
+      "Ammo:",
+      "Munizioni:"
+    ],
+    [
+      "Regen:",
+      "Rigenerazione:"
+    ],
+    [
+      "Coolers:",
+      "Dissipatori:"
+    ],
+    [
+      "Power:",
+      "Energia:"
+    ],
+    [
+      "Max Distortion:",
+      "Distorsione Max:"
+    ],
+    [
+      "Full Dmg to:",
+      "Danno Massimo a:"
+    ],
+    [
+      "Cooldown:",
+      "Raffreddamento:"
+    ],
+    [
+      "Drop:",
+      "Caduta:"
+    ],
+    [
+      "Cost/Shot:",
+      "Costo/Colpo:"
+    ],
+    [
+      "Turrets:",
+      "Torrette:"
+    ],
+    [
+      "Cooling Rate:",
+      "Tasso di Raffreddamento:"
+    ],
+    [
+      "Power Output:",
+      "Potenza Erogata:"
+    ],
+    [
+      "Max HP:",
+      "HP Max:"
+    ],
+    [
+      "Downed Delay:",
+      "Ritardo a Terra:"
+    ],
+    [
+      "Damaged Delay:",
+      "Ritardo Danno:"
+    ],
+    [
+      "Resist:",
+      "Resistenza:"
+    ],
+    [
+      "Damage:",
+      "Danno:"
+    ],
+    [
+      "Blast Radius:",
+      "Raggio di Esplosione:"
+    ],
+    [
+      "Spool:",
+      "Avvio (Spool):"
+    ],
+    [
+      "Fuel/Gm:",
+      "Carburante/Gm:"
+    ],
+    [
+      "QT Fuel Use:",
+      "Uso Carb. QT:"
+    ],
+    [
+      "Accel:",
+      "Accel.:"
+    ],
+    [
+      "Cal Rate:",
+      "Tasso Cal.:"
+    ],
+    [
+      "Required:",
+      "Richiesto:"
+    ],
+    [
+      "Ping Cooldown:",
+      "Raffreddamento Ping:"
+    ],
+    [
+      "Detection Mode:",
+      "Modalità Rilevamento:"
+    ],
+    [
+      "Lifetime:",
+      "Durata:"
+    ],
+    [
+      "Arm Time:",
+      "Tempo di Armamento:"
+    ],
+    [
+      "Arm Dist:",
+      "Distanza di Armamento:"
+    ],
+    [
+      "Min Detonate:",
+      "Detonazione Minima:"
+    ],
+    [
+      "Guns:",
+      "Armi:"
+    ],
+    [
+      "Damage-Map Rate:",
+      "Tasso Mappa Danni:"
+    ],
+    [
+      "HP/Ammo:",
+      "HP/Munizioni:"
+    ],
+    [
+      "Ramp:",
+      "Rampa:"
+    ],
+    [
+      "Optimal Charge Window:",
+      "Finestra di Carica Ottimale:"
+    ],
+    [
+      "Inert Filter:",
+      "Filtro Inerte:"
+    ],
+    [
+      "Size:",
+      "Dimensione:"
+    ],
+    [
+      "Grade:",
+      "Grado:"
+    ],
+    [
+      "Bomb Slots:",
+      "Slot Bombe:"
+    ],
+    [
+      "Material Efficiency:",
+      "Efficienza Materiale:"
+    ],
+    [
+      "Junior:",
+      "Junior:"
+    ],
+    [
+      "Member:",
+      "Membro:"
+    ],
+    [
+      "Experienced:",
+      "Esperto:"
+    ],
+    [
+      "Senior:",
+      "Senior:"
+    ],
+    [
+      "Master:",
+      "Master:"
+    ],
+    [
+      "Lead Security Contractor:",
+      "Capo Appaltatore della Sicurezza:"
+    ],
+    [
+      "Objectives:",
+      "Obiettivi:"
+    ],
+    [
+      "Min Dmg:",
+      "Danno Minimo:"
+    ],
+    [
+      "Resistance:",
+      "Resistenza:"
+    ]
   ]
 }

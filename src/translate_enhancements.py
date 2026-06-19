@@ -64,7 +64,7 @@ ENHANCEMENT_TRANSLATIONS: dict[str, dict[str, str]] = {
 # Label candidates the pending-report looks for: "Word(s):" after a literal
 # \n (INI values store backslash-n, not newlines) or a "|" separator inside
 # the generated stat block, plus unit suffixes.
-_LABEL_RE = re.compile(r"(?:^|\\n|\|\s+)([A-Z][A-Za-z0-9 ./()-]{1,30}?):(?=\s)")
+_LABEL_RE = re.compile(r"(?:^|\\n|\|\s+)(?:<EM[34]>)?([A-Z][A-Za-z0-9 ./()-]{1,30}?):(?:</EM[34]>)?(?=\s)")
 _UNIT_RE = re.compile(r"\b(min base|min express|items|types)\b")
 
 
@@ -101,8 +101,9 @@ def _apply_glossary(value: str, rules: list[tuple[str, str]]) -> str:
 
 
 # Generated-section markers, language-independent: the stats divider
-# ("--- STATS ---" or its translation) and crafting lines ("<EM4>>>").
-_SECTION_RE = re.compile(r"--- [^-]{3,40} ---|<EM4>>>")
+# ("--- STATS ---" or its translation), crafting lines ("<EM4>>>"),
+# and mission block headers like <EM3>POTENTIAL BLUEPRINTS</EM3> or <EM3>MISSION DETAILS</EM3>.
+_SECTION_RE = re.compile(r"(?:^|\\n)--- [^-]{3,40} ---(?:\\n|$)|<EM4>>>|<EM3>[A-Z ]{3,40}</EM3>")
 
 
 def _find_untranslated(value: str) -> list[str]:
@@ -162,7 +163,7 @@ def translate_language(language: str, cfg: dict[str, str], check_only: bool) -> 
             else:
                 out[key] = _apply_glossary(value, rules)
                 for term in _find_untranslated(out[key]):
-                    if term not in known:
+                    if term not in known and not any(t.startswith(term) for t in known):
                         pending[term] += 1
         translated_all.update(out)
         if not check_only:
