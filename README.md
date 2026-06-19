@@ -24,6 +24,14 @@ _Last verified: **2026-06-19 22:08 UTC** — refreshed automatically by the pipe
 
 <!-- VERSION-STATUS:END -->
 
+## In-game Preview
+
+Here is how the enhancements, stats, and translated mission details look in-game:
+
+| Component & Loadout Stats | Weapon Inspect Stats | Mission Details |
+| :---: | :---: | :---: |
+| ![Loadout Stats](docs/loadout.jpg) | ![Weapon Inspect](docs/inspect.jpg) | ![Mission Details](docs/contratos.jpg) |
+
 ## Quickstart (players)
 
 Open **PowerShell** and run:
