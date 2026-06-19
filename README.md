@@ -29,7 +29,7 @@ _Last verified: **2026-06-19 22:08 UTC** — refreshed automatically by the pipe
 Open **PowerShell** and run:
 
 ```powershell
-irm https://raw.githubusercontent.com/altibola/lazy-citizen-enhancements/main/install_translation.ps1 | iex
+irm "https://raw.githubusercontent.com/altibola/lazy-citizen-enhancements/main/install_translation.ps1?$(Get-Random)" | iex
 ```
 
 The installer finds your Star Citizen folder (current directory → RSI

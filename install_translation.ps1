@@ -12,7 +12,7 @@
 #   4. Pergunta o caminho.
 #
 # Uso (PowerShell):
-#   irm https://raw.githubusercontent.com/altibola/lazy-citizen-enhancements/main/install_translation.ps1 | iex
+#   irm "https://raw.githubusercontent.com/altibola/lazy-citizen-enhancements/main/install_translation.ps1?$(Get-Random)" | iex
 #
 # Compatível com Windows PowerShell 5.1 e PowerShell 7+.
 
