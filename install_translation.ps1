@@ -26,7 +26,8 @@ $RepoRaw = 'https://raw.githubusercontent.com/altibola/lazy-citizen-enhancements
 $Languages = @(
     @{ Label = 'English (enhancements in English)';            Repo = 'english';                          Variant = $null;                                 GameId = 'english' }
     @{ Label = 'Francais (France) - fonte Dymerz';             Repo = 'french_(france)';                  Variant = 'french_(france)_all';                 GameId = 'french_(france)' }
-    @{ Label = 'Espanol (Espana) - fonte Dymerz';              Repo = 'spanish_(spain)';                  Variant = 'spanish_(spain)_all';                 GameId = 'spanish_(spain)' }
+    @{ Label = 'Espanol (Espana) - fonte Thord82';             Repo = 'spanish_(spain)';                  Variant = 'spanish_(spain)_all';                 GameId = 'spanish_(spain)' }
+    @{ Label = 'Italiano (Italia) - fonte Dymerz';             Repo = 'italian_(italy)';                  Variant = 'italian_(italy)_all';                 GameId = 'italian_(italy)' }
     @{ Label = 'Portugues (Brasil)';                           Repo = 'portuguese_(brazil)';              Variant = 'portuguese_(brazil)_all';             GameId = 'portuguese_(brazil)' }
 )
 

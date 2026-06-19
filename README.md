@@ -12,7 +12,7 @@ missions, components).
 
 <!-- VERSION-STATUS:START -->
 
-_Last verified: **2026-06-19 20:09 UTC** — refreshed automatically by the pipeline and the **Update community translations** workflow._
+_Last verified: **2026-06-19 22:08 UTC** — refreshed automatically by the pipeline and the **Update community translations** workflow._
 
 | Source | Pinned (this repo) | Upstream HEAD | Status |
 |---|---|---|---|
