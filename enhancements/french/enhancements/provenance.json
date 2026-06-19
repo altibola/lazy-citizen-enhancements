@@ -1,0 +1,49 @@
+{
+  "build": "12061511",
+  "language": "french",
+  "generated_at": "2026-06-19T15:02:49",
+  "inputs": {
+    "base_en.ini": {
+      "sha256": "8e32cc478a0aa7b278d90f9d13d53d9869dcddda7d1f884a1a41ee8fcd398418",
+      "path": "D:\\starcitizen\\projects\\lce\\lazy-citizen-enhancements\\enhancements\\base_en.ini"
+    },
+    "base.ini": {
+      "url": "https://raw.githubusercontent.com/Dymerz/StarCitizen-Localization/main/data/Localization/french_(france)/global.ini",
+      "sha256": "19d503792739ddcacff151d5ee29c6cd69c0cf6609869383adadffe51b984b18",
+      "owner": "Dymerz",
+      "repo": "StarCitizen-Localization",
+      "branch": "main",
+      "commit": "ea747a48b33cde88487a0612aeba1f93ab835070",
+      "permalink": "https://github.com/Dymerz/StarCitizen-Localization/blob/ea747a48b33cde88487a0612aeba1f93ab835070/data/Localization/french_(france)/global.ini"
+    }
+  },
+  "outputs": {
+    "ships_desc_enhancements.ini": {
+      "sha256": "96275e29219a82f851fd12edaab5c53d2b87412c0272f1d4142dddef585c4bd0"
+    },
+    "components_desc_enhancements.ini": {
+      "sha256": "25715c359a49d41d772b5caff445784b55b76f78e8eebe4a6d9f7f07eaacf05b"
+    },
+    "ship_weapons_desc_enhancements.ini": {
+      "sha256": "0c264090f1c7ad4fa7a9f8ea9618ac32606d5c5c213ce0d333f3bdccb6a9f6f2"
+    },
+    "fps_weapons_desc_enhancements.ini": {
+      "sha256": "72e6063271e0cacc828fc774ac58386bcedc888da434181c8d4f2355eeb7e093"
+    },
+    "mission_rewards_enhancements.ini": {
+      "sha256": "24139c24bd1203b349637a1980462a96e98a232eb340042e5a537bb575bca7fb"
+    },
+    "commodity_crafting_enhancements.ini": {
+      "sha256": "43ebb5212929eb950261270eb5eb7a57528fb81c7f4370ed55e569913b02f577"
+    },
+    "journal_enhancements.ini": {
+      "sha256": "12df8a085e410da007717cdf2ebe953652c43ac8a834f4828cd282bff0e4eb25"
+    },
+    "missile_enhancements.ini": {
+      "sha256": "92578891f83112f97a8f0ef38d400f9d93a1da388fe6a49012468ac5e54e451b"
+    },
+    "global.ini": {
+      "sha256": "ce31273092381dc947825a2ef16aee9d9b0465114125e0c439e40df7b80e90ed"
+    }
+  }
+}
