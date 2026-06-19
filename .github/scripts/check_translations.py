@@ -27,13 +27,10 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 VERSION_JSON = REPO_ROOT / "enhancements" / "version.json"
 
-# Re-uses lang_sources.LANGUAGE_GITHUB_INFO without importing the module
-# (the script must work in a bare Python 3.11 env with only stdlib).
-_LANG_GITHUB = {
-    "french":           {"owner": "Dymerz",     "repo": "StarCitizen-Localization", "branch": "main"},
-    "spanish":          {"owner": "Dymerz",     "repo": "StarCitizen-Localization", "branch": "main"},
-    "portuguese_br":    {"owner": "danielgmota","repo": "StarCitizen-Localization", "branch": "develop"},
-}
+# Import language configurations dynamically from src/lang_sources.py
+sys.path.insert(0, str(REPO_ROOT / "src"))
+from lang_sources import LANGUAGE_GITHUB_INFO
+_LANG_GITHUB = LANGUAGE_GITHUB_INFO
 
 
 def _gh_api(path: str) -> dict:
@@ -150,7 +147,6 @@ def update_readme_status(rows: list[tuple[str, str, str, str]]) -> None:
         "!": "❗ upstream check failed",
     }
     try:
-        sys.path.insert(0, str(REPO_ROOT))
         import versions_report
         vr_rows = []
         for lang, stored_sha, current_sha, status in rows:

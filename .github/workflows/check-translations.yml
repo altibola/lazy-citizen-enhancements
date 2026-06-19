@@ -57,8 +57,8 @@ jobs:
       # ── 3. Smart Citizen scripts (needed for the merge step) ─────────────────
       - name: Set up Smart Citizen tools
         run: |
-          chmod +x setup_smart_citizen.sh
-          ./setup_smart_citizen.sh
+          chmod +x src/setup_smart_citizen.sh
+          ./src/setup_smart_citizen.sh
 
       # ── 4. Guard: pipeline artifacts must already exist on this branch ────────
       - name: Check for existing pipeline artifacts

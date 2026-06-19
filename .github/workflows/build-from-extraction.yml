@@ -82,8 +82,8 @@ jobs:
       # ── 4. Smart Citizen tools (para merge) ──────────────────────────────────
       - name: Set up Smart Citizen tools
         run: |
-          chmod +x setup_smart_citizen.sh
-          ./setup_smart_citizen.sh
+          chmod +x src/setup_smart_citizen.sh
+          ./src/setup_smart_citizen.sh
 
       # ── 5. Pipeline: --skip-extract (reutiliza base_en.ini + dataforge cache) ─
       #   Baixa traduções comunitárias atualizadas e remerge com os
@@ -94,7 +94,7 @@ jobs:
           if [ -n "${{ inputs.lang }}" ]; then
             ARGS+=(--lang "${{ inputs.lang }}")
           fi
-          python run_pipeline.py "${ARGS[@]}"
+          python src/run_pipeline.py "${ARGS[@]}"
         env:
           PYTHONIOENCODING: utf-8
 
@@ -103,9 +103,9 @@ jobs:
         if: inputs.translate == 'true'
         run: |
           if [ -n "${{ inputs.lang }}" ]; then
-            python translate_enhancements.py --lang "${{ inputs.lang }}"
+            python src/translate_enhancements.py --lang "${{ inputs.lang }}"
           else
-            python translate_enhancements.py
+            python src/translate_enhancements.py
           fi
         env:
           PYTHONIOENCODING: utf-8
@@ -113,7 +113,7 @@ jobs:
       # ── 7. Criar branch build/{p4cl} + PR ────────────────────────────────────
       - name: Push build branch and open PR
         if: inputs.push_branch == 'true'
-        run: python create_pr.py
+        run: python src/create_pr.py
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PYTHONIOENCODING: utf-8
