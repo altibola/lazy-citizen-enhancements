@@ -1,7 +1,7 @@
 {
-  "build": "12061511",
+  "build": "12122953",
   "language": "portuguese_br",
-  "generated_at": "2026-06-19T17:08:41",
+  "generated_at": "2026-07-01T21:42:54",
   "inputs": {
     "base_en.ini": {
       "sha256": "8e32cc478a0aa7b278d90f9d13d53d9869dcddda7d1f884a1a41ee8fcd398418",
@@ -13,8 +13,8 @@
       "owner": "danielgmota",
       "repo": "StarCitizen-Localization",
       "branch": "develop",
-      "commit": "e9d908a19b2203e551a2d190dfa96d77234c1957",
-      "permalink": "https://github.com/danielgmota/StarCitizen-Localization/blob/e9d908a19b2203e551a2d190dfa96d77234c1957/data/Localization/portuguese_(brazil)/global.ini"
+      "commit": "b37c02428cc8a6e1db51a7cbb06d20c1d5647d4f",
+      "permalink": "https://github.com/danielgmota/StarCitizen-Localization/blob/b37c02428cc8a6e1db51a7cbb06d20c1d5647d4f/data/Localization/portuguese_(brazil)/global.ini"
     }
   },
   "outputs": {
@@ -22,7 +22,7 @@
       "sha256": "178d5587c3fd52213f88d3e928b0040e3c2c918acd4ce12659f7d6eed185879a"
     },
     "components_desc_enhancements.ini": {
-      "sha256": "724dd42c67d5b71080beda5b5c615cc739a35fdb5e32000cb70f2b1f4098e396"
+      "sha256": "66bb9622922a535145e95f672ab581243f44586738b24dbd0b4bc558068fe55e"
     },
     "ship_weapons_desc_enhancements.ini": {
       "sha256": "de1a21d09d047801b96260b18d0c3f90e46d7471ef7e8fbaf25eef6a66fdcff9"
@@ -31,19 +31,19 @@
       "sha256": "dfc3888d2cdae5e784b535517a0a29f9c8c77b08efc7fca7350d8bdc919e8650"
     },
     "mission_rewards_enhancements.ini": {
-      "sha256": "ecdd826563fe7382f0942ec38fef26a4e5d1571d8b1ac74fa0b8be29bce2ef0f"
+      "sha256": "c1f23ae8b72690b6673f254932f777162177d91519dccfe31c312be40743a109"
     },
     "commodity_crafting_enhancements.ini": {
-      "sha256": "404f788414e04f03d6328cad92a695e769a377c034e4ba5c1ff0fb148704053f"
+      "sha256": "8608c9508bf923e1994c2d937d9a7d27d9f2139aefd7f0c6b142226f926c1343"
     },
     "journal_enhancements.ini": {
-      "sha256": "e04ce4c3a21beae6f604dcc900b7bd70cc5f041238860aa6eda65722a6afa1bf"
+      "sha256": "8159d4f3c61899c9c64ec1049d4d90bbb03b9aaa653069b01127aae331da19af"
     },
     "missile_enhancements.ini": {
       "sha256": "adf2f7df7e3265acee672d5a26aae746d1c5eb13a6f50375acafe89184549979"
     },
     "global.ini": {
-      "sha256": "051c3f45f474e1bfaf07fd1c2716f947ea3900dcf27dd93db01575ed5ff8a164"
+      "sha256": "598483c2b16a9e71800fdc0d169e233b9bdcaec760126a526cea77b625ce9f76"
     }
   }
 }

@@ -1,11 +1,11 @@
 {
-  "version": "12061511",
-  "display_version": "4.8.0-live-12061511",
+  "version": "12122953",
+  "display_version": "4.8.0-live-12122953",
   "environment": "LIVE",
   "translations": {
-    "french": "ea747a48b33cde88487a0612aeba1f93ab835070",
-    "italian": "ea747a48b33cde88487a0612aeba1f93ab835070",
-    "portuguese_br": "e9d908a19b2203e551a2d190dfa96d77234c1957",
+    "french": "df7384940b5f7ecab79a7e64915f4d9e3583877e",
+    "italian": "df7384940b5f7ecab79a7e64915f4d9e3583877e",
+    "portuguese_br": "b37c02428cc8a6e1db51a7cbb06d20c1d5647d4f",
     "spanish": "56d99dc9c8e75e20d6291419c742aa7d0d1c61ca"
   }
 }
