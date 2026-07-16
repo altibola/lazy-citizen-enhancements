@@ -12,14 +12,14 @@ missions, components).
 
 <!-- VERSION-STATUS:START -->
 
-_Last verified: **2026-07-16 11:25 UTC** — refreshed automatically by the pipeline and the **Update community translations** workflow._
+_Last verified: **2026-07-16 23:53 UTC** — refreshed automatically by the pipeline and the **Update community translations** workflow._
 
 | Source | Pinned (this repo) | Upstream HEAD | Status |
 |---|---|---|---|
 | Game build (P4CL) | `4.9.0-live-12232306` <br/> `(P4CL: 12232306)` | — | — |
-| french — `Dymerz/StarCitizen-Localization@main` | [`df73849`](https://github.com/Dymerz/StarCitizen-Localization/commit/df7384940b5f7ecab79a7e64915f4d9e3583877e) | `df73849` | ✅ up to date (pinned at build) |
-| italian — `Dymerz/StarCitizen-Localization@main` | [`df73849`](https://github.com/Dymerz/StarCitizen-Localization/commit/df7384940b5f7ecab79a7e64915f4d9e3583877e) | `df73849` | ✅ up to date (pinned at build) |
-| portuguese_br — `danielgmota/StarCitizen-Localization@develop` | [`e506fd6`](https://github.com/danielgmota/StarCitizen-Localization/commit/e506fd63172b0c44a6534a95b249f2069e79ed43) | `e506fd6` | ✅ up to date (pinned at build) |
+| french — `Dymerz/StarCitizen-Localization@main` | [`39c208a`](https://github.com/Dymerz/StarCitizen-Localization/commit/39c208ad32fb5b9718927e2fa622a98c048101d7) | `39c208a` | ✅ up to date (pinned at build) |
+| italian — `Dymerz/StarCitizen-Localization@main` | [`39c208a`](https://github.com/Dymerz/StarCitizen-Localization/commit/39c208ad32fb5b9718927e2fa622a98c048101d7) | `39c208a` | ✅ up to date (pinned at build) |
+| portuguese_br — `danielgmota/StarCitizen-Localization@develop` | [`c215bf8`](https://github.com/danielgmota/StarCitizen-Localization/commit/c215bf86f53d6e9830f9393f7b2ddcf1c8596c07) | `c215bf8` | ✅ up to date (pinned at build) |
 | spanish — `Thord82/Star_citizen_ES@main` | [`56d99dc`](https://github.com/Thord82/Star_citizen_ES/commit/56d99dc9c8e75e20d6291419c742aa7d0d1c61ca) | `56d99dc` | ✅ up to date (pinned at build) |
 
 <!-- VERSION-STATUS:END -->
