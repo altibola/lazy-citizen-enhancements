@@ -1,11 +1,11 @@
 {
-  "version": "12122953",
-  "display_version": "4.8.0-live-12122953",
+  "version": "12232306",
+  "display_version": "4.9.0-live-12232306",
   "environment": "LIVE",
   "translations": {
     "french": "df7384940b5f7ecab79a7e64915f4d9e3583877e",
     "italian": "df7384940b5f7ecab79a7e64915f4d9e3583877e",
-    "portuguese_br": "b37c02428cc8a6e1db51a7cbb06d20c1d5647d4f",
+    "portuguese_br": "e506fd63172b0c44a6534a95b249f2069e79ed43",
     "spanish": "56d99dc9c8e75e20d6291419c742aa7d0d1c61ca"
   }
 }

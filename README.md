@@ -12,14 +12,14 @@ missions, components).
 
 <!-- VERSION-STATUS:START -->
 
-_Last verified: **2026-07-04 16:35 UTC** — refreshed automatically by the pipeline and the **Update community translations** workflow._
+_Last verified: **2026-07-16 11:25 UTC** — refreshed automatically by the pipeline and the **Update community translations** workflow._
 
 | Source | Pinned (this repo) | Upstream HEAD | Status |
 |---|---|---|---|
-| Game build (P4CL) | `4.8.0-live-12122953` <br/> `(P4CL: 12122953)` | — | — |
+| Game build (P4CL) | `4.9.0-live-12232306` <br/> `(P4CL: 12232306)` | — | — |
 | french — `Dymerz/StarCitizen-Localization@main` | [`df73849`](https://github.com/Dymerz/StarCitizen-Localization/commit/df7384940b5f7ecab79a7e64915f4d9e3583877e) | `df73849` | ✅ up to date (pinned at build) |
 | italian — `Dymerz/StarCitizen-Localization@main` | [`df73849`](https://github.com/Dymerz/StarCitizen-Localization/commit/df7384940b5f7ecab79a7e64915f4d9e3583877e) | `df73849` | ✅ up to date (pinned at build) |
-| portuguese_br — `danielgmota/StarCitizen-Localization@develop` | [`b37c024`](https://github.com/danielgmota/StarCitizen-Localization/commit/b37c02428cc8a6e1db51a7cbb06d20c1d5647d4f) | `b37c024` | ✅ up to date (pinned at build) |
+| portuguese_br — `danielgmota/StarCitizen-Localization@develop` | [`e506fd6`](https://github.com/danielgmota/StarCitizen-Localization/commit/e506fd63172b0c44a6534a95b249f2069e79ed43) | `e506fd6` | ✅ up to date (pinned at build) |
 | spanish — `Thord82/Star_citizen_ES@main` | [`56d99dc`](https://github.com/Thord82/Star_citizen_ES/commit/56d99dc9c8e75e20d6291419c742aa7d0d1c61ca) | `56d99dc` | ✅ up to date (pinned at build) |
 
 <!-- VERSION-STATUS:END -->
@@ -51,19 +51,19 @@ anywhere else it targets **LIVE**.
 
 <!-- DOWNLOADS:START -->
 
-Current build: **`12122953`** (LIVE) — this table is regenerated automatically by the pipeline (`versions_report.py`); see [VERSIONS.md](VERSIONS.md) for the full input/output version manifest.
+Current build: **`12232306`** (LIVE) — this table is regenerated automatically by the pipeline (`versions_report.py`); see [VERSIONS.md](VERSIONS.md) for the full input/output version manifest.
 
 | Language | Game build | Enhanced file |
 |---|---|---|
-| English | `12122953` (LIVE) | [global.ini](data/Localization/english/global.ini) |
-| French (France) | `12122953` (LIVE) | [global.ini](data/Localization/french_%28france%29/global.ini) |
-| French (France) — stats translated | `12122953` (LIVE) | [global.ini](data/Localization/french_%28france%29_all/global.ini) |
-| Italian (Italy) | `12122953` (LIVE) | [global.ini](data/Localization/italian_%28italy%29/global.ini) |
-| Italian (Italy) — stats translated | `12122953` (LIVE) | [global.ini](data/Localization/italian_%28italy%29_all/global.ini) |
-| Portuguese (Brazil) | `12122953` (LIVE) | [global.ini](data/Localization/portuguese_%28brazil%29/global.ini) |
-| Portuguese (Brazil) — stats translated | `12122953` (LIVE) | [global.ini](data/Localization/portuguese_%28brazil%29_all/global.ini) |
-| Spanish (Spain) | `12122953` (LIVE) | [global.ini](data/Localization/spanish_%28spain%29/global.ini) |
-| Spanish (Spain) — stats translated | `12122953` (LIVE) | [global.ini](data/Localization/spanish_%28spain%29_all/global.ini) |
+| English | `12232306` (LIVE) | [global.ini](data/Localization/english/global.ini) |
+| French (France) | `12232306` (LIVE) | [global.ini](data/Localization/french_%28france%29/global.ini) |
+| French (France) — stats translated | `12232306` (LIVE) | [global.ini](data/Localization/french_%28france%29_all/global.ini) |
+| Italian (Italy) | `12232306` (LIVE) | [global.ini](data/Localization/italian_%28italy%29/global.ini) |
+| Italian (Italy) — stats translated | `12232306` (LIVE) | [global.ini](data/Localization/italian_%28italy%29_all/global.ini) |
+| Portuguese (Brazil) | `12232306` (LIVE) | [global.ini](data/Localization/portuguese_%28brazil%29/global.ini) |
+| Portuguese (Brazil) — stats translated | `12232306` (LIVE) | [global.ini](data/Localization/portuguese_%28brazil%29_all/global.ini) |
+| Spanish (Spain) | `12232306` (LIVE) | [global.ini](data/Localization/spanish_%28spain%29/global.ini) |
+| Spanish (Spain) — stats translated | `12232306` (LIVE) | [global.ini](data/Localization/spanish_%28spain%29_all/global.ini) |
 
 <!-- DOWNLOADS:END -->
 

@@ -1,10 +1,10 @@
 {
-  "build": "12122953",
+  "build": "12232306",
   "language": "french",
-  "generated_at": "2026-07-04T13:34:21",
+  "generated_at": "2026-07-16T08:24:42",
   "inputs": {
     "base_en.ini": {
-      "sha256": "8e32cc478a0aa7b278d90f9d13d53d9869dcddda7d1f884a1a41ee8fcd398418",
+      "sha256": "e5574df1178a980c4b8cfa1fb812d813b527cbc65bc613631eb0abbfecbdd1a5",
       "path": "D:\\starcitizen\\projects\\lce\\lazy-citizen-enhancements\\enhancements\\base_en.ini"
     },
     "base.ini": {
@@ -19,22 +19,22 @@
   },
   "outputs": {
     "ships_desc_enhancements.ini": {
-      "sha256": "1bc3aec90c7b928eabe609be787025901806355433f0ea75d124188f6f39b464"
+      "sha256": "3689a44b71d7ed58d5eb6ace3a6b617bb5744f59e6721dc2badcd0e8c8f5a222"
     },
     "components_desc_enhancements.ini": {
       "sha256": "8bb16e21742433bdc976ea0160583a5ea8477cb22617228c574796b61c083473"
     },
     "ship_weapons_desc_enhancements.ini": {
-      "sha256": "0c264090f1c7ad4fa7a9f8ea9618ac32606d5c5c213ce0d333f3bdccb6a9f6f2"
+      "sha256": "5b14334f552f93dad96ada104c6f9a1b187572922f282d275c4b71603cb2b64c"
     },
     "fps_weapons_desc_enhancements.ini": {
-      "sha256": "72e6063271e0cacc828fc774ac58386bcedc888da434181c8d4f2355eeb7e093"
+      "sha256": "18d94d44f1597f535bc92a5ab8bbd8fe1c333bc617db1c2269049d22f522716a"
     },
     "mission_rewards_enhancements.ini": {
-      "sha256": "db93e516f28d20247ce016f65356acfd5f44db01a5f18ecaabc184ac71462071"
+      "sha256": "1c31d3e930fc3fdecbe88339ffd4dd42ce4b38eec055498ed25b1280f0d7bb42"
     },
     "commodity_crafting_enhancements.ini": {
-      "sha256": "094e5adb568d59a3a85d1a22f4fad3f0a200b0863c67a2c266a2d55f14c89422"
+      "sha256": "1da3f9f984ca4290326ec3f7aeb2e40e797df66148dc859ba7e516edfbec3ebb"
     },
     "journal_enhancements.ini": {
       "sha256": "763e110532ccbb9eecc3708521505b72e7d59faea3bc30b4815ff96226c88373"
@@ -43,7 +43,7 @@
       "sha256": "92578891f83112f97a8f0ef38d400f9d93a1da388fe6a49012468ac5e54e451b"
     },
     "global.ini": {
-      "sha256": "024c003c3f2c98492dd5a1eb8267c517a17ac314ed7a123e4bd4272ec47a3266"
+      "sha256": "de78ae4dfa9b8a52436647fab81b6d02ef0b6ecb71182827f9068e62ad14de3c"
     }
   }
 }
