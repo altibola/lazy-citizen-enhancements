@@ -48,7 +48,7 @@ ENHANCEMENT_FILES: tuple[str, ...] = (
     "ship_weapons_desc_enhancements.ini",
     "fps_weapons_desc_enhancements.ini",
     "mission_rewards_enhancements.ini",
-    "commodity_crafting_enhancements.ini",
+    # "commodity_crafting_enhancements.ini",
     "journal_enhancements.ini",
     "missile_enhancements.ini",
 )
