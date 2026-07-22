@@ -26,12 +26,20 @@ jobs:
       with:
         node-version: 20
 
-    - name: Validate Portuguese (Brazil)
+    - name: Validate Portuguese (Brazil) - danielgmota
       run: npx @dymerz/starcitizen-ini-utils validate --ci --fail-on-error --reference-type local --local-path "data/Localization/english/global.ini" "data/Localization/portuguese_(brazil)/global.ini"
 
-    - name: Validate Portuguese (Brazil) All
+    - name: Validate Portuguese (Brazil) - danielgmota All
       if: hashFiles('data/Localization/portuguese_(brazil)_all/global.ini') != ''
       run: npx @dymerz/starcitizen-ini-utils validate --ci --fail-on-error --reference-type local --local-path "data/Localization/english/global.ini" "data/Localization/portuguese_(brazil)_all/global.ini"
+
+    - name: Validate Portuguese (Brazil) - Dymerz
+      if: hashFiles('data/Localization/portuguese_(brazil)_dymerz/global.ini') != ''
+      run: npx @dymerz/starcitizen-ini-utils validate --ci --fail-on-error --reference-type local --local-path "data/Localization/english/global.ini" "data/Localization/portuguese_(brazil)_dymerz/global.ini"
+
+    - name: Validate Portuguese (Brazil) - Dymerz All
+      if: hashFiles('data/Localization/portuguese_(brazil)_dymerz_all/global.ini') != ''
+      run: npx @dymerz/starcitizen-ini-utils validate --ci --fail-on-error --reference-type local --local-path "data/Localization/english/global.ini" "data/Localization/portuguese_(brazil)_dymerz_all/global.ini"
 
     - name: Validate French
       run: npx @dymerz/starcitizen-ini-utils validate --ci --fail-on-error --reference-type local --local-path "data/Localization/english/global.ini" "data/Localization/french_(france)/global.ini"

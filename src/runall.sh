@@ -66,7 +66,7 @@ PY "$SCRIPT_DIR/run_pipeline.py" "${ARGS[@]}"
 
 echo ""
 echo "=== [2/4] Validando arquivos INI com npx (micromamba) ==="
-for l in "portuguese_(brazil)" "french_(france)" "spanish_(spain)"; do
+for l in "portuguese_(brazil)" "portuguese_(brazil)_dymerz" "french_(france)" "spanish_(spain)"; do
     if [ -f "data/Localization/$l/global.ini" ]; then
         echo "  Validando data/Localization/$l/global.ini..."
         "$EXE" run -r "$MAMBA_ROOT" -n lce npx -y @dymerz/starcitizen-ini-utils validate --fail-on-error --reference-type local --local-path "data/Localization/english/global.ini" "data/Localization/$l/global.ini" || true

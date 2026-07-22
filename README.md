@@ -12,7 +12,7 @@ missions, components).
 
 <!-- VERSION-STATUS:START -->
 
-_Last verified: **2026-07-22 00:06 UTC** — refreshed automatically by the pipeline and the **Update community translations** workflow._
+_Last verified: **2026-07-22 01:22 UTC** — refreshed automatically by the pipeline and the **Update community translations** workflow._
 
 | Source | Pinned (this repo) | Upstream HEAD | Status |
 |---|---|---|---|
@@ -20,6 +20,7 @@ _Last verified: **2026-07-22 00:06 UTC** — refreshed automatically by the pipe
 | french — `Dymerz/StarCitizen-Localization@main` | [`b839d62`](https://github.com/Dymerz/StarCitizen-Localization/commit/b839d62f2911d402dc1a9f22b45afccc9a4c1d16) | `b839d62` | ✅ up to date (pinned at build) |
 | italian — `Dymerz/StarCitizen-Localization@main` | [`b839d62`](https://github.com/Dymerz/StarCitizen-Localization/commit/b839d62f2911d402dc1a9f22b45afccc9a4c1d16) | `b839d62` | ✅ up to date (pinned at build) |
 | portuguese_br — `danielgmota/StarCitizen-Localization@develop` | [`ee12700`](https://github.com/danielgmota/StarCitizen-Localization/commit/ee127003a3aa4a8c1369b1594f4992bc2f5b5c6d) | `ee12700` | ✅ up to date (pinned at build) |
+| portuguese_br_dymerz — `Dymerz/StarCitizen-Localization@main` | [`b839d62`](https://github.com/Dymerz/StarCitizen-Localization/commit/b839d62f2911d402dc1a9f22b45afccc9a4c1d16) | `b839d62` | ✅ up to date (pinned at build) |
 | spanish — `Thord82/Star_citizen_ES@main` | [`56d99dc`](https://github.com/Thord82/Star_citizen_ES/commit/56d99dc9c8e75e20d6291419c742aa7d0d1c61ca) | `56d99dc` | ✅ up to date (pinned at build) |
 
 <!-- VERSION-STATUS:END -->
@@ -62,6 +63,8 @@ Current build: **`12248363`** (LIVE) — this table is regenerated automatically
 | Italian (Italy) — stats translated | `12248363` (LIVE) | [global.ini](data/Localization/italian_%28italy%29_all/global.ini) |
 | Portuguese (Brazil) | `12248363` (LIVE) | [global.ini](data/Localization/portuguese_%28brazil%29/global.ini) |
 | Portuguese (Brazil) — stats translated | `12248363` (LIVE) | [global.ini](data/Localization/portuguese_%28brazil%29_all/global.ini) |
+| Portuguese (Brazil) — dymerz | `12248363` (LIVE) | [global.ini](data/Localization/portuguese_%28brazil%29_dymerz/global.ini) |
+| Portuguese (Brazil) — dymerz — stats translated | `12248363` (LIVE) | [global.ini](data/Localization/portuguese_%28brazil%29_dymerz_all/global.ini) |
 | Spanish (Spain) | `12248363` (LIVE) | [global.ini](data/Localization/spanish_%28spain%29/global.ini) |
 | Spanish (Spain) — stats translated | `12248363` (LIVE) | [global.ini](data/Localization/spanish_%28spain%29_all/global.ini) |
 
