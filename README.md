@@ -106,12 +106,12 @@ GitHub Actions cuida do restante (traduções comunitárias, glossário, PR).
 
 ```
 RSI Launcher instala o jogo
-    └─ run-local.ps1           (extrai Data.p4k, gera enhancements, commita)
+    └─ ./src/runall.sh           (extrai Data.p4k, gera enhancements, commita)
         └─ build-from-extraction.yml  (online: baixa traduções, cria PR)
 ```
 
 1. RSI Launcher baixa e instala o patch normalmente.
-2. `run-local.ps1` detecta o `Data.p4k` automaticamente, extrai e gera.
+2. `./src/runall.sh` (ou `python src/run_pipeline.py`) extrai e gera os arquivos de enhancement.
 3. Commita e faz push de `enhancements/`.
 4. Dispara o workflow **Build from local extraction** → traduz + cria PR.
 
@@ -134,7 +134,7 @@ o branch `build/{p4cl}` em `main`.
 
 | Workflow | O que faz | Quando usar |
 |---|---|---|
-| **Build from local extraction** | Baixa traduções comunitárias e abre PR; reusa `enhancements/` já commitado localmente. | Após `run-local.ps1` + push |
+| **Build from local extraction** | Baixa traduções comunitárias e abre PR; reusa `enhancements/` já commitado localmente. | Após `./src/runall.sh` + push |
 | **Download build (hosted)** | Pipeline completo num runner GitHub via CDN da RSI. Requer `RSI_USERNAME`/`RSI_PASSWORD` nos Secrets. | Patch novo, sem instalação local |
 | **Update community translations** | Verifica se as traduções upstream mudaram; remerge e commita quando sim. | Atualizações de tradução |
 | **Translate enhancement texts** | Aplica os glossários e rebuilda as variantes `*_all*`. | Após editar glossários |
@@ -142,7 +142,7 @@ o branch `build/{p4cl}` em `main`.
 
 ## Translating the generated texts (`*_all` variants)
 
-The stat blocks are generated with English labels. `translate_enhancements.py`
+The stat blocks are generated with English labels. `src/translate_enhancements.py`
 translates them with committed, user-editable glossaries — no external
 translation service:
 
@@ -155,71 +155,49 @@ translation service:
 | `data/Localization/<id>_all/` | Final fully-localized variant. |
 
 ```bash
-python translate_enhancements.py            # all configured languages
-python translate_enhancements.py --check    # coverage report only
+python src/translate_enhancements.py            # all configured languages
+python src/translate_enhancements.py --check    # coverage report only
+# ou via helper script:
+./src/translate.sh
 ```
 
-## Setup
+## Setup (desenvolvimento)
+
+Para preparar o ambiente de desenvolvimento no Windows (via Git Bash) ou Linux/macOS:
 
 ```bash
-# Git Bash / Linux / macOS:
-./bootstrap.sh        # cria .micromamba env e baixa Smart Citizen (uma vez)
+./src/bootstrap.sh        # cria o ambiente .micromamba e configura o Smart Citizen (uma vez)
 ```
 
-## Uso — Windows (PowerShell nativo, sem Git Bash)
+## Uso — Desenvolvimento (Git Bash / Linux / macOS)
 
-O ponto de entrada principal no Windows é `run-local.ps1`:
-
-```powershell
-# Auto-detecta Data.p4k do RSI Launcher, processa todas as línguas:
-.\run-local.ps1
-
-# Só PT-BR:
-.\run-local.ps1 -Lang portuguese_br
-
-# Caminho explícito (PTU, por exemplo):
-.\run-local.ps1 -P4k "E:\StarCitizen\PTU\Data.p4k"
-
-# Pipeline + criar PR automaticamente:
-.\run-local.ps1 -Pr
-
-# Reutilizar extração anterior (patch de tradução, sem re-extrair o p4k):
-.\run-local.ps1 -SkipExtract
-
-# Só remerge (mais rápido; útil quando apenas as traduções mudaram):
-.\run-local.ps1 -SkipExtract -SkipGenerate
-```
-
-Após o push, dispare o workflow **Build from local extraction** no GitHub
-para baixar as traduções comunitárias atualizadas e abrir o PR automaticamente.
-
-## Uso — Linux / macOS / Git Bash
+Os scripts de automação e desenvolvimento estão localizados na pasta `src/`:
 
 ```bash
-# Pipeline completo a partir do p4k local:
-./run.sh --p4k "/path/to/StarCitizen/LIVE/Data.p4k"
-./run.sh --p4k "..." --lang portuguese_br   # língua única
+# Pipeline completo a partir do p4k local (extração + geração + merge):
+python src/run_pipeline.py --p4k "/path/to/StarCitizen/LIVE/Data.p4k"
+python src/run_pipeline.py --p4k "..." --lang portuguese_br   # língua única
 
-# Só remerge (CI mode):
-python run_pipeline.py --skip-extract --skip-generate
+# Só remerge (modo CI / atualização de tradução):
+python src/run_pipeline.py --skip-extract --skip-generate
 
-# Tradução por glossário (*_all* variants):
-./translate.sh
+# Tradução por glossário (variantes *_all*):
+./src/translate.sh
 
-# Branch build/{p4cl} + PR:
-python create_pr.py
+# Criar branch build/{p4cl} + PR:
+python src/create_pr.py
 
-# Tudo de uma vez:
-./runall.sh --p4k "/path/to/StarCitizen/LIVE/Data.p4k"
+# Tudo de uma vez em lote:
+./src/runall.sh --p4k "/path/to/StarCitizen/LIVE/Data.p4k"
 ```
 
 ## Adding languages
 
 1. Add entries to `LANGUAGE_GITHUB_INFO` and `SC_LANGUAGE_IDS` in
-   [`lang_sources.py`](lang_sources.py).
+   [`src/lang_sources.py`](src/lang_sources.py).
 2. (Optional) To get a fully-translated variant, add the language to
    `ENHANCEMENT_TRANSLATIONS` in
-   [`translate_enhancements.py`](translate_enhancements.py) and create its
+   [`src/translate_enhancements.py`](src/translate_enhancements.py) and create its
    glossary under `translations/glossaries/`.
 
 ## Projects used
@@ -235,9 +213,9 @@ See [NOTICE](NOTICE) for Smart Citizen attribution (Apache 2.0).
 ## Maintenance
 
 ```bash
-./clean.sh            # remove out/, *.log, __pycache__
-./clean.sh --deep     # also remove .smart-citizen/  → restore with ./setup_smart_citizen.sh
-./clean.sh --full     # also remove .micromamba/     → restore with ./bootstrap.sh
+./src/clean.sh            # remove out/, *.log, __pycache__
+./src/clean.sh --deep     # também remove .smart-citizen/  → restaurar com ./src/setup_smart_citizen.sh
+./src/clean.sh --full     # também remove .micromamba/     → restaurar com ./src/bootstrap.sh
 ```
 
 ## Requirements
@@ -254,3 +232,4 @@ See [NOTICE](NOTICE) for Smart Citizen attribution (Apache 2.0).
 
 Apache License 2.0 — see [LICENSE](LICENSE) and [NOTICE](NOTICE).  
 Unofficial community project; not affiliated with Cloud Imperium Games or RSI.
+
