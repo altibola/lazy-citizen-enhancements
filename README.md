@@ -99,46 +99,40 @@ Every release records the exact versions it was built from:
 
 Three flows by design:
 
-### 1. Full build local + online (recomendado)
+### 1. Full build local + online (recommended)
 
-Você roda localmente apenas o que precisa do Star Citizen instalado. O
-GitHub Actions cuida do restante (traduções comunitárias, glossário, PR).
+You run locally only what requires your Star Citizen installation. GitHub Actions takes care of the rest (community translations, glossary translation, PR creation).
 
 ```
-RSI Launcher instala o jogo
-    └─ ./src/runall.sh           (extrai Data.p4k, gera enhancements, commita)
-        └─ build-from-extraction.yml  (online: baixa traduções, cria PR)
+RSI Launcher installs game
+    └─ ./src/runall.sh           (extracts Data.p4k, generates enhancements, commits)
+        └─ build-from-extraction.yml  (online: downloads translations, creates PR)
 ```
 
-1. RSI Launcher baixa e instala o patch normalmente.
-2. `./src/runall.sh` (ou `python src/run_pipeline.py`) extrai e gera os arquivos de enhancement.
-3. Commita e faz push de `enhancements/`.
-4. Dispara o workflow **Build from local extraction** → traduz + cria PR.
+1. RSI Launcher downloads and installs the patch normally.
+2. `./src/runall.sh` (or `python src/run_pipeline.py`) extracts and generates the enhancement files.
+3. Commits and pushes `enhancements/`.
+4. Triggers the **Build from local extraction** workflow → translates + creates PR.
 
-### 2. Full build 100% online (requer credenciais RSI no GitHub)
+### 2. Full build 100% online (requires RSI credentials in GitHub Secrets)
 
-O workflow **Download build (hosted)** autentica no CDN da RSI e faz tudo
-sem instalação local. Ver [docs/download-runner.md](docs/download-runner.md).
+The **Download build (hosted)** workflow authenticates against the RSI CDN and does everything without a local game installation. See [docs/download-runner.md](docs/download-runner.md).
 
-### 3. Translation refresh (CI — sem arquivos de jogo)
+### 3. Translation refresh (CI — without game files)
 
-Quando uma tradução comunitária muda upstream, o workflow
-**Update community translations** reroda só o download + merge
-(`--skip-extract --skip-generate`), reusando os `*_enhancements.ini` já no
-branch. Se nada mudou, não commita nada.
+When a community translation is updated upstream, the **Update community translations** workflow re-runs only the download + merge (`--skip-extract --skip-generate`), re-using the `*_enhancements.ini` files already present in the branch. If nothing changed, it commits nothing.
 
-Quando um build PTU vira LIVE, o workflow **Promote build to main** merge
-o branch `build/{p4cl}` em `main`.
+When a PTU build becomes LIVE, the **Promote build to main** workflow merges the `build/{p4cl}` branch into `main`.
 
 ## Workflows (all on-demand — `workflow_dispatch`)
 
-| Workflow | O que faz | Quando usar |
+| Workflow | Description | When to use |
 |---|---|---|
-| **Build from local extraction** | Baixa traduções comunitárias e abre PR; reusa `enhancements/` já commitado localmente. | Após `./src/runall.sh` + push |
-| **Download build (hosted)** | Pipeline completo num runner GitHub via CDN da RSI. Requer `RSI_USERNAME`/`RSI_PASSWORD` nos Secrets. | Patch novo, sem instalação local |
-| **Update community translations** | Verifica se as traduções upstream mudaram; remerge e commita quando sim. | Atualizações de tradução |
-| **Translate enhancement texts** | Aplica os glossários e rebuilda as variantes `*_all*`. | Após editar glossários |
-| **Promote build to main** | Abre PR (ou auto-merge) `build/{p4cl}` → `main` quando o build já está LIVE. | PTU → LIVE |
+| **Build from local extraction** | Downloads community translations and opens PR; reuses locally committed `enhancements/`. | After `./src/runall.sh` + push |
+| **Download build (hosted)** | Full pipeline on a GitHub runner via RSI CDN. Requires `RSI_USERNAME`/`RSI_PASSWORD` in Secrets. | New patch, no local installation |
+| **Update community translations** | Checks if upstream translations changed; re-merges and commits when updated. | Translation updates |
+| **Translate enhancement texts** | Applies glossaries and rebuilds `*_all*` variants. | After editing glossaries |
+| **Promote build to main** | Opens PR (or auto-merges) `build/{p4cl}` → `main` when build goes LIVE. | PTU → LIVE |
 
 ## Translating the generated texts (`*_all` variants)
 
@@ -157,37 +151,37 @@ translation service:
 ```bash
 python src/translate_enhancements.py            # all configured languages
 python src/translate_enhancements.py --check    # coverage report only
-# ou via helper script:
+# or via helper script:
 ./src/translate.sh
 ```
 
-## Setup (desenvolvimento)
+## Development Setup
 
-Para preparar o ambiente de desenvolvimento no Windows (via Git Bash) ou Linux/macOS:
+To set up the development environment on Windows (via Git Bash) or Linux/macOS:
 
 ```bash
-./src/bootstrap.sh        # cria o ambiente .micromamba e configura o Smart Citizen (uma vez)
+./src/bootstrap.sh        # creates .micromamba env and configures Smart Citizen (once)
 ```
 
-## Uso — Desenvolvimento (Git Bash / Linux / macOS)
+## Development Usage (Git Bash / Linux / macOS)
 
-Os scripts de automação e desenvolvimento estão localizados na pasta `src/`:
+Automation and development scripts are located in the `src/` directory:
 
 ```bash
-# Pipeline completo a partir do p4k local (extração + geração + merge):
+# Full pipeline from local p4k (extraction + generation + merge):
 python src/run_pipeline.py --p4k "/path/to/StarCitizen/LIVE/Data.p4k"
-python src/run_pipeline.py --p4k "..." --lang portuguese_br   # língua única
+python src/run_pipeline.py --p4k "..." --lang portuguese_br   # single language
 
-# Só remerge (modo CI / atualização de tradução):
+# Re-merge only (CI mode / translation update):
 python src/run_pipeline.py --skip-extract --skip-generate
 
-# Tradução por glossário (variantes *_all*):
+# Glossary translation (*_all* variants):
 ./src/translate.sh
 
-# Criar branch build/{p4cl} + PR:
+# Create branch build/{p4cl} + PR:
 python src/create_pr.py
 
-# Tudo de uma vez em lote:
+# Run everything at once:
 ./src/runall.sh --p4k "/path/to/StarCitizen/LIVE/Data.p4k"
 ```
 
@@ -214,8 +208,8 @@ See [NOTICE](NOTICE) for Smart Citizen attribution (Apache 2.0).
 
 ```bash
 ./src/clean.sh            # remove out/, *.log, __pycache__
-./src/clean.sh --deep     # também remove .smart-citizen/  → restaurar com ./src/setup_smart_citizen.sh
-./src/clean.sh --full     # também remove .micromamba/     → restaurar com ./src/bootstrap.sh
+./src/clean.sh --deep     # also removes .smart-citizen/  → restore with ./src/setup_smart_citizen.sh
+./src/clean.sh --full     # also removes .micromamba/     → restore with ./src/bootstrap.sh
 ```
 
 ## Requirements
