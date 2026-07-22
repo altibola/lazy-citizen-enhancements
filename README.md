@@ -8,6 +8,22 @@ Generates enhanced `global.ini` localization files for Star Citizen by merging
 community translations with auto-generated stat overlays (ships, weapons,
 missions, components).
 
+## Quickstart (players)
+
+Open **PowerShell** and run:
+
+```powershell
+irm "https://raw.githubusercontent.com/altibola/lazy-citizen-enhancements/main/install_translation.ps1?$(Get-Random)" | iex
+```
+
+### How the installer works:
+1. **Detects Star Citizen folder**: Checks current directory → RSI Launcher logs → default installation path (asks if not found). Run it from inside a channel folder (e.g. `StarCitizen\PTU`) to target that channel; otherwise it targets **LIVE**.
+2. **Language selection**: Allows you to pick your preferred community translation (e.g. Português - danielgmota, Português - Dymerz, Français, Español, Italiano).
+3. **Translating enhancements / stats (`[S/n]`)**:
+   - **`S` (Sim / Yes — Recommended)**: Installs the **`*_all`** variant where stat labels and overlays (Armor HP, Shield Regen, DPS, Weapon Fire Rate, Crafting info, etc.) are translated into your chosen language.
+   - **`n` (Não / No)**: Installs the standard version with stat labels left in their original English format (`Armor HP:`, `Regen:`, etc.).
+4. **Auto-configuration**: Downloads the correct `global.ini` to `data\Localization\<language>\global.ini` and automatically updates `g_language` in `user.cfg`.
+
 ## Version status
 
 <!-- VERSION-STATUS:START -->
@@ -32,21 +48,6 @@ Here is how the enhancements, stats, and translated mission details look in-game
 | Component & Loadout Stats | Weapon Inspect Stats | Mission Details |
 | :---: | :---: | :---: |
 | ![Loadout Stats](docs/loadout.jpg) | ![Weapon Inspect](docs/inspect.jpg) | ![Mission Details](docs/contratos.jpg) |
-
-## Quickstart (players)
-
-Open **PowerShell** and run:
-
-```powershell
-irm "https://raw.githubusercontent.com/altibola/lazy-citizen-enhancements/main/install_translation.ps1?$(Get-Random)" | iex
-```
-
-The installer finds your Star Citizen folder (current directory → RSI
-Launcher logs → default path → asks), lets you pick the language and whether
-you want the stats/enhancements translated too, downloads the right
-`global.ini` and sets `g_language` in `user.cfg`. Run it from inside a
-channel folder (e.g. `StarCitizen\PTU`) to target that channel; from
-anywhere else it targets **LIVE**.
 
 ## Downloads
 
