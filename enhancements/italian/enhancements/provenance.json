@@ -1,7 +1,7 @@
 {
-  "build": "12232306",
+  "build": "12248363",
   "language": "italian",
-  "generated_at": "2026-07-16T20:52:25",
+  "generated_at": "2026-07-21T21:04:28",
   "inputs": {
     "base_en.ini": {
       "sha256": "e5574df1178a980c4b8cfa1fb812d813b527cbc65bc613631eb0abbfecbdd1a5",
@@ -13,8 +13,8 @@
       "owner": "Dymerz",
       "repo": "StarCitizen-Localization",
       "branch": "main",
-      "commit": "39c208ad32fb5b9718927e2fa622a98c048101d7",
-      "permalink": "https://github.com/Dymerz/StarCitizen-Localization/blob/39c208ad32fb5b9718927e2fa622a98c048101d7/data/Localization/italian_(italy)/global.ini"
+      "commit": "b839d62f2911d402dc1a9f22b45afccc9a4c1d16",
+      "permalink": "https://github.com/Dymerz/StarCitizen-Localization/blob/b839d62f2911d402dc1a9f22b45afccc9a4c1d16/data/Localization/italian_(italy)/global.ini"
     }
   },
   "outputs": {
@@ -33,9 +33,6 @@
     "mission_rewards_enhancements.ini": {
       "sha256": "30598d87c8a95fec1b3e3137e9cf8a722eafb05e3e24c3c545cddba6c44aa80d"
     },
-    "commodity_crafting_enhancements.ini": {
-      "sha256": "e6c21a42d84d70432a81e50a6264fb15ee378fb9ea95f69f1bed4ff3deaef0f1"
-    },
     "journal_enhancements.ini": {
       "sha256": "a86e15cdd6244aacd351a8dba8d90a224c40458a51aaaa3510e79e3ef3fb2ef9"
     },
@@ -43,7 +40,7 @@
       "sha256": "c257cdbff5dc88732601d7a0901d4a5ae0678c08113af15868aa7faceb606364"
     },
     "global.ini": {
-      "sha256": "8c16d00dc0cb831c8b9b77bc48494c13d6aa09c4755d6d30a67b4242ab8d37ea"
+      "sha256": "f4571edf863ce3427d88d0652ca9d7153570f2ee1d03a5e9e761b3037b3c8990"
     }
   }
 }

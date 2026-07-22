@@ -1,7 +1,7 @@
 {
-  "build": "12232306",
+  "build": "12248363",
   "language": "english",
-  "generated_at": "2026-07-16T20:51:54",
+  "generated_at": "2026-07-21T21:04:23",
   "inputs": {
     "base_en.ini": {
       "sha256": "e5574df1178a980c4b8cfa1fb812d813b527cbc65bc613631eb0abbfecbdd1a5",
@@ -29,9 +29,6 @@
     "mission_rewards_enhancements.ini": {
       "sha256": "d35f6e416e1fd7f45457e93ed3ac6eec1f3fa560126cabfe6b905040293125fc"
     },
-    "commodity_crafting_enhancements.ini": {
-      "sha256": "06a0991f5aa87ddb36e3143589d1be0cb457f5927ba531efb21c5f518636f18b"
-    },
     "journal_enhancements.ini": {
       "sha256": "46e11064bc82e86f16dbbebccc4e19beda24da3da746dea74151010578344c63"
     },
@@ -39,7 +36,7 @@
       "sha256": "fa271883a74660b0b571639cbaed5dcb8868461036395a7f2d53f6a067fb58b9"
     },
     "global.ini": {
-      "sha256": "9897ff21716d6cd113c39c3545c6d919aef4aca0f7b94a0450f946b9639d58ab"
+      "sha256": "43e8026d35a936b4484871ffe1e0aaddd04fbbec4a99c4194d663aa86bb1770e"
     }
   }
 }
