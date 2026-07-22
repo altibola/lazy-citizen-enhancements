@@ -28,7 +28,8 @@ $Languages = @(
     @{ Label = 'Francais (France) - fonte Dymerz';             Repo = 'french_(france)';                  Variant = 'french_(france)_all';                 GameId = 'french_(france)' }
     @{ Label = 'Espanol (Espana) - fonte Thord82';             Repo = 'spanish_(spain)';                  Variant = 'spanish_(spain)_all';                 GameId = 'spanish_(spain)' }
     @{ Label = 'Italiano (Italia) - fonte Dymerz';             Repo = 'italian_(italy)';                  Variant = 'italian_(italy)_all';                 GameId = 'italian_(italy)' }
-    @{ Label = 'Portugues (Brasil)';                           Repo = 'portuguese_(brazil)';              Variant = 'portuguese_(brazil)_all';             GameId = 'portuguese_(brazil)' }
+    @{ Label = 'Portugues (Brasil) - fonte danielgmota';       Repo = 'portuguese_(brazil)';              Variant = 'portuguese_(brazil)_all';             GameId = 'portuguese_(brazil)' }
+    @{ Label = 'Portugues (Brasil) - fonte Dymerz';           Repo = 'portuguese_(brazil)_dymerz';       Variant = 'portuguese_(brazil)_dymerz_all';      GameId = 'portuguese_(brazil)' }
 )
 
 function Find-ChannelDirFromCwd {

@@ -33,6 +33,12 @@ LANGUAGE_GITHUB_INFO: dict[str, dict] = {
         "branch": "develop",
         "path": "data/Localization/portuguese_(brazil)/global.ini",
     },
+    "portuguese_br_dymerz": {
+        "owner": "Dymerz",
+        "repo":  "StarCitizen-Localization",
+        "branch": "main",
+        "path": "data/Localization/portuguese_(brazil)/global.ini",
+    },
     "italian": {
         "owner": "Dymerz",
         "repo":  "StarCitizen-Localization",
@@ -58,6 +64,7 @@ SC_LANGUAGE_IDS: dict[str, str] = {
     "french": "french_(france)",
     "spanish": "spanish_(spain)",
     "portuguese_br": "portuguese_(brazil)",
+    "portuguese_br_dymerz": "portuguese_(brazil)_dymerz",
     "italian": "italian_(italy)",
 }
 

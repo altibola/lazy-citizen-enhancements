@@ -55,10 +55,11 @@ TRANSLATIONS_DIR = REPO_ROOT / "translations"
 # Which pipeline languages get a fully-translated variant and which glossary
 # they use. The variant folder suffix is "_all" for every language.
 ENHANCEMENT_TRANSLATIONS: dict[str, dict[str, str]] = {
-    "french":            {"glossary": "fr",    "suffix": "_all"},
-    "spanish":           {"glossary": "es",    "suffix": "_all"},
-    "portuguese_br":     {"glossary": "pt_br", "suffix": "_all"},
-    "italian":           {"glossary": "it",    "suffix": "_all"},
+    "french":               {"glossary": "fr",    "suffix": "_all"},
+    "spanish":              {"glossary": "es",    "suffix": "_all"},
+    "portuguese_br":        {"glossary": "pt_br", "suffix": "_all"},
+    "portuguese_br_dymerz": {"glossary": "pt_br", "suffix": "_all"},
+    "italian":              {"glossary": "it",    "suffix": "_all"},
 }
 
 # Label candidates the pending-report looks for: "Word(s):" after a literal
