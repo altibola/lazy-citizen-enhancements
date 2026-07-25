@@ -1,7 +1,7 @@
 {
-  "build": "12248363",
+  "build": "12302499",
   "language": "portuguese_br",
-  "generated_at": "2026-07-21T21:04:31",
+  "generated_at": "2026-07-25T09:41:57",
   "inputs": {
     "base_en.ini": {
       "sha256": "e5574df1178a980c4b8cfa1fb812d813b527cbc65bc613631eb0abbfecbdd1a5",
@@ -13,8 +13,8 @@
       "owner": "danielgmota",
       "repo": "StarCitizen-Localization",
       "branch": "develop",
-      "commit": "ee127003a3aa4a8c1369b1594f4992bc2f5b5c6d",
-      "permalink": "https://github.com/danielgmota/StarCitizen-Localization/blob/ee127003a3aa4a8c1369b1594f4992bc2f5b5c6d/data/Localization/portuguese_(brazil)/global.ini"
+      "commit": "c5c4dde58572c321dedfed356b550970bd83670f",
+      "permalink": "https://github.com/danielgmota/StarCitizen-Localization/blob/c5c4dde58572c321dedfed356b550970bd83670f/data/Localization/portuguese_(brazil)/global.ini"
     }
   },
   "outputs": {
@@ -31,7 +31,7 @@
       "sha256": "e4c55596af08b51e3e4e72723e987695eb0a356786860b6c3b05213946628998"
     },
     "mission_rewards_enhancements.ini": {
-      "sha256": "7f509ba23621ef59d2652ab0b6ca18c1381ad405b503bdd328db600335762a5d"
+      "sha256": "2119bf6267e746f482b46d5d2144593a7415aa3926ddfa5fdadad05c5cf07a51"
     },
     "journal_enhancements.ini": {
       "sha256": "7c22778436dd5d2f5ca11c1281c015e112081ee0e8cfac065d0030a8215955aa"
@@ -40,7 +40,7 @@
       "sha256": "adf2f7df7e3265acee672d5a26aae746d1c5eb13a6f50375acafe89184549979"
     },
     "global.ini": {
-      "sha256": "3d9d9dd4f4d9633352e5f7238cf01e051980ca1e5f2e7acc371ebcd353e25091"
+      "sha256": "e06de772148d6854996c7c22e359b53afbe265ffe6a84fb907ba4ae64b1777cb"
     }
   }
 }

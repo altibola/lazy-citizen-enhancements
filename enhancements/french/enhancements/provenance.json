@@ -1,7 +1,7 @@
 {
-  "build": "12248363",
+  "build": "12302499",
   "language": "french",
-  "generated_at": "2026-07-21T21:04:26",
+  "generated_at": "2026-07-25T09:41:39",
   "inputs": {
     "base_en.ini": {
       "sha256": "e5574df1178a980c4b8cfa1fb812d813b527cbc65bc613631eb0abbfecbdd1a5",
@@ -19,28 +19,28 @@
   },
   "outputs": {
     "ships_desc_enhancements.ini": {
-      "sha256": "3689a44b71d7ed58d5eb6ace3a6b617bb5744f59e6721dc2badcd0e8c8f5a222"
+      "sha256": "ff15de709fb78f33b94347e2b0ab74fcd36a8b26e84af5edf93f55786af2ba9b"
     },
     "components_desc_enhancements.ini": {
       "sha256": "8bb16e21742433bdc976ea0160583a5ea8477cb22617228c574796b61c083473"
     },
     "ship_weapons_desc_enhancements.ini": {
-      "sha256": "5b14334f552f93dad96ada104c6f9a1b187572922f282d275c4b71603cb2b64c"
+      "sha256": "8d1b9432a268a947ed79039206e4f1f6e2a04021d1368442283e73b43e9817df"
     },
     "fps_weapons_desc_enhancements.ini": {
-      "sha256": "18d94d44f1597f535bc92a5ab8bbd8fe1c333bc617db1c2269049d22f522716a"
+      "sha256": "235b7a198941e15ae82baa6a799bfb6a5033cf499a97b67c6a7e250007919a0c"
     },
     "mission_rewards_enhancements.ini": {
-      "sha256": "1c31d3e930fc3fdecbe88339ffd4dd42ce4b38eec055498ed25b1280f0d7bb42"
+      "sha256": "120e27a109e6d041bde1c4e52d1325a26299cd9d2932ee37dafad78d2f1e7345"
     },
     "journal_enhancements.ini": {
-      "sha256": "763e110532ccbb9eecc3708521505b72e7d59faea3bc30b4815ff96226c88373"
+      "sha256": "4aa41d57e3aaec6cba1f2343c1aed25c029a69b55083c735a1465d282d0e4966"
     },
     "missile_enhancements.ini": {
       "sha256": "92578891f83112f97a8f0ef38d400f9d93a1da388fe6a49012468ac5e54e451b"
     },
     "global.ini": {
-      "sha256": "bfa7b3fc6131bcf58568879f06aa9b66ab1703b450babd1cf0cbfbdde8df7b26"
+      "sha256": "a745ef2d570d0235a26d23481136a00f7b881b824bab3edc85f6407a12cca53d"
     }
   }
 }

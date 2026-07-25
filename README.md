@@ -28,14 +28,14 @@ irm "https://raw.githubusercontent.com/altibola/lazy-citizen-enhancements/main/i
 
 <!-- VERSION-STATUS:START -->
 
-_Last verified: **2026-07-22 01:22 UTC** — refreshed automatically by the pipeline and the **Update community translations** workflow._
+_Last verified: **2026-07-25 12:42 UTC** — refreshed automatically by the pipeline and the **Update community translations** workflow._
 
 | Source | Pinned (this repo) | Upstream HEAD | Status |
 |---|---|---|---|
-| Game build (P4CL) | `4.9.0-live-12248363` <br/> `(P4CL: 12248363)` | — | — |
+| Game build (P4CL) | `4.9.0-live-12302499` <br/> `(P4CL: 12302499)` | — | — |
 | french — `Dymerz/StarCitizen-Localization@main` | [`b839d62`](https://github.com/Dymerz/StarCitizen-Localization/commit/b839d62f2911d402dc1a9f22b45afccc9a4c1d16) | `b839d62` | ✅ up to date (pinned at build) |
 | italian — `Dymerz/StarCitizen-Localization@main` | [`b839d62`](https://github.com/Dymerz/StarCitizen-Localization/commit/b839d62f2911d402dc1a9f22b45afccc9a4c1d16) | `b839d62` | ✅ up to date (pinned at build) |
-| portuguese_br — `danielgmota/StarCitizen-Localization@develop` | [`ee12700`](https://github.com/danielgmota/StarCitizen-Localization/commit/ee127003a3aa4a8c1369b1594f4992bc2f5b5c6d) | `ee12700` | ✅ up to date (pinned at build) |
+| portuguese_br — `danielgmota/StarCitizen-Localization@develop` | [`c5c4dde`](https://github.com/danielgmota/StarCitizen-Localization/commit/c5c4dde58572c321dedfed356b550970bd83670f) | `c5c4dde` | ✅ up to date (pinned at build) |
 | portuguese_br_dymerz — `Dymerz/StarCitizen-Localization@main` | [`b839d62`](https://github.com/Dymerz/StarCitizen-Localization/commit/b839d62f2911d402dc1a9f22b45afccc9a4c1d16) | `b839d62` | ✅ up to date (pinned at build) |
 | spanish — `Thord82/Star_citizen_ES@main` | [`56d99dc`](https://github.com/Thord82/Star_citizen_ES/commit/56d99dc9c8e75e20d6291419c742aa7d0d1c61ca) | `56d99dc` | ✅ up to date (pinned at build) |
 
@@ -53,21 +53,21 @@ Here is how the enhancements, stats, and translated mission details look in-game
 
 <!-- DOWNLOADS:START -->
 
-Current build: **`12248363`** (LIVE) — this table is regenerated automatically by the pipeline (`versions_report.py`); see [VERSIONS.md](VERSIONS.md) for the full input/output version manifest.
+Current build: **`12302499`** (LIVE) — this table is regenerated automatically by the pipeline (`versions_report.py`); see [VERSIONS.md](VERSIONS.md) for the full input/output version manifest.
 
 | Language | Game build | Enhanced file |
 |---|---|---|
-| English | `12248363` (LIVE) | [global.ini](data/Localization/english/global.ini) |
-| French (France) | `12248363` (LIVE) | [global.ini](data/Localization/french_%28france%29/global.ini) |
-| French (France) — stats translated | `12248363` (LIVE) | [global.ini](data/Localization/french_%28france%29_all/global.ini) |
-| Italian (Italy) | `12248363` (LIVE) | [global.ini](data/Localization/italian_%28italy%29/global.ini) |
-| Italian (Italy) — stats translated | `12248363` (LIVE) | [global.ini](data/Localization/italian_%28italy%29_all/global.ini) |
-| Portuguese (Brazil) | `12248363` (LIVE) | [global.ini](data/Localization/portuguese_%28brazil%29/global.ini) |
-| Portuguese (Brazil) — stats translated | `12248363` (LIVE) | [global.ini](data/Localization/portuguese_%28brazil%29_all/global.ini) |
-| Portuguese (Brazil) — dymerz | `12248363` (LIVE) | [global.ini](data/Localization/portuguese_%28brazil%29_dymerz/global.ini) |
-| Portuguese (Brazil) — dymerz — stats translated | `12248363` (LIVE) | [global.ini](data/Localization/portuguese_%28brazil%29_dymerz_all/global.ini) |
-| Spanish (Spain) | `12248363` (LIVE) | [global.ini](data/Localization/spanish_%28spain%29/global.ini) |
-| Spanish (Spain) — stats translated | `12248363` (LIVE) | [global.ini](data/Localization/spanish_%28spain%29_all/global.ini) |
+| English | `12302499` (LIVE) | [global.ini](data/Localization/english/global.ini) |
+| French (France) | `12302499` (LIVE) | [global.ini](data/Localization/french_%28france%29/global.ini) |
+| French (France) — stats translated | `12302499` (LIVE) | [global.ini](data/Localization/french_%28france%29_all/global.ini) |
+| Italian (Italy) | `12302499` (LIVE) | [global.ini](data/Localization/italian_%28italy%29/global.ini) |
+| Italian (Italy) — stats translated | `12302499` (LIVE) | [global.ini](data/Localization/italian_%28italy%29_all/global.ini) |
+| Portuguese (Brazil) | `12302499` (LIVE) | [global.ini](data/Localization/portuguese_%28brazil%29/global.ini) |
+| Portuguese (Brazil) — stats translated | `12302499` (LIVE) | [global.ini](data/Localization/portuguese_%28brazil%29_all/global.ini) |
+| Portuguese (Brazil) — dymerz | `12302499` (LIVE) | [global.ini](data/Localization/portuguese_%28brazil%29_dymerz/global.ini) |
+| Portuguese (Brazil) — dymerz — stats translated | `12302499` (LIVE) | [global.ini](data/Localization/portuguese_%28brazil%29_dymerz_all/global.ini) |
+| Spanish (Spain) | `12302499` (LIVE) | [global.ini](data/Localization/spanish_%28spain%29/global.ini) |
+| Spanish (Spain) — stats translated | `12302499` (LIVE) | [global.ini](data/Localization/spanish_%28spain%29_all/global.ini) |
 
 <!-- DOWNLOADS:END -->
 
