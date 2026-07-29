@@ -496,6 +496,8 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--p4k", type=Path, default=None,
                         help="Path to Data.p4k (auto-detected if omitted).")
+    parser.add_argument("--environment", "--env", default=None,
+                        help="Override the game environment (e.g. LIVE, PTU, EPTU, HOTFIX).")
     parser.add_argument("--game-version", default=None,
                         help="Override the game version string used as the output "
                              "folder prefix (auto-detected from build_manifest.id "
@@ -552,12 +554,14 @@ def main(argv: list[str] | None = None) -> int:
     if args.skip_extract:
         game_version_json, environment = _read_version_file(out_dir)
         game_version = args.game_version or game_version_json
+        if args.environment:
+            environment = args.environment.upper()
+        elif not environment:
+            environment = "LIVE"
         if not game_version:
             parser.error(
                 "--skip-extract requires enhancements/version.json to exist or --game-version to be passed."
             )
-        if not environment:
-            environment = "LIVE"
             
         english_base = out_dir / "base_en.ini"
         forge_dir = out_dir / "dataforge"
@@ -580,7 +584,7 @@ def main(argv: list[str] | None = None) -> int:
             parser.error(f"Data.p4k does not exist: {p4k}")
 
         game_version = args.game_version or _detect_game_version(p4k)
-        environment = _detect_environment(p4k)
+        environment = args.environment.upper() if args.environment else _detect_environment(p4k)
         
         # Determine the user-friendly display version (e.g., 4.8.0-live-11952564)
         display_version = f"{environment.lower()}-{game_version}"
