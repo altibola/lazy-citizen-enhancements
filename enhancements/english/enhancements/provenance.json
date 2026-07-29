@@ -1,0 +1,42 @@
+{
+  "build": "12326004",
+  "language": "english",
+  "generated_at": "2026-07-29T00:33:40",
+  "inputs": {
+    "base_en.ini": {
+      "sha256": "e5574df1178a980c4b8cfa1fb812d813b527cbc65bc613631eb0abbfecbdd1a5",
+      "path": "/home/runner/work/lazy-citizen-enhancements/lazy-citizen-enhancements/enhancements/base_en.ini"
+    },
+    "base.ini": {
+      "origin": "game",
+      "description": "English global.ini extracted from the game build (base_en.ini)",
+      "sha256": "e5574df1178a980c4b8cfa1fb812d813b527cbc65bc613631eb0abbfecbdd1a5"
+    }
+  },
+  "outputs": {
+    "ships_desc_enhancements.ini": {
+      "sha256": "c68493b527c31482db4a2e29a6737813ec454215fd8388794d358ed0f08d8aed"
+    },
+    "components_desc_enhancements.ini": {
+      "sha256": "d3f12a5e66f58f5e0b04449fa5d9f9029dd336e781d1fa111682c6daf2512433"
+    },
+    "ship_weapons_desc_enhancements.ini": {
+      "sha256": "2c8f5f4e645be6afd9d1448f1c63c86fe828ca29bbda59361339a2d29fc6539f"
+    },
+    "fps_weapons_desc_enhancements.ini": {
+      "sha256": "935877056e693d0ca23b0d05eeb1b42385b5e960a5c9a690d58a53c73ac98263"
+    },
+    "mission_rewards_enhancements.ini": {
+      "sha256": "69958a52410dd3f5b8a935eed67534eb9ff099be1a114c581d98ffd78fb7251c"
+    },
+    "journal_enhancements.ini": {
+      "sha256": "46e11064bc82e86f16dbbebccc4e19beda24da3da746dea74151010578344c63"
+    },
+    "missile_enhancements.ini": {
+      "sha256": "fa271883a74660b0b571639cbaed5dcb8868461036395a7f2d53f6a067fb58b9"
+    },
+    "global.ini": {
+      "sha256": "4d803f23e93e724238b252ab266019cd7f8c26583b7db789a71780c86e05d9cc"
+    }
+  }
+}

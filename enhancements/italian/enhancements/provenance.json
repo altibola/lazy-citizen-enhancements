@@ -1,0 +1,46 @@
+{
+  "build": "12326004",
+  "language": "italian",
+  "generated_at": "2026-07-29T00:33:42",
+  "inputs": {
+    "base_en.ini": {
+      "sha256": "e5574df1178a980c4b8cfa1fb812d813b527cbc65bc613631eb0abbfecbdd1a5",
+      "path": "/home/runner/work/lazy-citizen-enhancements/lazy-citizen-enhancements/enhancements/base_en.ini"
+    },
+    "base.ini": {
+      "url": "https://raw.githubusercontent.com/Dymerz/StarCitizen-Localization/main/data/Localization/italian_(italy)/global.ini",
+      "sha256": "8495be5633c756f77bffc7a27a18b18c3c85b9c24d7bb84f0ac4684ca79e716d",
+      "owner": "Dymerz",
+      "repo": "StarCitizen-Localization",
+      "branch": "main",
+      "commit": "b839d62f2911d402dc1a9f22b45afccc9a4c1d16",
+      "permalink": "https://github.com/Dymerz/StarCitizen-Localization/blob/b839d62f2911d402dc1a9f22b45afccc9a4c1d16/data/Localization/italian_(italy)/global.ini"
+    }
+  },
+  "outputs": {
+    "ships_desc_enhancements.ini": {
+      "sha256": "2f7ef9afd52e837f46e74a46a3211b39a0e914bf96550a7abda842cdc9a1ae8b"
+    },
+    "components_desc_enhancements.ini": {
+      "sha256": "3095bf3c5b8448b3b7293e1bd3ff669871837c9c837aaf870463d78e31eb38d4"
+    },
+    "ship_weapons_desc_enhancements.ini": {
+      "sha256": "98718afd136f921e95810613530dc5be348b38fb878fceb63c6e32f51d8a613f"
+    },
+    "fps_weapons_desc_enhancements.ini": {
+      "sha256": "e979b5c86b08afd53bef3bfeae55892373e142645035d40843c9e20e4b043e7e"
+    },
+    "mission_rewards_enhancements.ini": {
+      "sha256": "c34a447f235e01578862b9dc83ce0725416756521d145ed155f7761d23dcb6bd"
+    },
+    "journal_enhancements.ini": {
+      "sha256": "a86e15cdd6244aacd351a8dba8d90a224c40458a51aaaa3510e79e3ef3fb2ef9"
+    },
+    "missile_enhancements.ini": {
+      "sha256": "c257cdbff5dc88732601d7a0901d4a5ae0678c08113af15868aa7faceb606364"
+    },
+    "global.ini": {
+      "sha256": "9be3ae709f744fca97c0cbf86545914851fce0274bd6ac0cd369c8a56aeff09a"
+    }
+  }
+}

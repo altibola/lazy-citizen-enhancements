@@ -1,0 +1,33 @@
+{
+  "_comment": "Terms found in generated enhancement texts that no glossary rule matched. To translate them, copy entries into translations/glossaries/it.json as [\"term\", \"translation\"] rules and re-run translate_enhancements.py.",
+  "untranslated": [
+    {
+      "term": "Ace Pilot:",
+      "occurrences": 15
+    },
+    {
+      "term": "Trusted Associate:",
+      "occurrences": 12
+    },
+    {
+      "term": "Associate:",
+      "occurrences": 7
+    },
+    {
+      "term": "Prospective Associate:",
+      "occurrences": 5
+    },
+    {
+      "term": "Prestige 3:",
+      "occurrences": 1
+    },
+    {
+      "term": "Prestige 1:",
+      "occurrences": 1
+    },
+    {
+      "term": "Prestige 2:",
+      "occurrences": 1
+    }
+  ]
+}
