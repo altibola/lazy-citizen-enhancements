@@ -122,7 +122,7 @@ The **Download build (hosted)** workflow authenticates against the RSI CDN and d
 
 When a community translation is updated upstream, the **Update community translations** workflow re-runs only the download + merge (`--skip-extract --skip-generate`), re-using the `*_enhancements.ini` files already present in the branch. If nothing changed, it commits nothing.
 
-When a PTU build becomes LIVE, the **Promote build to main** workflow merges the `build/{p4cl}` branch into `main`.
+When a PTU build becomes LIVE, the **Promote build to LIVE** workflow merges the `build/{p4cl}` branch into `LIVE`.
 
 ## Workflows (all on-demand — `workflow_dispatch`)
 
@@ -132,7 +132,8 @@ When a PTU build becomes LIVE, the **Promote build to main** workflow merges the
 | **Download build (hosted)** | Full pipeline on a GitHub runner via RSI CDN. Requires `RSI_USERNAME`/`RSI_PASSWORD` in Secrets. | New patch, no local installation |
 | **Update community translations** | Checks if upstream translations changed; re-merges and commits when updated. | Translation updates |
 | **Translate enhancement texts** | Applies glossaries and rebuilds `*_all*` variants. | After editing glossaries |
-| **Promote build to main** | Opens PR (or auto-merges) `build/{p4cl}` → `main` when build goes LIVE. | PTU → LIVE |
+| **Promote build to LIVE** | Opens PR (or auto-merges) `build/{p4cl}` → `LIVE` when build goes LIVE. | PTU → LIVE |
+
 
 ## Translating the generated texts (`*_all` variants)
 
