@@ -348,21 +348,15 @@ def process_language(
     forge_dir: Path,
     workers: int,
     game_version: str,
+    environment: str = "LIVE",
     skip_generate: bool = False,
 ) -> str | None:
-    """Download the target base, generate enhancements, merge, and write provenance.
-
-    When *skip_generate* is True (or DataForge is absent), the enhancement
-    generation step is skipped and any existing ``*_enhancements.ini`` files
-    committed to the branch are reused as-is.  Only the base translation
-    download and final merge are performed.  This is the mode used by the
-    automated GitHub Actions translation-update workflow.
-    """
+    """Download the target base, generate enhancements, merge, and write provenance."""
     enh_dir = versioned_out / language / "enhancements"
     global_dir = versioned_out / language / "global"
     base_ini = enh_dir / "base.ini"
 
-    logger.info(f"=== Language: {language} ===")
+    logger.info(f"=== Language: {language} ({environment}) ===")
 
     # 1. Resolve the target-language base with source tracking.
     if language == "english":
@@ -378,9 +372,10 @@ def process_language(
         (base_ini.parent / "base.ini.source.json").write_text(
             json.dumps(base_source, indent=2), encoding="utf-8")
     else:
-        gh_info = lang_sources.github_info(language)
+        gh_info = lang_sources.github_info(language, environment)
         base_source = _download_with_source(
-            lang_sources.language_url(language), base_ini, gh_info)
+            lang_sources.language_url(language, environment), base_ini, gh_info)
+
 
     # 2. Enhancement generation — skip if requested or DataForge unavailable.
     has_dataforge = forge_dir and (forge_dir / "raw" / "libs").exists()
@@ -635,7 +630,8 @@ def main(argv: list[str] | None = None) -> int:
     translation_commits = {}
     for lang in languages:
         commit_sha = process_language(lang, out_dir, english_base, forge_dir, args.workers, game_version,
-                                      skip_generate=skip_gen)
+                                      environment=environment, skip_generate=skip_gen)
+
         if commit_sha:
             translation_commits[lang] = commit_sha
 

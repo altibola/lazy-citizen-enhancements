@@ -29,8 +29,10 @@ VERSION_JSON = REPO_ROOT / "enhancements" / "version.json"
 
 # Import language configurations dynamically from src/lang_sources.py
 sys.path.insert(0, str(REPO_ROOT / "src"))
+import lang_sources
 from lang_sources import LANGUAGE_GITHUB_INFO
 _LANG_GITHUB = LANGUAGE_GITHUB_INFO
+
 
 
 def _gh_api(path: str) -> dict:
@@ -99,7 +101,7 @@ def set_github_output(key: str, value: str) -> None:
         print(f"::set-output name={key}::{value}")  # legacy fallback
 
 
-def write_step_summary(rows: list[tuple[str, str, str, str]]) -> None:
+def write_step_summary(rows: list[tuple[str, str, str, str]], environment: str = "LIVE") -> None:
     """Append a versions table to $GITHUB_STEP_SUMMARY so the original
     (stored/processed) vs. current upstream translation versions are visible
     directly on the Actions run page.
@@ -117,17 +119,18 @@ def write_step_summary(rows: list[tuple[str, str, str, str]]) -> None:
         f.write("| Language | Stored (processed) | Current (upstream) | Status |\n")
         f.write("|---|---|---|---|\n")
         for lang, stored_sha, current_sha, status in rows:
-            info = _LANG_GITHUB[lang]
-            base = f"https://github.com/{info['owner']}/{info['repo']}"
+            info = lang_sources.github_info(lang, environment) or {}
+            owner, repo = info.get("owner", ""), info.get("repo", "")
+            base = f"https://github.com/{owner}/{repo}" if owner and repo else ""
             stored_cell = (f"[`{stored_sha[:7]}`]({base}/commit/{stored_sha})"
-                           if stored_sha else "_(none)_")
+                           if stored_sha and base else (f"`{stored_sha[:7]}`" if stored_sha else "_(none)_"))
             current_cell = (f"[`{current_sha[:7]}`]({base}/commit/{current_sha})"
-                            if current_sha else "_(api error)_")
+                            if current_sha and base else (f"`{current_sha[:7]}`" if current_sha else "_(api error)_"))
             f.write(f"| {lang} | {stored_cell} | {current_cell} | `{status}` |\n")
         f.write("\n")
 
 
-def update_readme_status(rows: list[tuple[str, str, str, str]]) -> None:
+def update_readme_status(rows: list[tuple[str, str, str, str]], environment: str = "LIVE") -> None:
     """Write the stored-vs-upstream comparison into the README status table
     (between the VERSION-STATUS markers) via versions_report. The workflow
     commits README.md, so the repo front page always shows the result of the
@@ -150,14 +153,15 @@ def update_readme_status(rows: list[tuple[str, str, str, str]]) -> None:
         import versions_report
         vr_rows = []
         for lang, stored_sha, current_sha, status in rows:
-            info = _LANG_GITHUB[lang]
-            base = f"https://github.com/{info['owner']}/{info['repo']}"
+            info = lang_sources.github_info(lang, environment) or {}
+            owner, repo, branch = info.get("owner", ""), info.get("repo", ""), info.get("branch", "")
+            base = f"https://github.com/{owner}/{repo}" if owner and repo else ""
             vr_rows.append({
-                "label": f"{lang} — `{info['owner']}/{info['repo']}@{info['branch']}`",
+                "label": f"{lang} — `{owner}/{repo}@{branch}`" if owner else lang,
                 "stored": stored_sha,
                 "current": current_sha,
                 "status": _STATUS_LABELS.get(status[:1], status),
-                "url": f"{base}/commit/{stored_sha}" if stored_sha else "",
+                "url": f"{base}/commit/{stored_sha}" if stored_sha and base else "",
             })
         checked_at = time.strftime("%Y-%m-%d %H:%M UTC", time.gmtime())
         if versions_report.update_readme_status(vr_rows, checked_at):
@@ -166,17 +170,29 @@ def update_readme_status(rows: list[tuple[str, str, str, str]]) -> None:
         print(f"[warn] Could not refresh README status table: {exc}", file=sys.stderr)
 
 
+
 def main() -> int:
     stored = load_stored_commits()
+    version_data = {}
+    if VERSION_JSON.exists():
+        try:
+            version_data = json.loads(VERSION_JSON.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+    environment = version_data.get("environment", "LIVE")
 
-    print(f"\n{'Language':<22} {'Stored SHA':<42} {'Current SHA':<42} {'Status'}")
+    print(f"\nEnvironment: {environment}")
+    print(f"{'Language':<22} {'Stored SHA':<42} {'Current SHA':<42} {'Status'}")
     print("-" * 115)
 
     changed_langs: list[str] = []
     failed_langs: list[str] = []
     rows: list[tuple[str, str, str, str]] = []
 
-    for lang, info in _LANG_GITHUB.items():
+    for lang in lang_sources.available_languages():
+        info = lang_sources.github_info(lang, environment)
+        if not info:
+            continue
         stored_sha = stored.get(lang, "")
         current = current_commit(info["owner"], info["repo"], info["branch"])
         if current is None:
@@ -194,8 +210,10 @@ def main() -> int:
         rows.append((lang, stored_sha, current or "", status))
         print(f"{lang:<22} {(stored_sha or '(none)'):<42} {(current or 'n/a'):<42} {status}")
 
-    write_step_summary(rows)
-    update_readme_status(rows)
+
+    write_step_summary(rows, environment)
+    update_readme_status(rows, environment)
+
 
     print()
     failed_note = (f" ({len(failed_langs)} source(s) could NOT be verified - API error: "

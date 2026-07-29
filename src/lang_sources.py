@@ -19,30 +19,35 @@ LANGUAGE_GITHUB_INFO: dict[str, dict] = {
         "owner": "Dymerz",
         "repo":  "StarCitizen-Localization",
         "branch": "main",
+        "branches": {"LIVE": "main", "PTU": "ptu", "EPTU": "ptu"},
         "path": "data/Localization/french_(france)/global.ini",
     },
     "spanish": {
         "owner": "Thord82",
         "repo":  "Star_citizen_ES",
         "branch": "main",
+        "branches": {"LIVE": "main", "PTU": "ptu", "EPTU": "ptu"},
         "path": "global.ini",
     },
     "portuguese_br": {
         "owner": "danielgmota",
         "repo":  "StarCitizen-Localization",
         "branch": "develop",
+        "branches": {"LIVE": "develop", "PTU": "develop", "EPTU": "develop"},
         "path": "data/Localization/portuguese_(brazil)/global.ini",
     },
     "portuguese_br_dymerz": {
         "owner": "Dymerz",
         "repo":  "StarCitizen-Localization",
         "branch": "main",
+        "branches": {"LIVE": "main", "PTU": "ptu", "EPTU": "ptu"},
         "path": "data/Localization/portuguese_(brazil)/global.ini",
     },
     "italian": {
         "owner": "Dymerz",
         "repo":  "StarCitizen-Localization",
         "branch": "main",
+        "branches": {"LIVE": "main", "PTU": "ptu", "EPTU": "ptu"},
         "path": "data/Localization/italian_(italy)/global.ini",
     },
 }
@@ -74,25 +79,36 @@ DEFAULT_LANGUAGE = "portuguese_br"
 
 def available_languages() -> list[str]:
     """Languages that have a download source configured."""
-    return sorted(LANGUAGE_SOURCES)
+    return sorted(LANGUAGE_GITHUB_INFO)
 
 
-def language_url(language: str) -> str:
-    """Return the base.ini download URL for *language* or raise KeyError."""
-    try:
-        return LANGUAGE_SOURCES[language]
-    except KeyError:
+def github_info(language: str, environment: str = "LIVE") -> dict | None:
+    """Return the GitHub source dict for *language*, adjusted for *environment*."""
+    info = LANGUAGE_GITHUB_INFO.get(language)
+    if not info:
+        return None
+    res = dict(info)
+    branches = res.get("branches")
+    if isinstance(branches, dict):
+        res["branch"] = branches.get(environment.upper(), res.get("branch", "main"))
+    return res
+
+
+def language_url(language: str, environment: str = "LIVE") -> str:
+    """Return the base.ini download URL for *language* in *environment* or raise KeyError."""
+    info = github_info(language, environment)
+    if not info:
         raise KeyError(
             f"No source URL configured for language {language!r}. "
             f"Known: {', '.join(available_languages()) or '(none)'}"
         )
-
-
-def github_info(language: str) -> dict | None:
-    """Return the GitHub source dict for *language*, or None if not a GitHub source."""
-    return LANGUAGE_GITHUB_INFO.get(language)
+    return (
+        f"https://raw.githubusercontent.com/{info['owner']}/{info['repo']}"
+        f"/{info['branch']}/{info['path']}"
+    )
 
 
 def sc_language_id(language: str) -> str:
     """Return the SC localization folder id for *language* (falls back to itself)."""
     return SC_LANGUAGE_IDS.get(language, language)
+
