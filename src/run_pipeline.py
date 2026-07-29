@@ -58,71 +58,58 @@ logger = logging.getLogger("lazy_citizen_enhancements")
 
 # ── helpers ──────────────────────────────────────────────────────────────────
 
-def _autodetect_p4k() -> Path | None:
-    """Find Data.p4k by reading the RSI Launcher log file.
+def _autodetect_p4k(target_env: str | None = None) -> Path | None:
+    """Find Data.p4k by reading the RSI Launcher log file or probing environment paths.
 
-    The launcher writes one JSON object per line to:
-      %APPDATA%\\rsilauncher\\logs\\log.log
-
-    Two log patterns contain the exact channel install path:
-      [Launcher::launch] Launching Star Citizen LIVE from (E:\\...\\LIVE)
-      [Installer] Delta update applied ... in E:\\...\\LIVE
-
-    Strategy:
-      1. Collect all candidate paths from both patterns.
-      2. Return the most recent path for LIVE (preferred channel).
-      3. Fall back to most recent path for any other channel.
+    If target_env is specified (e.g. "PTU"), prioritize paths matching target_env.
     """
+    preferred_env = target_env.upper() if target_env else "LIVE"
+
     appdata = os.environ.get("APPDATA", "")
-    if not appdata:
-        return None
+    log_candidates: list[Path] = []
+    if appdata:
+        log_path = Path(appdata) / "rsilauncher" / "logs" / "log.log"
+        if log_path.exists():
+            _LAUNCH_RE = re.compile(
+                r"\[Launcher::launch\] Launching Star Citizen \S+ from \((.+?)\)"
+            )
+            _INSTALL_RE = re.compile(
+                r"\[Installer\] Delta update applied .+ in ([^\s\"]+)"
+            )
+            try:
+                with open(log_path, encoding="utf-8", errors="replace") as fh:
+                    for raw in fh:
+                        for pattern in (_LAUNCH_RE, _INSTALL_RE):
+                            m = pattern.search(raw)
+                            if m:
+                                path_str = m.group(1).strip().replace("\\\\", "\\")
+                                log_candidates.append(Path(path_str))
+                                break
+            except OSError as exc:
+                logger.debug(f"Could not read launcher log: {exc}")
 
-    log_path = Path(appdata) / "rsilauncher" / "logs" / "log.log"
-    if not log_path.exists():
-        logger.debug(f"RSI Launcher log not found: {log_path}")
-        return None
-
-    # Regex patterns that extract the channel install path from log messages.
-    # Applied directly on raw lines — avoids JSON parsing issues with
-    # multi-line error entries that span several lines in the log file.
-    # In the raw file, backslashes are JSON-escaped (\\), so we unescape them.
-    _LAUNCH_RE = re.compile(
-        r"\[Launcher::launch\] Launching Star Citizen \S+ from \((.+?)\)"
-    )
-    _INSTALL_RE = re.compile(
-        r"\[Installer\] Delta update applied .+ in ([^\s\"]+)"
-    )
-
-    live_candidates: list[Path] = []
+    target_candidates: list[Path] = []
     other_candidates: list[Path] = []
 
-    try:
-        with open(log_path, encoding="utf-8", errors="replace") as fh:
-            for raw in fh:
-                for pattern in (_LAUNCH_RE, _INSTALL_RE):
-                    m = pattern.search(raw)
-                    if m:
-                        # Unescape JSON double-backslashes → single backslashes.
-                        path_str = m.group(1).strip().replace("\\\\", "\\")
-                        p = Path(path_str)
-                        if p.name.upper() == "LIVE":
-                            live_candidates.append(p)
-                        else:
-                            other_candidates.append(p)
-                        break
+    for path in reversed(log_candidates):
+        if preferred_env in path.name.upper():
+            if path not in target_candidates:
+                target_candidates.append(path)
+        else:
+            if path not in other_candidates:
+                other_candidates.append(path)
+            sibling = path.parent / preferred_env
+            if sibling not in target_candidates:
+                target_candidates.append(sibling)
 
-    except OSError as exc:
-        logger.debug(f"Could not read launcher log: {exc}")
-        return None
-
-    # Prefer LIVE; within each group use the most recent entry (last in log).
-    for path in (*reversed(live_candidates), *reversed(other_candidates)):
+    for path in (*target_candidates, *other_candidates):
         p4k = path / "Data.p4k"
         if p4k.exists():
-            logger.info(f"Auto-detected Data.p4k from launcher log: {p4k}")
+            logger.info(f"Auto-detected Data.p4k for environment {preferred_env}: {p4k}")
             return p4k
 
     return None
+
 
 
 def _prompt_p4k() -> Path:
@@ -571,7 +558,8 @@ def main(argv: list[str] | None = None) -> int:
             )
         logger.info(f"Skipping extraction; reusing files in {out_dir}")
     else:
-        p4k = args.p4k or _autodetect_p4k()
+        p4k = args.p4k or _autodetect_p4k(target_env=args.environment)
+
         if p4k is None:
             if sys.stdin.isatty():
                 p4k = _prompt_p4k()
