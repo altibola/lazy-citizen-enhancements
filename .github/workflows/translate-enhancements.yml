@@ -98,8 +98,9 @@ jobs:
           git commit -m "chore(i18n): translate enhancement texts on ${TARGET_BRANCH}
 
           Glossary-based translation of generated stat blocks into the
-          fully-localized variants (data/Localization/*_all*/global.ini).
+          fully-localized variants (data/Localization/*_all*/global.ini)."
 
           git push origin "$TARGET_BRANCH"
+
 
 

@@ -153,8 +153,9 @@ jobs:
           ${SUMMARY}
 
           Source versions consumed by this run:
-          ${VERSIONS_BODY}
+          ${VERSIONS_BODY}"
 
           git push origin "$TARGET_BRANCH"
+
 
 
