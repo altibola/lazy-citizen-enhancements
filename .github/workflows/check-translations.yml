@@ -155,6 +155,6 @@ jobs:
           Source versions consumed by this run:
           ${VERSIONS_BODY}
 
-          [skip ci]"
-          python src/git_push_clean.py "$TARGET_BRANCH"
+          git push origin "$TARGET_BRANCH"
+
 

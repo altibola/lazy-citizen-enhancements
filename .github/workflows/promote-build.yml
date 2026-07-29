@@ -120,8 +120,8 @@ jobs:
           Source versions:
           ${VERSIONS_BODY}
 
-          [skip ci]"
-            python src/git_push_clean.py
+            git push origin main
+
             echo "Auto-merged ${BRANCH} into main."
           else
             gh pr create \

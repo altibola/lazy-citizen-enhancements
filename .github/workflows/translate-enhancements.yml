@@ -100,6 +100,6 @@ jobs:
           Glossary-based translation of generated stat blocks into the
           fully-localized variants (data/Localization/*_all*/global.ini).
 
-          [skip ci]"
-          python src/git_push_clean.py "$TARGET_BRANCH"
+          git push origin "$TARGET_BRANCH"
+
 

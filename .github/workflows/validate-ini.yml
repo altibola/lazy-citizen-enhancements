@@ -24,7 +24,8 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: 20
+        node-version: 22
+
 
     - name: Validate Portuguese (Brazil) - danielgmota
       run: npx @dymerz/starcitizen-ini-utils validate --ci --fail-on-error --reference-type local --local-path "data/Localization/english/global.ini" "data/Localization/portuguese_(brazil)/global.ini"

@@ -58,8 +58,10 @@ if $DO_COMMIT; then
         echo "Nada mudou — nenhum commit necessário."
     else
         git commit -m "chore(i18n): re-translate enhancement texts (glossary update)"
-        "$EXE" run -r "$MAMBA_ROOT" -n lce python "$SCRIPT_DIR/git_push_clean.py"
+        BRANCH=$(git rev-parse --abbrev-ref HEAD)
+        git push origin "$BRANCH"
     fi
+
 else
     echo ""
     echo "Para commitar os resultados:  ./translate.sh --commit"
