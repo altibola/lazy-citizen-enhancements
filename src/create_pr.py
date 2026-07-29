@@ -162,7 +162,8 @@ def main() -> int:
     # Convention: build/{p4cl} for every build (PTU or LIVE).
     # PRs always target "main" — for PTU builds that means "ready for review
     # when promoted"; for LIVE re-runs, it merges directly.
-    base_branch = args.base_branch or "main"
+    base_branch = args.base_branch or "LIVE"
+
     new_branch = f"{args.branch_prefix}{game_version}"
     
     print(f"Branch base: {base_branch}")

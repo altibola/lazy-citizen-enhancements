@@ -4,12 +4,14 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - main
+      - LIVE
+
     paths:
       - 'data/Localization/**/global.ini'
   pull_request:
     branches:
-      - main
+      - LIVE
+
     paths:
       - 'data/Localization/**/global.ini'
 

@@ -1,6 +1,6 @@
 # install_translation.ps1 — Instalador da tradução para jogadores.
 #
-# Baixa o global.ini melhorado direto do GitHub (branch main) e instala na
+# Baixa o global.ini melhorado direto do GitHub (branch LIVE) e instala na
 # pasta do Star Citizen, ajustando o user.cfg (g_language).
 #
 # Detecção da pasta do jogo, nesta ordem:
@@ -12,14 +12,15 @@
 #   4. Pergunta o caminho.
 #
 # Uso (PowerShell):
-#   irm "https://raw.githubusercontent.com/altibola/lazy-citizen-enhancements/main/install_translation.ps1?$(Get-Random)" | iex
+#   irm "https://raw.githubusercontent.com/altibola/lazy-citizen-enhancements/LIVE/install_translation.ps1?$(Get-Random)" | iex
 #
 # Compatível com Windows PowerShell 5.1 e PowerShell 7+.
 
 $ErrorActionPreference = 'Stop'
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 
-$RepoRaw = 'https://raw.githubusercontent.com/altibola/lazy-citizen-enhancements/main'
+$RepoRaw = 'https://raw.githubusercontent.com/altibola/lazy-citizen-enhancements/LIVE'
+
 
 # Opções de idioma: pasta no repositório -> id de idioma que o jogo aceita.
 # 'variant' aponta a pasta com os melhoramentos TRADUZIDOS (quando existir).
@@ -146,7 +147,8 @@ try {
     Invoke-WebRequest -Uri $url -OutFile $dest -UseBasicParsing
 } catch {
     Write-Host "Falha no download: $($_.Exception.Message)" -ForegroundColor Red
-    Write-Host 'Verifique se essa variante ja foi publicada no branch main (tabela Downloads do README).' -ForegroundColor Yellow
+    Write-Host 'Verifique se essa variante ja foi publicada no branch LIVE (tabela Downloads do README).' -ForegroundColor Yellow
+
     exit 1
 }
 $size = (Get-Item $dest).Length

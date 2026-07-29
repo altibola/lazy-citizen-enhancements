@@ -1,9 +1,9 @@
-name: Promote build to main
+name: Promote build to LIVE
 
 # ON-DEMAND ONLY (workflow_dispatch) — no schedule for now.
 #
 # When a PTU build ships to LIVE, run this workflow with the build number
-# (P4CL). It finds the matching build/{p4cl} branch and opens a PR to main
+# (P4CL). It finds the matching build/{p4cl} branch and opens a PR to LIVE
 # (or auto-merges, if requested).
 #
 # Version traceability: before promoting, the run summary shows the version
@@ -60,7 +60,7 @@ jobs:
           git fetch origin "${BRANCH}"
 
           {
-            echo "## Promoting \`${BRANCH}\` → \`main\`"
+            echo "## Promoting \`${BRANCH}\` → \`LIVE\`"
             echo ""
             if git cat-file -e "origin/${BRANCH}:VERSIONS.md" 2>/dev/null; then
               git show "origin/${BRANCH}:VERSIONS.md"
@@ -74,18 +74,18 @@ jobs:
             fi
           } >> "$GITHUB_STEP_SUMMARY"
 
-      # ── 4. Check that main's version differs (avoid duplicate promotions) ────
-      - name: Check main version
+      # ── 4. Check that LIVE version differs (avoid duplicate promotions) ────
+      - name: Check LIVE version
         id: mainver
         run: |
-          git fetch origin main
-          VERSION=$(git show origin/main:enhancements/version.json 2>/dev/null \
+          git fetch origin LIVE
+          VERSION=$(git show origin/LIVE:enhancements/version.json 2>/dev/null \
                     | python -c "import sys,json; d=json.load(sys.stdin); print(d.get('version',''))" \
                     || echo "")
           BUILD="${{ inputs.build_number }}"
           if [ "$VERSION" = "$BUILD" ]; then
             echo "already_merged=true" >> "$GITHUB_OUTPUT"
-            echo "main is already at build ${BUILD} — nothing to do."
+            echo "LIVE is already at build ${BUILD} — nothing to do."
           else
             echo "already_merged=false" >> "$GITHUB_OUTPUT"
           fi
@@ -111,25 +111,25 @@ jobs:
           if [ "${{ inputs.auto_merge }}" = "true" ]; then
             git config user.name  "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
-            git checkout main
+            git checkout LIVE
             git merge --no-ff "origin/${BRANCH}" \
               -m "chore: promote build ${BUILD} from PTU to LIVE
 
-          Merging ${BRANCH} into main.
+          Merging ${BRANCH} into LIVE.
 
           Source versions:
           ${VERSIONS_BODY}
 
           [skip ci]"
-            python src/git_push_clean.py
+            python src/git_push_clean.py LIVE
 
 
-            echo "Auto-merged ${BRANCH} into main."
+            echo "Auto-merged ${BRANCH} into LIVE."
           else
             gh pr create \
-              --title "[LIVE] Promote build ${BUILD} to main" \
+              --title "[LIVE] Promote build ${BUILD} to LIVE" \
               --body "$(cat <<EOF
-          Build \`${BUILD}\` has shipped to **LIVE**. This PR merges \`${BRANCH}\` into \`main\`.
+          Build \`${BUILD}\` has shipped to **LIVE**. This PR merges \`${BRANCH}\` into \`LIVE\`.
 
           ## Source versions
           ${VERSIONS_BODY}
@@ -138,8 +138,9 @@ jobs:
           (original translation commits + what the enhancement generator consumed).
           EOF
           )" \
-              --base main \
+              --base LIVE \
               --head "${BRANCH}"
           fi
+
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

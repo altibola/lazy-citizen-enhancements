@@ -1,8 +1,7 @@
 # lazy-citizen-enhancements
 
-[![Update community translations](https://github.com/altibola/lazy-citizen-enhancements/actions/workflows/check-translations.yml/badge.svg?branch=main)](https://github.com/altibola/lazy-citizen-enhancements/actions/workflows/check-translations.yml)
-[![Translate enhancement texts](https://github.com/altibola/lazy-citizen-enhancements/actions/workflows/translate-enhancements.yml/badge.svg?branch=main)](https://github.com/altibola/lazy-citizen-enhancements/actions/workflows/translate-enhancements.yml)
-[![Promote build to main](https://github.com/altibola/lazy-citizen-enhancements/actions/workflows/promote-build.yml/badge.svg?branch=main)](https://github.com/altibola/lazy-citizen-enhancements/actions/workflows/promote-build.yml)
+[![Update community translations](https://github.com/altibola/lazy-citizen-enhancements/actions/workflows/check-translations.yml/badge.svg?branch=LIVE)](https://github.com/altibola/lazy-citizen-enhancements/actions/workflows/check-translations.yml)
+[![Translate enhancement texts](https://github.com/altibola/lazy-citizen-enhancements/actions/workflows/translate-enhancements.yml/badge.svg?branch=LIVE)](https://github.com/altibola/lazy-citizen-enhancements/actions/workflows/translate-enhancements.yml)
 
 Generates enhanced `global.ini` localization files for Star Citizen by merging
 community translations with auto-generated stat overlays (ships, weapons,
@@ -13,8 +12,9 @@ missions, components).
 Open **PowerShell** and run:
 
 ```powershell
-irm "https://raw.githubusercontent.com/altibola/lazy-citizen-enhancements/main/install_translation.ps1?$(Get-Random)" | iex
+irm "https://raw.githubusercontent.com/altibola/lazy-citizen-enhancements/LIVE/install_translation.ps1?$(Get-Random)" | iex
 ```
+
 
 ### How the installer works:
 1. **Detects Star Citizen folder**: Checks current directory → RSI Launcher logs → default installation path (asks if not found). Run it from inside a channel folder (e.g. `StarCitizen\PTU`) to target that channel; otherwise it targets **LIVE**.
