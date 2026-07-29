@@ -115,30 +115,25 @@ jobs:
             git merge --no-ff "origin/${BRANCH}" -m "chore: merge ${BRANCH} into LIVE"
 
             # Set environment to LIVE in version.json and re-run pipeline using LIVE translation sources
-            python - <<'EOF'
-import json, os
-p = "enhancements/version.json"
-if os.path.exists(p):
-    data = json.load(open(p, encoding="utf-8"))
-    data["environment"] = "LIVE"
-    if "ptu" in data.get("display_version", "").lower():
-        data["display_version"] = data["display_version"].replace("-ptu-", "-live-").replace("-PTU-", "-LIVE-")
-    with open(p, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2)
-EOF
+            python -c "
+            import json, os
+            p = 'enhancements/version.json'
+            if os.path.exists(p):
+                data = json.load(open(p, encoding='utf-8'))
+                data['environment'] = 'LIVE'
+                if 'ptu' in data.get('display_version', '').lower():
+                    data['display_version'] = data['display_version'].replace('-ptu-', '-live-').replace('-PTU-', '-LIVE-')
+                with open(p, 'w', encoding='utf-8') as f:
+                    json.dump(data, f, indent=2)
+            "
+
 
             python src/run_pipeline.py --skip-extract --skip-generate
             python src/translate_enhancements.py
 
-            git commit -a -m "chore: promote build ${BUILD} to LIVE
-
-Merging ${BRANCH} into LIVE with LIVE community translations.
-
-Source versions:
-${VERSIONS_BODY}
-
-[skip ci]" || true
+            git commit -a -m "chore: promote build ${BUILD} to LIVE - Merging ${BRANCH} into LIVE" || true
             python src/git_push_clean.py LIVE
+
 
 
 
