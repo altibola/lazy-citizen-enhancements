@@ -26,9 +26,10 @@ LANGUAGE_GITHUB_INFO: dict[str, dict] = {
         "owner": "Thord82",
         "repo":  "Star_citizen_ES",
         "branch": "main",
-        "branches": {"LIVE": "main", "PTU": "ptu", "EPTU": "ptu"},
+        "branches": {"LIVE": "main", "PTU": "main", "EPTU": "main"},
         "path": "global.ini",
     },
+
     "portuguese_br": {
         "owner": "danielgmota",
         "repo":  "StarCitizen-Localization",
