@@ -3,19 +3,19 @@
   "untranslated": [
     {
       "term": "Trusted Associate:",
-      "occurrences": 12
-    },
-    {
-      "term": "Associate:",
-      "occurrences": 7
+      "occurrences": 10
     },
     {
       "term": "Ace Pilot:",
       "occurrences": 6
     },
     {
-      "term": "Prospective Associate:",
+      "term": "Associate:",
       "occurrences": 5
+    },
+    {
+      "term": "Prospective Associate:",
+      "occurrences": 3
     }
   ]
 }

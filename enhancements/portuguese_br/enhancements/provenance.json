@@ -1,46 +1,46 @@
 {
-  "build": "12326004",
+  "build": "12519617",
   "language": "portuguese_br",
-  "generated_at": "2026-07-29T00:33:43",
+  "generated_at": "2026-08-26T16:10:26",
   "inputs": {
     "base_en.ini": {
-      "sha256": "e5574df1178a980c4b8cfa1fb812d813b527cbc65bc613631eb0abbfecbdd1a5",
-      "path": "/home/runner/work/lazy-citizen-enhancements/lazy-citizen-enhancements/enhancements/base_en.ini"
+      "sha256": "7df68893f0ec8564d9e123024cf06c6c731dd7acc36b528c7caa06104ad74e11",
+      "path": "D:\\starcitizen\\projects\\lce\\lazy-citizen-enhancements\\enhancements\\base_en.ini"
     },
     "base.ini": {
       "url": "https://raw.githubusercontent.com/danielgmota/StarCitizen-Localization/develop/data/Localization/portuguese_(brazil)/global.ini",
-      "sha256": "1e041b64b219ef5dde93cddcdc144ef9726796362b589ef05cf3c3d60fbc05b3",
+      "sha256": "15ad48c1721b2680a28ade50fafee859bea1a849bc381785d709703da902b4d7",
       "owner": "danielgmota",
       "repo": "StarCitizen-Localization",
       "branch": "develop",
-      "commit": "c5c4dde58572c321dedfed356b550970bd83670f",
-      "permalink": "https://github.com/danielgmota/StarCitizen-Localization/blob/c5c4dde58572c321dedfed356b550970bd83670f/data/Localization/portuguese_(brazil)/global.ini"
+      "commit": "6719290e48f80868f7aeb75c771a2e8f8b5f4b1f",
+      "permalink": "https://github.com/danielgmota/StarCitizen-Localization/blob/6719290e48f80868f7aeb75c771a2e8f8b5f4b1f/data/Localization/portuguese_(brazil)/global.ini"
     }
   },
   "outputs": {
     "ships_desc_enhancements.ini": {
-      "sha256": "97d339e9e9da1eb096b38e0b0c71e39e7ff75e668887155889deed2c19a3d60d"
+      "sha256": "2c684a8d391242cc96d0183e8460e9f99ed71134c4d85e49f411c3af11d7c250"
     },
     "components_desc_enhancements.ini": {
-      "sha256": "306de45796b2668a87f1d19a3e6f86d3ac9d16fe5c721eea61524569a9524d93"
+      "sha256": "ca48007bce00bf4217aab75e7c500409697de623a85f93ff6618eae1d8bd17f3"
     },
     "ship_weapons_desc_enhancements.ini": {
-      "sha256": "018aab7556d2770a2409d2bc1075cd5037e08fef2c6999ea34fe9713f48c30b1"
+      "sha256": "6b270e791c5bdc940948399ac1e88ca51279d35b41fec5672134b4f294049f5f"
     },
     "fps_weapons_desc_enhancements.ini": {
-      "sha256": "e4c55596af08b51e3e4e72723e987695eb0a356786860b6c3b05213946628998"
+      "sha256": "52e19561df6e1da32c60ba6e01bd205b49fc31f8f9edd30e8d1955b18df88cb9"
     },
     "mission_rewards_enhancements.ini": {
-      "sha256": "9395a891654c5dda306aa2085b06fa01aa3e9a355ba34e487e50390e08aa554b"
+      "sha256": "7ff42d614109198b380db8ec9e802ad8c976e3d12aa47918d84b9608ec0cd53b"
     },
     "journal_enhancements.ini": {
-      "sha256": "7c22778436dd5d2f5ca11c1281c015e112081ee0e8cfac065d0030a8215955aa"
+      "sha256": "61bc278430af3ff3f01668d5dd90e3d8d2c3dcff9bc3cf09858a84f0f799ab8b"
     },
     "missile_enhancements.ini": {
       "sha256": "adf2f7df7e3265acee672d5a26aae746d1c5eb13a6f50375acafe89184549979"
     },
     "global.ini": {
-      "sha256": "90cecfa67ce555cefd7c39a7bb9f28cdc3a052998cf07b54a539d6e7a0e8fa2c"
+      "sha256": "d8ae92454f93572b68091a99f29c50e767032455db1430b91dc92d1f6220a147"
     }
   }
 }
