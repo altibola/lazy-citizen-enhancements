@@ -1,7 +1,7 @@
 {
   "build": "12519617",
   "language": "italian",
-  "generated_at": "2026-08-26T16:10:16",
+  "generated_at": "2026-08-27T19:25:15",
   "inputs": {
     "base_en.ini": {
       "sha256": "7df68893f0ec8564d9e123024cf06c6c731dd7acc36b528c7caa06104ad74e11",
@@ -9,29 +9,29 @@
     },
     "base.ini": {
       "url": "https://raw.githubusercontent.com/Dymerz/StarCitizen-Localization/main/data/Localization/italian_(italy)/global.ini",
-      "sha256": "8495be5633c756f77bffc7a27a18b18c3c85b9c24d7bb84f0ac4684ca79e716d",
+      "sha256": "27342c0f6e6205a750e87d2f4cbedc38946d9e7cb9c9fe64dfbe46fc5cacb3af",
       "owner": "Dymerz",
       "repo": "StarCitizen-Localization",
       "branch": "main",
-      "commit": "1046f3de3db15f6d06a7183f27b9ed8763e54c1c",
-      "permalink": "https://github.com/Dymerz/StarCitizen-Localization/blob/1046f3de3db15f6d06a7183f27b9ed8763e54c1c/data/Localization/italian_(italy)/global.ini"
+      "commit": "03b991854888648068ab2e63038d9f79feb5f9d6",
+      "permalink": "https://github.com/Dymerz/StarCitizen-Localization/blob/03b991854888648068ab2e63038d9f79feb5f9d6/data/Localization/italian_(italy)/global.ini"
     }
   },
   "outputs": {
     "ships_desc_enhancements.ini": {
-      "sha256": "13a0c61c5e53956360f90fdcd76909965e806d1f20a2ee96e6bab2f4aa22b449"
+      "sha256": "c984a27f9ec29f370977bad43cb5772cb0fbef54633d256f4442d14237ddeebd"
     },
     "components_desc_enhancements.ini": {
       "sha256": "3b3a6d29d9be490148319f018a8be8fa7223e51fde978761ac6a97ee737a2a53"
     },
     "ship_weapons_desc_enhancements.ini": {
-      "sha256": "adc164bfffe66202cbc7a8ecc67d1f81ac835e197ada0e3939fd5728150ebf11"
+      "sha256": "77b9ecd8578d5c40c9b7203681f973ae4824ebe9091655aca23eb3c07d855971"
     },
     "fps_weapons_desc_enhancements.ini": {
-      "sha256": "9bc39b0d356d3e10330dce1821e2238b76540b1a5cfbc5b4e543f97cb8160ce5"
+      "sha256": "9af1ff49ed9fae3a072c1f3d7239171f5e1d3ac813a5102e73933ccd5dc53830"
     },
     "mission_rewards_enhancements.ini": {
-      "sha256": "1367d9975bf1cb76eb5233aa726afc73bf86de9d6a21b1d404635fbfafcb365a"
+      "sha256": "28079ff7c4b76cbdc66ac8fa0d977c817a4e84b8ec23f8c23ba5c8cc36254a5d"
     },
     "journal_enhancements.ini": {
       "sha256": "6bf780ca05b15c2a426e4a9cd8b5cc024f8504c617713a1bcab99879845769ac"
@@ -40,7 +40,7 @@
       "sha256": "c257cdbff5dc88732601d7a0901d4a5ae0678c08113af15868aa7faceb606364"
     },
     "global.ini": {
-      "sha256": "f4bcb87701e59c526875422a9c71dcb08f050fa498740d46e1e08123e84c089a"
+      "sha256": "11c33e463214cf6cbe499472915033532ff5fa0ab276acb8818e9a77c01274eb"
     }
   }
 }
