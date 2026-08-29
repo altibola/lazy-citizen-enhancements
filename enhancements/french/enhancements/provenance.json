@@ -1,20 +1,20 @@
 {
   "build": "12519617",
   "language": "french",
-  "generated_at": "2026-08-27T19:25:03",
+  "generated_at": "2026-08-29T12:53:39",
   "inputs": {
     "base_en.ini": {
       "sha256": "7df68893f0ec8564d9e123024cf06c6c731dd7acc36b528c7caa06104ad74e11",
-      "path": "D:\\starcitizen\\projects\\lce\\lazy-citizen-enhancements\\enhancements\\base_en.ini"
+      "path": "/home/runner/work/lazy-citizen-enhancements/lazy-citizen-enhancements/enhancements/base_en.ini"
     },
     "base.ini": {
       "url": "https://raw.githubusercontent.com/Dymerz/StarCitizen-Localization/main/data/Localization/french_(france)/global.ini",
-      "sha256": "524ad3b65be5ed7ab5a47f730c594423eb0b9551c999b79e28ab8e37747b934f",
+      "sha256": "971511777619a54c39103b51a1bac2a12b970ccf1e32f4435c303b4da6d537fa",
       "owner": "Dymerz",
       "repo": "StarCitizen-Localization",
       "branch": "main",
-      "commit": "03b991854888648068ab2e63038d9f79feb5f9d6",
-      "permalink": "https://github.com/Dymerz/StarCitizen-Localization/blob/03b991854888648068ab2e63038d9f79feb5f9d6/data/Localization/french_(france)/global.ini"
+      "commit": "9be3c164b0e92be230f607ab1b1b1e60f11ebd21",
+      "permalink": "https://github.com/Dymerz/StarCitizen-Localization/blob/9be3c164b0e92be230f607ab1b1b1e60f11ebd21/data/Localization/french_(france)/global.ini"
     }
   },
   "outputs": {
@@ -40,7 +40,7 @@
       "sha256": "92578891f83112f97a8f0ef38d400f9d93a1da388fe6a49012468ac5e54e451b"
     },
     "global.ini": {
-      "sha256": "e8d6e4ed934b8d2ac4da9198f46477253a425e7fde72e12c8ba2850ace1d4d09"
+      "sha256": "bb57ddf8694ea2b8cf421a3c40cbf3c2cadb8431198234d2a9eeac08e9c858e7"
     }
   }
 }

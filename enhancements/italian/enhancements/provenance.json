@@ -1,11 +1,11 @@
 {
   "build": "12519617",
   "language": "italian",
-  "generated_at": "2026-08-27T19:25:15",
+  "generated_at": "2026-08-29T12:53:40",
   "inputs": {
     "base_en.ini": {
       "sha256": "7df68893f0ec8564d9e123024cf06c6c731dd7acc36b528c7caa06104ad74e11",
-      "path": "D:\\starcitizen\\projects\\lce\\lazy-citizen-enhancements\\enhancements\\base_en.ini"
+      "path": "/home/runner/work/lazy-citizen-enhancements/lazy-citizen-enhancements/enhancements/base_en.ini"
     },
     "base.ini": {
       "url": "https://raw.githubusercontent.com/Dymerz/StarCitizen-Localization/main/data/Localization/italian_(italy)/global.ini",
@@ -13,8 +13,8 @@
       "owner": "Dymerz",
       "repo": "StarCitizen-Localization",
       "branch": "main",
-      "commit": "03b991854888648068ab2e63038d9f79feb5f9d6",
-      "permalink": "https://github.com/Dymerz/StarCitizen-Localization/blob/03b991854888648068ab2e63038d9f79feb5f9d6/data/Localization/italian_(italy)/global.ini"
+      "commit": "9be3c164b0e92be230f607ab1b1b1e60f11ebd21",
+      "permalink": "https://github.com/Dymerz/StarCitizen-Localization/blob/9be3c164b0e92be230f607ab1b1b1e60f11ebd21/data/Localization/italian_(italy)/global.ini"
     }
   },
   "outputs": {
