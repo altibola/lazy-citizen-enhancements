@@ -1,6 +1,7 @@
 # lazy-citizen-enhancements
 
 [![Update community translations](https://github.com/altibola/lazy-citizen-enhancements/actions/workflows/check-translations.yml/badge.svg?branch=LIVE)](https://github.com/altibola/lazy-citizen-enhancements/actions/workflows/check-translations.yml)
+[![Last Updated](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Frepos%2Faltibola%2Flazy-citizen-enhancements%2Factions%2Fworkflows%2Fcheck-translations.yml%2Fruns%3Fper_page%3D1&query=%24.workflow_runs%5B0%5D.updated_at&label=last%20updated&color=blue)](https://github.com/altibola/lazy-citizen-enhancements/actions/workflows/check-translations.yml)
 [![Translate enhancement texts](https://github.com/altibola/lazy-citizen-enhancements/actions/workflows/translate-enhancements.yml/badge.svg?branch=LIVE)](https://github.com/altibola/lazy-citizen-enhancements/actions/workflows/translate-enhancements.yml)
 
 Generates enhanced `global.ini` localization files for Star Citizen by merging
@@ -30,7 +31,7 @@ irm "https://raw.githubusercontent.com/altibola/lazy-citizen-enhancements/LIVE/i
 
 <!-- VERSION-STATUS:START -->
 
-_Last verified: **2026-08-29 12:53 UTC** — refreshed automatically every 15 minutes by the **Update community translations** workflow._
+_Last updated: **2026-08-29 12:53 UTC** — refreshed automatically every 15 minutes by the **Update community translations** workflow._
 
 | Source | Pinned (this repo) | Upstream HEAD | Status |
 |---|---|---|---|

@@ -212,7 +212,8 @@ def main() -> int:
 
 
     write_step_summary(rows, environment)
-    update_readme_status(rows, environment)
+    if changed_langs:
+        update_readme_status(rows, environment)
 
 
     print()
