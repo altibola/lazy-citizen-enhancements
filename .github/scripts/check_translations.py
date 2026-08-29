@@ -156,8 +156,9 @@ def update_readme_status(rows: list[tuple[str, str, str, str]], environment: str
             info = lang_sources.github_info(lang, environment) or {}
             owner, repo, branch = info.get("owner", ""), info.get("repo", ""), info.get("branch", "")
             base = f"https://github.com/{owner}/{repo}" if owner and repo else ""
+            repo_link = f"[`{owner}/{repo}@{branch}`]({base}/tree/{branch})" if base and branch else (f"[`{owner}/{repo}`]({base})" if base else "")
             vr_rows.append({
-                "label": f"{lang} — `{owner}/{repo}@{branch}`" if owner else lang,
+                "label": f"{lang} — {repo_link}" if repo_link else lang,
                 "stored": stored_sha,
                 "current": current_sha,
                 "status": _STATUS_LABELS.get(status[:1], status),

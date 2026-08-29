@@ -163,11 +163,12 @@ def build_status_section(rows: list[dict] | None = None,
             gh = {}
         for lang, sha in sorted(version.get("translations", {}).items()):
             info = gh.get(lang, {})
-            url = (f"https://github.com/{info['owner']}/{info['repo']}/commit/{sha}"
-                   if info else "")
+            owner, repo, branch = info.get("owner", ""), info.get("repo", ""), info.get("branch", "")
+            base = f"https://github.com/{owner}/{repo}" if owner and repo else ""
+            repo_link = f"[`{owner}/{repo}@{branch}`]({base}/tree/{branch})" if base and branch else (f"[`{owner}/{repo}`]({base})" if base else "")
+            url = f"{base}/commit/{sha}" if base and sha else ""
             rows.append({
-                "label": (f"{lang} — `{info['owner']}/{info['repo']}@{info['branch']}`"
-                          if info else lang),
+                "label": (f"{lang} — {repo_link}" if repo_link else lang),
                 "stored": sha, "current": sha,
                 "status": "✅ up to date (pinned at build)", "url": url,
             })

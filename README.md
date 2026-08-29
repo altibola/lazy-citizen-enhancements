@@ -4,11 +4,9 @@
 [![Last Updated](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Frepos%2Faltibola%2Flazy-citizen-enhancements%2Factions%2Fworkflows%2Fcheck-translations.yml%2Fruns%3Fper_page%3D1&query=%24.workflow_runs%5B0%5D.updated_at&label=last%20updated&color=blue)](https://github.com/altibola/lazy-citizen-enhancements/actions/workflows/check-translations.yml)
 [![Translate enhancement texts](https://github.com/altibola/lazy-citizen-enhancements/actions/workflows/translate-enhancements.yml/badge.svg?branch=LIVE)](https://github.com/altibola/lazy-citizen-enhancements/actions/workflows/translate-enhancements.yml)
 
-Generates enhanced `global.ini` localization files for Star Citizen by merging
-community translations with auto-generated stat overlays (ships, weapons,
-missions, components).
+This project is provided as a **community convenience service**. It uses [Smart Citizen](https://github.com/Osiris-DevWorks/smart-citizen) to generate game enhancements (stat overlays for ships, weapons, components, contracts) and merge them with community-maintained translations into ready-to-use `global.ini` localization files for Star Citizen.
 
-> ⏱️ **Automatic Updates**: This repository is automatically updated every **15 minutes** from upstream community translations.
+> ⏱️ **Automatic Updates**: This repository is automatically updated every **15 minutes** from upstream community translations. See the [Version status](#version-status) section below for supported languages, source repositories, and current commits.
 
 ## Quickstart (players)
 
@@ -36,11 +34,11 @@ _Last updated: **2026-08-29 12:53 UTC** — refreshed automatically every 15 min
 | Source | Pinned (this repo) | Upstream HEAD | Status |
 |---|---|---|---|
 | Game build (P4CL) | `4.10.0-live-12519617` <br/> `(P4CL: 12519617)` | — | — |
-| french — `Dymerz/StarCitizen-Localization@main` | [`9be3c16`](https://github.com/Dymerz/StarCitizen-Localization/commit/9be3c164b0e92be230f607ab1b1b1e60f11ebd21) | `9be3c16` | ✅ up to date (pinned at build) |
-| italian — `Dymerz/StarCitizen-Localization@main` | [`9be3c16`](https://github.com/Dymerz/StarCitizen-Localization/commit/9be3c164b0e92be230f607ab1b1b1e60f11ebd21) | `9be3c16` | ✅ up to date (pinned at build) |
-| portuguese_br — `danielgmota/StarCitizen-Localization@develop` | [`3d9363e`](https://github.com/danielgmota/StarCitizen-Localization/commit/3d9363ec2c58a75707e3cf3be8e95b7196c3ed39) | `3d9363e` | ✅ up to date (pinned at build) |
-| portuguese_br_dymerz — `Dymerz/StarCitizen-Localization@main` | [`9be3c16`](https://github.com/Dymerz/StarCitizen-Localization/commit/9be3c164b0e92be230f607ab1b1b1e60f11ebd21) | `9be3c16` | ✅ up to date (pinned at build) |
-| spanish — `Thord82/Star_citizen_ES@main` | [`56d99dc`](https://github.com/Thord82/Star_citizen_ES/commit/56d99dc9c8e75e20d6291419c742aa7d0d1c61ca) | `56d99dc` | ✅ up to date (pinned at build) |
+| french — [`Dymerz/StarCitizen-Localization@main`](https://github.com/Dymerz/StarCitizen-Localization/tree/main) | [`9be3c16`](https://github.com/Dymerz/StarCitizen-Localization/commit/9be3c164b0e92be230f607ab1b1b1e60f11ebd21) | `9be3c16` | ✅ up to date (pinned at build) |
+| italian — [`Dymerz/StarCitizen-Localization@main`](https://github.com/Dymerz/StarCitizen-Localization/tree/main) | [`9be3c16`](https://github.com/Dymerz/StarCitizen-Localization/commit/9be3c164b0e92be230f607ab1b1b1e60f11ebd21) | `9be3c16` | ✅ up to date (pinned at build) |
+| portuguese_br — [`danielgmota/StarCitizen-Localization@develop`](https://github.com/danielgmota/StarCitizen-Localization/tree/develop) | [`3d9363e`](https://github.com/danielgmota/StarCitizen-Localization/commit/3d9363ec2c58a75707e3cf3be8e95b7196c3ed39) | `3d9363e` | ✅ up to date (pinned at build) |
+| portuguese_br_dymerz — [`Dymerz/StarCitizen-Localization@main`](https://github.com/Dymerz/StarCitizen-Localization/tree/main) | [`9be3c16`](https://github.com/Dymerz/StarCitizen-Localization/commit/9be3c164b0e92be230f607ab1b1b1e60f11ebd21) | `9be3c16` | ✅ up to date (pinned at build) |
+| spanish — [`Thord82/Star_citizen_ES@main`](https://github.com/Thord82/Star_citizen_ES/tree/main) | [`56d99dc`](https://github.com/Thord82/Star_citizen_ES/commit/56d99dc9c8e75e20d6291419c742aa7d0d1c61ca) | `56d99dc` | ✅ up to date (pinned at build) |
 
 <!-- VERSION-STATUS:END -->
 
