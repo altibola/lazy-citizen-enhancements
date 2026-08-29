@@ -30,15 +30,15 @@ irm "https://raw.githubusercontent.com/altibola/lazy-citizen-enhancements/LIVE/i
 
 <!-- VERSION-STATUS:START -->
 
-_Last verified: **2026-08-27 22:25 UTC** — refreshed automatically every 15 minutes by the **Update community translations** workflow._
+_Last verified: **2026-08-29 12:53 UTC** — refreshed automatically every 15 minutes by the **Update community translations** workflow._
 
 | Source | Pinned (this repo) | Upstream HEAD | Status |
 |---|---|---|---|
 | Game build (P4CL) | `4.10.0-live-12519617` <br/> `(P4CL: 12519617)` | — | — |
-| french — `Dymerz/StarCitizen-Localization@main` | [`03b9918`](https://github.com/Dymerz/StarCitizen-Localization/commit/03b991854888648068ab2e63038d9f79feb5f9d6) | `03b9918` | ✅ up to date (pinned at build) |
-| italian — `Dymerz/StarCitizen-Localization@main` | [`03b9918`](https://github.com/Dymerz/StarCitizen-Localization/commit/03b991854888648068ab2e63038d9f79feb5f9d6) | `03b9918` | ✅ up to date (pinned at build) |
+| french — `Dymerz/StarCitizen-Localization@main` | [`9be3c16`](https://github.com/Dymerz/StarCitizen-Localization/commit/9be3c164b0e92be230f607ab1b1b1e60f11ebd21) | `9be3c16` | ✅ up to date (pinned at build) |
+| italian — `Dymerz/StarCitizen-Localization@main` | [`9be3c16`](https://github.com/Dymerz/StarCitizen-Localization/commit/9be3c164b0e92be230f607ab1b1b1e60f11ebd21) | `9be3c16` | ✅ up to date (pinned at build) |
 | portuguese_br — `danielgmota/StarCitizen-Localization@develop` | [`3d9363e`](https://github.com/danielgmota/StarCitizen-Localization/commit/3d9363ec2c58a75707e3cf3be8e95b7196c3ed39) | `3d9363e` | ✅ up to date (pinned at build) |
-| portuguese_br_dymerz — `Dymerz/StarCitizen-Localization@main` | [`03b9918`](https://github.com/Dymerz/StarCitizen-Localization/commit/03b991854888648068ab2e63038d9f79feb5f9d6) | `03b9918` | ✅ up to date (pinned at build) |
+| portuguese_br_dymerz — `Dymerz/StarCitizen-Localization@main` | [`9be3c16`](https://github.com/Dymerz/StarCitizen-Localization/commit/9be3c164b0e92be230f607ab1b1b1e60f11ebd21) | `9be3c16` | ✅ up to date (pinned at build) |
 | spanish — `Thord82/Star_citizen_ES@main` | [`56d99dc`](https://github.com/Thord82/Star_citizen_ES/commit/56d99dc9c8e75e20d6291419c742aa7d0d1c61ca) | `56d99dc` | ✅ up to date (pinned at build) |
 
 <!-- VERSION-STATUS:END -->
