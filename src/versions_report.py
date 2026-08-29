@@ -175,8 +175,8 @@ def build_status_section(rows: list[dict] | None = None,
     lines: list[str] = []
     lines.append(STATUS_START)
     lines.append("")
-    lines.append(f"_Last verified: **{checked_at}** — refreshed automatically by "
-                 "the pipeline and the **Update community translations** workflow._")
+    lines.append(f"_Last verified: **{checked_at}** — refreshed automatically every 15 minutes by "
+                 "the **Update community translations** workflow._")
     lines.append("")
     lines.append("| Source | Pinned (this repo) | Upstream HEAD | Status |")
     lines.append("|---|---|---|---|")

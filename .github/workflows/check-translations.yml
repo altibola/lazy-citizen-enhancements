@@ -1,6 +1,11 @@
 name: Update community translations
 
-# ON-DEMAND ONLY (workflow_dispatch) — no schedule for now.
+# Automated Schedule:
+#   - Every 15 minutes: Checks upstream community translations for new commits
+#     and only re-runs the pipeline if updates were found (force=false).
+#
+# Manual trigger (workflow_dispatch):
+#   - Allows specifying target branch and force flag manually.
 #
 # Checks the upstream community-translation repos for new commits and, when
 # something changed (or force=true), re-runs the merge pipeline
@@ -16,6 +21,9 @@ name: Update community translations
 #   - Commit message: per-language old → new commit SHAs.
 
 on:
+  schedule:
+    # Check every 15 minutes (runs with force=false)
+    - cron: '*/15 * * * *'
   workflow_dispatch:
     inputs:
       branch:

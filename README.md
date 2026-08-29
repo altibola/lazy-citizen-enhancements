@@ -7,6 +7,8 @@ Generates enhanced `global.ini` localization files for Star Citizen by merging
 community translations with auto-generated stat overlays (ships, weapons,
 missions, components).
 
+> ⏱️ **Automatic Updates**: This repository is automatically updated every **15 minutes** from upstream community translations.
+
 ## Quickstart (players)
 
 Open **PowerShell** and run:
@@ -28,7 +30,7 @@ irm "https://raw.githubusercontent.com/altibola/lazy-citizen-enhancements/LIVE/i
 
 <!-- VERSION-STATUS:START -->
 
-_Last verified: **2026-08-27 22:25 UTC** — refreshed automatically by the pipeline and the **Update community translations** workflow._
+_Last verified: **2026-08-27 22:25 UTC** — refreshed automatically every 15 minutes by the **Update community translations** workflow._
 
 | Source | Pinned (this repo) | Upstream HEAD | Status |
 |---|---|---|---|
@@ -120,17 +122,17 @@ The **Download build (hosted)** workflow authenticates against the RSI CDN and d
 
 ### 3. Translation refresh (CI — without game files)
 
-When a community translation is updated upstream, the **Update community translations** workflow re-runs only the download + merge (`--skip-extract --skip-generate`), re-using the `*_enhancements.ini` files already present in the branch. If nothing changed, it commits nothing.
+Scheduled automatically every 15 minutes (and can also be triggered on-demand). When a community translation is updated upstream, the **Update community translations** workflow re-runs only the download + merge (`--skip-extract --skip-generate`), re-using the `*_enhancements.ini` files already present in the branch. If nothing changed, it commits nothing.
 
 When a PTU build becomes LIVE, the **Promote build to LIVE** workflow merges the `build/{p4cl}` branch into `LIVE`.
 
-## Workflows (all on-demand — `workflow_dispatch`)
+## Workflows
 
 | Workflow | Description | When to use |
 |---|---|---|
 | **Build from local extraction** | Downloads community translations and opens PR; reuses locally committed `enhancements/`. | After `./src/runall.sh` + push |
 | **Download build (hosted)** | Full pipeline on a GitHub runner via RSI CDN. Requires `RSI_USERNAME`/`RSI_PASSWORD` in Secrets. | New patch, no local installation |
-| **Update community translations** | Checks if upstream translations changed; re-merges and commits when updated. | Translation updates |
+| **Update community translations** | Checks upstream community translations every 15 minutes; re-merges and commits when updated. | Automated (every 15 min) or on-demand |
 | **Translate enhancement texts** | Applies glossaries and rebuilds `*_all*` variants. | After editing glossaries |
 | **Promote build to LIVE** | Opens PR (or auto-merges) `build/{p4cl}` → `LIVE` when build goes LIVE. | PTU → LIVE |
 
