@@ -4,7 +4,7 @@
 [![Last Updated](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.github.com%2Frepos%2Faltibola%2Flazy-citizen-enhancements%2Factions%2Fworkflows%2Fcheck-translations.yml%2Fruns%3Fper_page%3D1&query=%24.workflow_runs%5B0%5D.updated_at&label=last%20updated&color=blue)](https://github.com/altibola/lazy-citizen-enhancements/actions/workflows/check-translations.yml)
 [![Translate enhancement texts](https://github.com/altibola/lazy-citizen-enhancements/actions/workflows/translate-enhancements.yml/badge.svg?branch=LIVE)](https://github.com/altibola/lazy-citizen-enhancements/actions/workflows/translate-enhancements.yml)
 
-This project is provided as a **community convenience service**. It uses [Smart Citizen](https://github.com/Osiris-DevWorks/smart-citizen) to generate game enhancements (stat overlays for ships, weapons, components, contracts) and merge them with community-maintained translations into ready-to-use `global.ini` localization files for Star Citizen.
+This project is provided as a **community convenience service**. It uses [Smart Citizen](https://github.com/Osiris-DevWorks/smart-citizen) to generate game enhancements (stat overlays for ships, weapons, components, contracts) and merge them with [community-maintained translations](#version-status) into ready-to-use `global.ini` localization files for Star Citizen.
 
 > ⏱️ **Automatic Updates**: This repository is automatically updated every **15 minutes** from upstream community translations. See the [Version status](#version-status) section below for supported languages, source repositories, and current commits.
 
