@@ -1,11 +1,11 @@
 {
-  "build": "12519617",
+  "build": "12572603",
   "language": "french",
-  "generated_at": "2026-09-08T21:42:21",
+  "generated_at": "2026-09-09T16:40:16",
   "inputs": {
     "base_en.ini": {
       "sha256": "7df68893f0ec8564d9e123024cf06c6c731dd7acc36b528c7caa06104ad74e11",
-      "path": "/home/runner/work/lazy-citizen-enhancements/lazy-citizen-enhancements/enhancements/base_en.ini"
+      "path": "D:\\starcitizen\\projects\\lce\\lazy-citizen-enhancements\\enhancements\\base_en.ini"
     },
     "base.ini": {
       "url": "https://raw.githubusercontent.com/Dymerz/StarCitizen-Localization/main/data/Localization/french_(france)/global.ini",
@@ -19,28 +19,28 @@
   },
   "outputs": {
     "ships_desc_enhancements.ini": {
-      "sha256": "1e95056b7bd3a288fd04b73ce65d6a2006b976256403a34cf209b9d5c17e27c6"
+      "sha256": "be227732f569849816673c3f6e361d4fd7d970ea9a60f1d471757ba8ac5b5fcb"
     },
     "components_desc_enhancements.ini": {
-      "sha256": "0f00b06c9e2faf9d261bdf6a8e2e3a0de4c28eabf7273db0851e14abd3bf6bfd"
+      "sha256": "151aa481ab6218587da72b3ba401d9c9a00bd6e4b84296babcc373399bb7c1b5"
     },
     "ship_weapons_desc_enhancements.ini": {
-      "sha256": "2a9de1cdcaccb6197b3398382dbae50fa2ee28ebce5e80ab79c938586495d74c"
+      "sha256": "aa46b0d30191d2697603b276de03378999c4d5fdfab85be54ff30c776a0f83eb"
     },
     "fps_weapons_desc_enhancements.ini": {
-      "sha256": "92e38ec6142cb17025245c655c8d47d2964ec7326744482cb291faba74b4b340"
+      "sha256": "de53487c0dde4a0807d204c70ec664007fdc93f1407d56b1ba37034622d5b1c9"
     },
     "mission_rewards_enhancements.ini": {
-      "sha256": "5b9dddc6807788bc972042cbb9fd2dd88b8e125bae935156c6fcf0d343df28b1"
+      "sha256": "f07bfaac8545b4c6be8fd15042551e5e7a0326fff80c6c10592fe41860d280a7"
     },
     "journal_enhancements.ini": {
       "sha256": "4aa41d57e3aaec6cba1f2343c1aed25c029a69b55083c735a1465d282d0e4966"
     },
     "missile_enhancements.ini": {
-      "sha256": "92578891f83112f97a8f0ef38d400f9d93a1da388fe6a49012468ac5e54e451b"
+      "sha256": "ca14ab706222763feec4811b62025468d8f704b11e46cf323e4e0c6763de3877"
     },
     "global.ini": {
-      "sha256": "bb57ddf8694ea2b8cf421a3c40cbf3c2cadb8431198234d2a9eeac08e9c858e7"
+      "sha256": "9b8ae32671e4cf40d5ae7b44475d8e44dd09756d4cfc3f1bbf1506872b818a38"
     }
   }
 }

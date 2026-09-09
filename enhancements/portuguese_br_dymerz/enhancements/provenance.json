@@ -1,11 +1,11 @@
 {
-  "build": "12519617",
+  "build": "12572603",
   "language": "portuguese_br_dymerz",
-  "generated_at": "2026-09-08T21:42:24",
+  "generated_at": "2026-09-09T16:40:49",
   "inputs": {
     "base_en.ini": {
       "sha256": "7df68893f0ec8564d9e123024cf06c6c731dd7acc36b528c7caa06104ad74e11",
-      "path": "/home/runner/work/lazy-citizen-enhancements/lazy-citizen-enhancements/enhancements/base_en.ini"
+      "path": "D:\\starcitizen\\projects\\lce\\lazy-citizen-enhancements\\enhancements\\base_en.ini"
     },
     "base.ini": {
       "url": "https://raw.githubusercontent.com/Dymerz/StarCitizen-Localization/main/data/Localization/portuguese_(brazil)/global.ini",
@@ -31,7 +31,7 @@
       "sha256": "5029fa97070b5516d0448d1b61667f6583983426885479f90509b5947dd695f3"
     },
     "mission_rewards_enhancements.ini": {
-      "sha256": "01c3cedbc0048e92ccfc3cbd9b8f44a8082d75cff67b869b7105b7e6d41ffbc4"
+      "sha256": "38d16a31eb15332e5e4777998a6af5572537f1a1b582ca251811dce25db1a116"
     },
     "journal_enhancements.ini": {
       "sha256": "cced6769255991e5ea4a856b5cd1669f570e477fe272bd5dad7692bee05e133a"
@@ -40,7 +40,7 @@
       "sha256": "0aa69ff1bd4715d18ece779f285ddc8ba71f1cce3259597999719e8df67e4b12"
     },
     "global.ini": {
-      "sha256": "54ce65d360dde7276665316be30de2bdb26524253482166d2bc189b17a432d99"
+      "sha256": "ac4b4d65555194203ff087ac90b290aab1570dafc1d44e001af803af853804da"
     }
   }
 }
