@@ -1,20 +1,20 @@
 {
   "build": "12572603",
   "language": "portuguese_br",
-  "generated_at": "2026-09-09T16:40:38",
+  "generated_at": "2026-09-13T20:52:04",
   "inputs": {
     "base_en.ini": {
       "sha256": "7df68893f0ec8564d9e123024cf06c6c731dd7acc36b528c7caa06104ad74e11",
-      "path": "D:\\starcitizen\\projects\\lce\\lazy-citizen-enhancements\\enhancements\\base_en.ini"
+      "path": "/home/runner/work/lazy-citizen-enhancements/lazy-citizen-enhancements/enhancements/base_en.ini"
     },
     "base.ini": {
       "url": "https://raw.githubusercontent.com/danielgmota/StarCitizen-Localization/develop/data/Localization/portuguese_(brazil)/global.ini",
-      "sha256": "ef70d53c31681cf84f8f493e6d7507dfb3d2bf66423462c712514d491b926128",
+      "sha256": "c154414c5b92f91d389fe4e67f5a22f2d15976809fc2308f29fb12eb614568be",
       "owner": "danielgmota",
       "repo": "StarCitizen-Localization",
       "branch": "develop",
-      "commit": "8690ec96ea91ded1263cbd2193b55484f671362a",
-      "permalink": "https://github.com/danielgmota/StarCitizen-Localization/blob/8690ec96ea91ded1263cbd2193b55484f671362a/data/Localization/portuguese_(brazil)/global.ini"
+      "commit": "f7a77c0196e1ec243b22a41437fb18bcc910b528",
+      "permalink": "https://github.com/danielgmota/StarCitizen-Localization/blob/f7a77c0196e1ec243b22a41437fb18bcc910b528/data/Localization/portuguese_(brazil)/global.ini"
     }
   },
   "outputs": {
@@ -40,7 +40,7 @@
       "sha256": "adf2f7df7e3265acee672d5a26aae746d1c5eb13a6f50375acafe89184549979"
     },
     "global.ini": {
-      "sha256": "c4c1ec323c82f92a79a6744db67c9196813c3c13dba02bd40467e2614381dff1"
+      "sha256": "e54c0d1caf728aebdbf0901aa407d91c396975b0d3723865b31489923dd1b36e"
     }
   }
 }
