@@ -1,33 +1,33 @@
 {
-  "build": "12572603",
+  "build": "12660092",
   "language": "english",
-  "generated_at": "2026-09-14T21:58:31",
+  "generated_at": "2026-09-16T17:41:24",
   "inputs": {
     "base_en.ini": {
-      "sha256": "7df68893f0ec8564d9e123024cf06c6c731dd7acc36b528c7caa06104ad74e11",
-      "path": "/home/runner/work/lazy-citizen-enhancements/lazy-citizen-enhancements/enhancements/base_en.ini"
+      "sha256": "037071e9fc8f402fee87e76b5ca175f4ae7bef5cf443a3a89727db9b139ae2f3",
+      "path": "D:\\starcitizen\\projects\\lce\\lazy-citizen-enhancements\\enhancements\\base_en.ini"
     },
     "base.ini": {
       "origin": "game",
       "description": "English global.ini extracted from the game build (base_en.ini)",
-      "sha256": "7df68893f0ec8564d9e123024cf06c6c731dd7acc36b528c7caa06104ad74e11"
+      "sha256": "037071e9fc8f402fee87e76b5ca175f4ae7bef5cf443a3a89727db9b139ae2f3"
     }
   },
   "outputs": {
     "ships_desc_enhancements.ini": {
-      "sha256": "cff84b55d1072ec236a70ab7804dadfb729f28a6cddbb692fdf9f9e9d6794b4e"
+      "sha256": "b8e884d93c015ec7c96ac35b750bd9a3b04651f31e167e72558a6146e6bff807"
     },
     "components_desc_enhancements.ini": {
       "sha256": "e7210f043986bf43a22042fb19ff6fd338c4cec10fe963abd3ec385a7c5356bc"
     },
     "ship_weapons_desc_enhancements.ini": {
-      "sha256": "3c77f38e674309a052d3fb865a5a5703359f773e3ae82d992f93d8f28e1c114a"
+      "sha256": "c311ad4e8761e92bc57e75096b9c36dfac658471ce71241c5b9254546cf3294a"
     },
     "fps_weapons_desc_enhancements.ini": {
-      "sha256": "b3c4be6d178b56254cfc8fb9cb27044434dc9a37d1a60d1db3720c40528ac989"
+      "sha256": "1b30efc36a8d574abc4180285129f48d2007d331f6d1fb9665b2b5209a530a37"
     },
     "mission_rewards_enhancements.ini": {
-      "sha256": "e36df84d6faa0c8f3035615338ca09833fad59ebdd16d721b31ba02970269228"
+      "sha256": "6575b0788bdc6a73ccf2da6efd82040a580a69be719b49ac68d368bc1cd2f2f0"
     },
     "journal_enhancements.ini": {
       "sha256": "2c8b1844aeac2a2028ee25221eba4938f89a85aced40023ed610a28f773a964c"
@@ -36,7 +36,7 @@
       "sha256": "fa271883a74660b0b571639cbaed5dcb8868461036395a7f2d53f6a067fb58b9"
     },
     "global.ini": {
-      "sha256": "b53a94151114e0b6aed1808d6423540886e2f0e86447f31ce072c8d8d3ea9517"
+      "sha256": "672654e2def2ccb4758372a5dbf516ae1cab9925aa8614c5c0290a4e54431bfb"
     }
   }
 }
