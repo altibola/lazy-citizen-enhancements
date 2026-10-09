@@ -1,11 +1,11 @@
 {
-  "build": "12660092",
+  "build": "12881860",
   "language": "portuguese_br_dymerz",
-  "generated_at": "2026-10-09T18:22:35",
+  "generated_at": "2026-10-09T17:36:32",
   "inputs": {
     "base_en.ini": {
-      "sha256": "037071e9fc8f402fee87e76b5ca175f4ae7bef5cf443a3a89727db9b139ae2f3",
-      "path": "/home/runner/work/lazy-citizen-enhancements/lazy-citizen-enhancements/enhancements/base_en.ini"
+      "sha256": "4d26ad3b0b3364b6abfcee48310b272c46e2e927cc2faf51ae299cc28debda00",
+      "path": "D:\\starcitizen\\projects\\lce\\lazy-citizen-enhancements\\enhancements\\base_en.ini"
     },
     "base.ini": {
       "url": "https://raw.githubusercontent.com/Dymerz/StarCitizen-Localization/main/data/Localization/portuguese_(brazil)/global.ini",
@@ -19,28 +19,28 @@
   },
   "outputs": {
     "ships_desc_enhancements.ini": {
-      "sha256": "76301452df0bf2b50c9784ee297b4fea06ba69dbb06a64d0747336698365e63b"
+      "sha256": "03ab65cd87bfd06561ee15f1c53cb0066c0a456b9a3305de9806887a836a10f6"
     },
     "components_desc_enhancements.ini": {
-      "sha256": "1d116107b38ddf52b6de363a6b8f945e9f8b196cf193e9acf945761d23dd1db0"
+      "sha256": "acbe5867868156bf21d15618ea302a5578e7a9f954072014459c78b7e9b52190"
     },
     "ship_weapons_desc_enhancements.ini": {
       "sha256": "0d9487c92a0db3f382cb690989ff914d8cc0b014ec34882c6cfe315411de7e81"
     },
     "fps_weapons_desc_enhancements.ini": {
-      "sha256": "50602d1ead624dd75886bcd2acdb283f012d46576bad7e36fb3ae0395b0dacc9"
+      "sha256": "92c35631e2b5362cab24eab282623dd9d1d992b9e6d7a276651debfd2180c011"
     },
     "mission_rewards_enhancements.ini": {
-      "sha256": "0382d2dde7fd2fea08ff89dfe60b9a634e346645c42c274bdc44f9ae2e89f049"
+      "sha256": "7a473908eadd75f4abd28feedba191e3d1efa01e3b3181c85e13b1ed2d04077b"
     },
     "journal_enhancements.ini": {
-      "sha256": "cced6769255991e5ea4a856b5cd1669f570e477fe272bd5dad7692bee05e133a"
+      "sha256": "70539522c7fe7dc9956431df26391dc9863fe827cac747bf0a528da41bb60a5c"
     },
     "missile_enhancements.ini": {
       "sha256": "0aa69ff1bd4715d18ece779f285ddc8ba71f1cce3259597999719e8df67e4b12"
     },
     "global.ini": {
-      "sha256": "8d6953129a5b88999de7aea01089284aaef89f2d6ce1a8e9a93437bb3dfd0c77"
+      "sha256": "42cd0c14a1fe15a560544257902c9b38b8f694c5df5577359187026db5a298d4"
     }
   }
 }

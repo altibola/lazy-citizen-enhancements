@@ -1,11 +1,11 @@
 {
-  "build": "12660092",
+  "build": "12881860",
   "language": "portuguese_br",
-  "generated_at": "2026-10-09T18:22:34",
+  "generated_at": "2026-10-09T17:36:18",
   "inputs": {
     "base_en.ini": {
-      "sha256": "037071e9fc8f402fee87e76b5ca175f4ae7bef5cf443a3a89727db9b139ae2f3",
-      "path": "/home/runner/work/lazy-citizen-enhancements/lazy-citizen-enhancements/enhancements/base_en.ini"
+      "sha256": "4d26ad3b0b3364b6abfcee48310b272c46e2e927cc2faf51ae299cc28debda00",
+      "path": "D:\\starcitizen\\projects\\lce\\lazy-citizen-enhancements\\enhancements\\base_en.ini"
     },
     "base.ini": {
       "url": "https://raw.githubusercontent.com/danielgmota/StarCitizen-Localization/develop/data/Localization/portuguese_(brazil)/global.ini",
@@ -19,28 +19,28 @@
   },
   "outputs": {
     "ships_desc_enhancements.ini": {
-      "sha256": "83dcfe05d1f0de4645d1706c1b09d83290d15d43c7b62911eacfe805ecb6c38b"
+      "sha256": "2de1f27d73ec5ed1efce1a78721bcac718ede2971bec3fcac1882f80a27a379b"
     },
     "components_desc_enhancements.ini": {
-      "sha256": "ca48007bce00bf4217aab75e7c500409697de623a85f93ff6618eae1d8bd17f3"
+      "sha256": "168e5122452c98074d06f1d8f629f635ec38a15d5113eeb4fd64b767b7d0fcb7"
     },
     "ship_weapons_desc_enhancements.ini": {
-      "sha256": "bb1c1834cca9ce49c1587959c4074b8a1ec975b947743b83a99080112bf27517"
+      "sha256": "42bf7c11e87ce2ae0e6933d97e44189a0ea3c0cdfa6e16768f92377f5c6e860b"
     },
     "fps_weapons_desc_enhancements.ini": {
-      "sha256": "53f577827b781d99f02c0b8a94b91f4579240756bbee3ed1ef2237f0d1d072b9"
+      "sha256": "d5b2a73bbfc904e8af2ad53a79559e3b5d9ce76d5feeabab365870186fffee3d"
     },
     "mission_rewards_enhancements.ini": {
-      "sha256": "a3c7b4978c67e62add63f52c2c26dd01cb45e12caf30270a5a0897c8ad49a232"
+      "sha256": "8e0b115a7e94efcff2702b4ecd6c878e3dad76e6cc7f891cf30c584ea87744dc"
     },
     "journal_enhancements.ini": {
-      "sha256": "61bc278430af3ff3f01668d5dd90e3d8d2c3dcff9bc3cf09858a84f0f799ab8b"
+      "sha256": "492756b9ba1f4c0311254525c8dac06087b505ac79206771f25e74a706bdd24b"
     },
     "missile_enhancements.ini": {
       "sha256": "adf2f7df7e3265acee672d5a26aae746d1c5eb13a6f50375acafe89184549979"
     },
     "global.ini": {
-      "sha256": "c56c56d5e73012460f3429d424e362916d6ca949c9413d7d487885dc0a28b4fa"
+      "sha256": "4fffc4d094d0bf14761000b3de23bdfcaa6de838cc9682db29792e63a33534af"
     }
   }
 }
