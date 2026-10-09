@@ -3,10 +3,10 @@
   "display_version": "4.10.0-live-12660092",
   "environment": "LIVE",
   "translations": {
-    "french": "67cec292e94aa3f3f9c7f1d8652dd9e7c8a5fb2b",
-    "italian": "67cec292e94aa3f3f9c7f1d8652dd9e7c8a5fb2b",
-    "portuguese_br": "a48475656807df5833da37c03923bce22ef56611",
-    "portuguese_br_dymerz": "67cec292e94aa3f3f9c7f1d8652dd9e7c8a5fb2b",
+    "french": "6cdaef0b5d4636d563f41bf0a519d4f277e3ca04",
+    "italian": "6cdaef0b5d4636d563f41bf0a519d4f277e3ca04",
+    "portuguese_br": "b221d76a6d92cdf711e6077d01c98ce0c06c6465",
+    "portuguese_br_dymerz": "6cdaef0b5d4636d563f41bf0a519d4f277e3ca04",
     "spanish": "56d99dc9c8e75e20d6291419c742aa7d0d1c61ca"
   }
 }
