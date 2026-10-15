@@ -1,7 +1,7 @@
 {
   "build": "12881860",
   "language": "french",
-  "generated_at": "2026-10-14T15:25:13",
+  "generated_at": "2026-10-15T19:19:51",
   "inputs": {
     "base_en.ini": {
       "sha256": "4d26ad3b0b3364b6abfcee48310b272c46e2e927cc2faf51ae299cc28debda00",
@@ -9,12 +9,12 @@
     },
     "base.ini": {
       "url": "https://raw.githubusercontent.com/Dymerz/StarCitizen-Localization/main/data/Localization/french_(france)/global.ini",
-      "sha256": "1fd40938070ea44fcd6e1006b50c90dae993dd6bf3c01b0513ef02003933ccf8",
+      "sha256": "362c3fe8ad1cc1c0ed20396c376690c79e4815959fa927429e278fb13138268a",
       "owner": "Dymerz",
       "repo": "StarCitizen-Localization",
       "branch": "main",
-      "commit": "6cdaef0b5d4636d563f41bf0a519d4f277e3ca04",
-      "permalink": "https://github.com/Dymerz/StarCitizen-Localization/blob/6cdaef0b5d4636d563f41bf0a519d4f277e3ca04/data/Localization/french_(france)/global.ini"
+      "commit": "e475a345a00f537f462be853fa0fe1f3ca32ba08",
+      "permalink": "https://github.com/Dymerz/StarCitizen-Localization/blob/e475a345a00f537f462be853fa0fe1f3ca32ba08/data/Localization/french_(france)/global.ini"
     }
   },
   "outputs": {
@@ -40,7 +40,7 @@
       "sha256": "ca14ab706222763feec4811b62025468d8f704b11e46cf323e4e0c6763de3877"
     },
     "global.ini": {
-      "sha256": "9f93b34f347bbc1d6bde1f3b6c897542aca5d29669209248dde90fdbe8ee26e2"
+      "sha256": "c2bbce99836ad224d061ba09531b6001aeea892f84844e203a5322dfdedcbba4"
     }
   }
 }
