@@ -20,7 +20,7 @@ The unmodified upstream files each language was built from.
 | english | _Star Citizen (game build — `base_en.ini`)_ | — | `4d26ad3b0b3364b6abfcee48310b272c46e2e927cc2faf51ae299cc28debda00` |
 | french | `Dymerz/StarCitizen-Localization@main` | [`7fe0ddb`](https://github.com/Dymerz/StarCitizen-Localization/blob/7fe0ddb61bccf9f88de338d419282fe11e8d5f84/data/Localization/french_(france)/global.ini) | `334107fd9bff04d0c1dbb8ac68d08bfb2e529bb7e712ea208a54916b6bb06950` |
 | italian | `Dymerz/StarCitizen-Localization@main` | [`7fe0ddb`](https://github.com/Dymerz/StarCitizen-Localization/blob/7fe0ddb61bccf9f88de338d419282fe11e8d5f84/data/Localization/italian_(italy)/global.ini) | `fb5ef74c6a4aa77bf79b133f0a04f3f70b4b82a3241cb3f6bec36f3eaa3de765` |
-| portuguese_br | `danielgmota/StarCitizen-Localization@develop` | [`d7ddee2`](https://github.com/danielgmota/StarCitizen-Localization/blob/d7ddee21676fb777a1822b527dbd1f432f2accab/data/Localization/portuguese_(brazil)/global.ini) | `4d50e788551cb00901aef080a3a005a55fb1f108054389983bcbfb1b86077e4f` |
+| portuguese_br | `danielgmota/StarCitizen-Localization@develop` | [`04533f3`](https://github.com/danielgmota/StarCitizen-Localization/blob/04533f3b021f69f42192be8fa7d6090406b27dd3/data/Localization/portuguese_(brazil)/global.ini) | `08c264e5674e7bdb3f22d6d6af2e52d5210f81f880155ef783bcd259ce495b78` |
 | portuguese_br_dymerz | `Dymerz/StarCitizen-Localization@main` | [`7fe0ddb`](https://github.com/Dymerz/StarCitizen-Localization/blob/7fe0ddb61bccf9f88de338d419282fe11e8d5f84/data/Localization/portuguese_(brazil)/global.ini) | `d33ad605f0e0ba645aa3f30f871ce02f985ebcb324de37ff1276721ba16a59ee` |
 | spanish | `Thord82/Star_citizen_ES@main` | [`56d99dc`](https://github.com/Thord82/Star_citizen_ES/blob/56d99dc9c8e75e20d6291419c742aa7d0d1c61ca/global.ini) | `5181b3b49ab5df1d0de35ba6e1960a11b4fe278bc76e91c088dc7b2b9f64a70b` |
 
@@ -30,7 +30,7 @@ What was passed to the generator/merger and what it produced.
 
 ### english
 
-- Generated at: `2026-10-19T14:56:43` (build `12881860`)
+- Generated at: `2026-10-19T23:54:48` (build `12881860`)
 - Input `base_en.ini` (game build): sha256 `4d26ad3b0b3364b6abfcee48310b272c46e2e927cc2faf51ae299cc28debda00`
 - Input `base.ini`: the game's own English base (no community translation) — sha256 `4d26ad3b0b3364b6abfcee48310b272c46e2e927cc2faf51ae299cc28debda00`
 - Outputs (8 files):
@@ -45,7 +45,7 @@ What was passed to the generator/merger and what it produced.
 
 ### french
 
-- Generated at: `2026-10-19T14:56:44` (build `12881860`)
+- Generated at: `2026-10-19T23:54:49` (build `12881860`)
 - Input `base_en.ini` (game build): sha256 `4d26ad3b0b3364b6abfcee48310b272c46e2e927cc2faf51ae299cc28debda00`
 - Input `base.ini` (original translation): `Dymerz/StarCitizen-Localization@7fe0ddb` — sha256 `334107fd9bff04d0c1dbb8ac68d08bfb2e529bb7e712ea208a54916b6bb06950`
 - Outputs (8 files):
@@ -60,7 +60,7 @@ What was passed to the generator/merger and what it produced.
 
 ### italian
 
-- Generated at: `2026-10-19T14:56:45` (build `12881860`)
+- Generated at: `2026-10-19T23:54:50` (build `12881860`)
 - Input `base_en.ini` (game build): sha256 `4d26ad3b0b3364b6abfcee48310b272c46e2e927cc2faf51ae299cc28debda00`
 - Input `base.ini` (original translation): `Dymerz/StarCitizen-Localization@7fe0ddb` — sha256 `fb5ef74c6a4aa77bf79b133f0a04f3f70b4b82a3241cb3f6bec36f3eaa3de765`
 - Outputs (8 files):
@@ -75,13 +75,13 @@ What was passed to the generator/merger and what it produced.
 
 ### portuguese_br
 
-- Generated at: `2026-10-19T14:56:46` (build `12881860`)
+- Generated at: `2026-10-19T23:54:52` (build `12881860`)
 - Input `base_en.ini` (game build): sha256 `4d26ad3b0b3364b6abfcee48310b272c46e2e927cc2faf51ae299cc28debda00`
-- Input `base.ini` (original translation): `danielgmota/StarCitizen-Localization@d7ddee2` — sha256 `4d50e788551cb00901aef080a3a005a55fb1f108054389983bcbfb1b86077e4f`
+- Input `base.ini` (original translation): `danielgmota/StarCitizen-Localization@04533f3` — sha256 `08c264e5674e7bdb3f22d6d6af2e52d5210f81f880155ef783bcd259ce495b78`
 - Outputs (8 files):
   - `components_desc_enhancements.ini` — sha256 `168e5122452c98074d06f1d8f629f635ec38a15d5113eeb4fd64b767b7d0fcb7`
   - `fps_weapons_desc_enhancements.ini` — sha256 `d5b2a73bbfc904e8af2ad53a79559e3b5d9ce76d5feeabab365870186fffee3d`
-  - `global.ini` — sha256 `d1a0bf1c9d3d1c9e1437c6bb09043e826510a19087b0a787fa6beeed42fbb171`
+  - `global.ini` — sha256 `17758539de01236a2e75fc49734ab54029fc42172b7f52c3b7c6323e39a36b5e`
   - `journal_enhancements.ini` — sha256 `492756b9ba1f4c0311254525c8dac06087b505ac79206771f25e74a706bdd24b`
   - `missile_enhancements.ini` — sha256 `adf2f7df7e3265acee672d5a26aae746d1c5eb13a6f50375acafe89184549979`
   - `mission_rewards_enhancements.ini` — sha256 `8e0b115a7e94efcff2702b4ecd6c878e3dad76e6cc7f891cf30c584ea87744dc`
@@ -90,7 +90,7 @@ What was passed to the generator/merger and what it produced.
 
 ### portuguese_br_dymerz
 
-- Generated at: `2026-10-19T14:56:46` (build `12881860`)
+- Generated at: `2026-10-19T23:54:53` (build `12881860`)
 - Input `base_en.ini` (game build): sha256 `4d26ad3b0b3364b6abfcee48310b272c46e2e927cc2faf51ae299cc28debda00`
 - Input `base.ini` (original translation): `Dymerz/StarCitizen-Localization@7fe0ddb` — sha256 `d33ad605f0e0ba645aa3f30f871ce02f985ebcb324de37ff1276721ba16a59ee`
 - Outputs (8 files):
@@ -105,7 +105,7 @@ What was passed to the generator/merger and what it produced.
 
 ### spanish
 
-- Generated at: `2026-10-19T14:56:47` (build `12881860`)
+- Generated at: `2026-10-19T23:54:54` (build `12881860`)
 - Input `base_en.ini` (game build): sha256 `4d26ad3b0b3364b6abfcee48310b272c46e2e927cc2faf51ae299cc28debda00`
 - Input `base.ini` (original translation): `Thord82/Star_citizen_ES@56d99dc` — sha256 `5181b3b49ab5df1d0de35ba6e1960a11b4fe278bc76e91c088dc7b2b9f64a70b`
 - Outputs (8 files):
