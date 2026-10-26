@@ -1,7 +1,7 @@
 {
   "build": "12881860",
   "language": "spanish",
-  "generated_at": "2026-10-26T16:54:36",
+  "generated_at": "2026-10-26T21:29:54",
   "inputs": {
     "base_en.ini": {
       "sha256": "4d26ad3b0b3364b6abfcee48310b272c46e2e927cc2faf51ae299cc28debda00",
@@ -13,8 +13,8 @@
       "owner": "Thord82",
       "repo": "Star_citizen_ES",
       "branch": "main",
-      "commit": "56d99dc9c8e75e20d6291419c742aa7d0d1c61ca",
-      "permalink": "https://github.com/Thord82/Star_citizen_ES/blob/56d99dc9c8e75e20d6291419c742aa7d0d1c61ca/global.ini"
+      "commit": "56e6215558b6e3f49851597289761154fa516781",
+      "permalink": "https://github.com/Thord82/Star_citizen_ES/blob/56e6215558b6e3f49851597289761154fa516781/global.ini"
     }
   },
   "outputs": {
