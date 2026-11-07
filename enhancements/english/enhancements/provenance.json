@@ -1,11 +1,11 @@
 {
-  "build": "12881860",
+  "build": "12913470",
   "language": "english",
-  "generated_at": "2026-11-07T06:39:06",
+  "generated_at": "2026-11-07T10:51:45",
   "inputs": {
     "base_en.ini": {
       "sha256": "4d26ad3b0b3364b6abfcee48310b272c46e2e927cc2faf51ae299cc28debda00",
-      "path": "/home/runner/work/lazy-citizen-enhancements/lazy-citizen-enhancements/enhancements/base_en.ini"
+      "path": "D:\\starcitizen\\projects\\lce\\lazy-citizen-enhancements\\enhancements\\base_en.ini"
     },
     "base.ini": {
       "origin": "game",
@@ -27,7 +27,7 @@
       "sha256": "785ea63dbd88b6a755da4729c85614cf5dfffdd1dd8c1e7c5ca74ec7f9eeaffb"
     },
     "mission_rewards_enhancements.ini": {
-      "sha256": "66442baed6849ccca038f52fe4811249a724d4e016bdf03d0b881f92684e6baf"
+      "sha256": "62e34041cf0ab0df7947ae27d0a799df3c378960fb6a05d7adac317e0e966bc6"
     },
     "journal_enhancements.ini": {
       "sha256": "e11c1b33526acda53ded14e3b58dd7575b22b94232857f2e8b9112c57a2f5022"
@@ -36,7 +36,7 @@
       "sha256": "fa271883a74660b0b571639cbaed5dcb8868461036395a7f2d53f6a067fb58b9"
     },
     "global.ini": {
-      "sha256": "d92a5c6adfa0d5b1a0486915b6ea6dcaa0806833aa4802cc8f72523bc8d7adf1"
+      "sha256": "b85834fbf1abe2ffadaef9d5069480b955b92ce7939a7f8e3279c02e794fc3ed"
     }
   }
 }

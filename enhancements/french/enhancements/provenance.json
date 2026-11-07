@@ -1,11 +1,11 @@
 {
-  "build": "12881860",
+  "build": "12913470",
   "language": "french",
-  "generated_at": "2026-11-07T06:39:07",
+  "generated_at": "2026-11-07T10:51:57",
   "inputs": {
     "base_en.ini": {
       "sha256": "4d26ad3b0b3364b6abfcee48310b272c46e2e927cc2faf51ae299cc28debda00",
-      "path": "/home/runner/work/lazy-citizen-enhancements/lazy-citizen-enhancements/enhancements/base_en.ini"
+      "path": "D:\\starcitizen\\projects\\lce\\lazy-citizen-enhancements\\enhancements\\base_en.ini"
     },
     "base.ini": {
       "url": "https://raw.githubusercontent.com/Dymerz/StarCitizen-Localization/main/data/Localization/french_(france)/global.ini",
@@ -19,19 +19,19 @@
   },
   "outputs": {
     "ships_desc_enhancements.ini": {
-      "sha256": "3ea6593d1e2e84ecf903b2874b703e63f286646d0ec61d9cbee4c15b5b33d614"
+      "sha256": "121a88479af2436ce470bf6dd44ab0303af0707bcb311f0049022115143616ca"
     },
     "components_desc_enhancements.ini": {
-      "sha256": "0b320e400b804a5ce710ff254a19c3298045982ae8320796585d8b7383d3791d"
+      "sha256": "bedb033a832454562a2f720cf69da6690b4caa624452089dc1424bbad31b3b15"
     },
     "ship_weapons_desc_enhancements.ini": {
       "sha256": "f1cb58443a78a21a2988c94252fa09435db78f7811428f05f5d183c8d93d4400"
     },
     "fps_weapons_desc_enhancements.ini": {
-      "sha256": "69c647ca246bcf566e6ff87c581044e6a9cbdcc5db571cf2c231ab46fa7ab3ab"
+      "sha256": "73a3e8d066b58f6236647730dc7c2aa69b60c4562a5455fefa446bceee217e5a"
     },
     "mission_rewards_enhancements.ini": {
-      "sha256": "5272d6fafb1672f749970ae49110e7e191225f9df16dbe8980a2d5a974a74abb"
+      "sha256": "87c8f22e973b91c1a196efe03721b7bd5fcd28fd8e386104a5a9dcf14e04a377"
     },
     "journal_enhancements.ini": {
       "sha256": "4aa41d57e3aaec6cba1f2343c1aed25c029a69b55083c735a1465d282d0e4966"
@@ -40,7 +40,7 @@
       "sha256": "ca14ab706222763feec4811b62025468d8f704b11e46cf323e4e0c6763de3877"
     },
     "global.ini": {
-      "sha256": "1988af3f08f22ec8478199491b4f772ce9435634578c8bbebcc314c23f3b606a"
+      "sha256": "f8002b5d1874259297e887ec65337716b0fd4b0b9152812f79311df7444c019c"
     }
   }
 }
