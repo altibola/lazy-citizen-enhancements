@@ -29,15 +29,15 @@ irm "https://raw.githubusercontent.com/altibola/lazy-citizen-enhancements/LIVE/i
 
 <!-- VERSION-STATUS:START -->
 
-_Last updated: **2026-11-08 19:25 UTC** — refreshed automatically every 15 minutes by the **Update community translations** workflow._
+_Last updated: **2026-11-08 23:02 UTC** — refreshed automatically every 15 minutes by the **Update community translations** workflow._
 
 | Source | Pinned (this repo) | Upstream HEAD | Status |
 |---|---|---|---|
 | Game build (P4CL) | `4.10.2-live-12913470` <br/> `(P4CL: 12913470)` | — | — |
-| french — [`Dymerz/StarCitizen-Localization@main`](https://github.com/Dymerz/StarCitizen-Localization/tree/main) | [`d019a3c`](https://github.com/Dymerz/StarCitizen-Localization/commit/d019a3c5e5091697de1c73efd5e005bc457cd5e2) | `d019a3c` | ✅ up to date (pinned at build) |
-| italian — [`Dymerz/StarCitizen-Localization@main`](https://github.com/Dymerz/StarCitizen-Localization/tree/main) | [`d019a3c`](https://github.com/Dymerz/StarCitizen-Localization/commit/d019a3c5e5091697de1c73efd5e005bc457cd5e2) | `d019a3c` | ✅ up to date (pinned at build) |
-| portuguese_br — [`danielgmota/StarCitizen-Localization@develop`](https://github.com/danielgmota/StarCitizen-Localization/tree/develop) | [`a91975e`](https://github.com/danielgmota/StarCitizen-Localization/commit/a91975e67003330c2ac8da3125e52eacf4047275) | `a91975e` | ✅ up to date (pinned at build) |
-| portuguese_br_dymerz — [`Dymerz/StarCitizen-Localization@main`](https://github.com/Dymerz/StarCitizen-Localization/tree/main) | [`d019a3c`](https://github.com/Dymerz/StarCitizen-Localization/commit/d019a3c5e5091697de1c73efd5e005bc457cd5e2) | `d019a3c` | ✅ up to date (pinned at build) |
+| french — [`Dymerz/StarCitizen-Localization@main`](https://github.com/Dymerz/StarCitizen-Localization/tree/main) | [`640e50b`](https://github.com/Dymerz/StarCitizen-Localization/commit/640e50b5725fdc4ada5fa5e38749b14d91706159) | `640e50b` | ✅ up to date (pinned at build) |
+| italian — [`Dymerz/StarCitizen-Localization@main`](https://github.com/Dymerz/StarCitizen-Localization/tree/main) | [`640e50b`](https://github.com/Dymerz/StarCitizen-Localization/commit/640e50b5725fdc4ada5fa5e38749b14d91706159) | `640e50b` | ✅ up to date (pinned at build) |
+| portuguese_br — [`danielgmota/StarCitizen-Localization@develop`](https://github.com/danielgmota/StarCitizen-Localization/tree/develop) | [`20281db`](https://github.com/danielgmota/StarCitizen-Localization/commit/20281db9fcac1f24a63d46bc4e28fc0aba0fed0c) | `20281db` | ✅ up to date (pinned at build) |
+| portuguese_br_dymerz — [`Dymerz/StarCitizen-Localization@main`](https://github.com/Dymerz/StarCitizen-Localization/tree/main) | [`640e50b`](https://github.com/Dymerz/StarCitizen-Localization/commit/640e50b5725fdc4ada5fa5e38749b14d91706159) | `640e50b` | ✅ up to date (pinned at build) |
 | spanish — [`Thord82/Star_citizen_ES@main`](https://github.com/Thord82/Star_citizen_ES/tree/main) | [`56e6215`](https://github.com/Thord82/Star_citizen_ES/commit/56e6215558b6e3f49851597289761154fa516781) | `56e6215` | ✅ up to date (pinned at build) |
 
 <!-- VERSION-STATUS:END -->
