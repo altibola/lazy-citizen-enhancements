@@ -1,7 +1,7 @@
 {
   "build": "12913470",
   "language": "portuguese_br",
-  "generated_at": "2026-11-10T18:52:01",
+  "generated_at": "2026-11-11T21:07:56",
   "inputs": {
     "base_en.ini": {
       "sha256": "4d26ad3b0b3364b6abfcee48310b272c46e2e927cc2faf51ae299cc28debda00",
@@ -9,12 +9,12 @@
     },
     "base.ini": {
       "url": "https://raw.githubusercontent.com/danielgmota/StarCitizen-Localization/develop/data/Localization/portuguese_(brazil)/global.ini",
-      "sha256": "52e799f5c20095e5fc9930ce3520c0ddd7a0b8b1bc7e2ec9bdd23c138fc4b8a8",
+      "sha256": "86ca4ccb76a4aeab4cf7ef5d03262a527baa7f794b9a8f96e47676fe864aa4cf",
       "owner": "danielgmota",
       "repo": "StarCitizen-Localization",
       "branch": "develop",
-      "commit": "7e02626b48edde59d7f34a736dba3591cf6e5c37",
-      "permalink": "https://github.com/danielgmota/StarCitizen-Localization/blob/7e02626b48edde59d7f34a736dba3591cf6e5c37/data/Localization/portuguese_(brazil)/global.ini"
+      "commit": "31022f8648352596d0984728756eebfcb713ddd0",
+      "permalink": "https://github.com/danielgmota/StarCitizen-Localization/blob/31022f8648352596d0984728756eebfcb713ddd0/data/Localization/portuguese_(brazil)/global.ini"
     }
   },
   "outputs": {
@@ -40,7 +40,7 @@
       "sha256": "8b8e1454d33aa59b883755af23cec3f4d49571917c78805f57a253e65fb19d5a"
     },
     "global.ini": {
-      "sha256": "5388c891725e788cb6fbdc6dff3a7b8e049b63eb42c564385dca3d5f732d81c5"
+      "sha256": "d1904ca1920c6979cfa32a91346034c4d1ca551059451898f76d18eef17dc3c1"
     }
   }
 }
