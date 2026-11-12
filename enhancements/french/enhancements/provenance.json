@@ -1,11 +1,11 @@
 {
-  "build": "12913470",
+  "build": "13165946",
   "language": "french",
-  "generated_at": "2026-11-11T21:07:54",
+  "generated_at": "2026-11-12T14:53:47",
   "inputs": {
     "base_en.ini": {
-      "sha256": "4d26ad3b0b3364b6abfcee48310b272c46e2e927cc2faf51ae299cc28debda00",
-      "path": "/home/runner/work/lazy-citizen-enhancements/lazy-citizen-enhancements/enhancements/base_en.ini"
+      "sha256": "99113d762aaabeb1519458e6fdca7b45610bcce3c5e3adfb795c79a96fcb7cea",
+      "path": "D:\\starcitizen\\projects\\lce\\lazy-citizen-enhancements\\enhancements\\base_en.ini"
     },
     "base.ini": {
       "url": "https://raw.githubusercontent.com/Dymerz/StarCitizen-Localization/main/data/Localization/french_(france)/global.ini",
@@ -13,34 +13,34 @@
       "owner": "Dymerz",
       "repo": "StarCitizen-Localization",
       "branch": "main",
-      "commit": "0ffa5ead42cbfa38472701901ec03819e9a3c0f2",
-      "permalink": "https://github.com/Dymerz/StarCitizen-Localization/blob/0ffa5ead42cbfa38472701901ec03819e9a3c0f2/data/Localization/french_(france)/global.ini"
+      "commit": "e46418bd83ce38b799c70856d255dd96ab5fe3c3",
+      "permalink": "https://github.com/Dymerz/StarCitizen-Localization/blob/e46418bd83ce38b799c70856d255dd96ab5fe3c3/data/Localization/french_(france)/global.ini"
     }
   },
   "outputs": {
     "ships_desc_enhancements.ini": {
-      "sha256": "121a88479af2436ce470bf6dd44ab0303af0707bcb311f0049022115143616ca"
+      "sha256": "4484c7c4eced0c89a7f1056a379b1d6c9c7a105743d0a0abf4f50eb95aa66d8b"
     },
     "components_desc_enhancements.ini": {
-      "sha256": "bedb033a832454562a2f720cf69da6690b4caa624452089dc1424bbad31b3b15"
+      "sha256": "12d980ff26f56ee84551dddf099f9088c4a44d5ae4128cbd7d3bf563e7fdb69f"
     },
     "ship_weapons_desc_enhancements.ini": {
-      "sha256": "f1cb58443a78a21a2988c94252fa09435db78f7811428f05f5d183c8d93d4400"
+      "sha256": "6b420a00e5d937ef4cbca8982c449037a75168d718f2510447f0eca4724d3b93"
     },
     "fps_weapons_desc_enhancements.ini": {
-      "sha256": "73a3e8d066b58f6236647730dc7c2aa69b60c4562a5455fefa446bceee217e5a"
+      "sha256": "840eb1fc0a4a9f93ce83f9da1f7525240cecf9c3fb72eeeabd672a92482d60d1"
     },
     "mission_rewards_enhancements.ini": {
-      "sha256": "87c8f22e973b91c1a196efe03721b7bd5fcd28fd8e386104a5a9dcf14e04a377"
+      "sha256": "49133e899828be71b7ad6ec77ddc09b4f05ed40f1f613bfe46a9e8b9f24837e5"
     },
     "journal_enhancements.ini": {
       "sha256": "4aa41d57e3aaec6cba1f2343c1aed25c029a69b55083c735a1465d282d0e4966"
     },
     "missile_enhancements.ini": {
-      "sha256": "ca14ab706222763feec4811b62025468d8f704b11e46cf323e4e0c6763de3877"
+      "sha256": "98de7fd69308ad8ddf012441c99aed1cb703640d788cf44f8cb3ed6c812186de"
     },
     "global.ini": {
-      "sha256": "f8002b5d1874259297e887ec65337716b0fd4b0b9152812f79311df7444c019c"
+      "sha256": "cb5af9b498e8c57c0a9862b8709fe91dee09edde1f4ea956dc19be7463e86299"
     }
   }
 }

@@ -6,10 +6,10 @@
 
 | Field | Value |
 |---|---|
-| Public Version | `4.10.2-live-12913470` |
-| Build (P4CL) | `12913470` |
+| Public Version | `4.10.0-live-13165946` |
+| Build (P4CL) | `13165946` |
 | Environment | `LIVE` |
-| `base_en.ini` sha256 | `4d26ad3b0b3364b6abfcee48310b272c46e2e927cc2faf51ae299cc28debda00` |
+| `base_en.ini` sha256 | `99113d762aaabeb1519458e6fdca7b45610bcce3c5e3adfb795c79a96fcb7cea` |
 
 ## Original community translations (pipeline inputs)
 
@@ -17,11 +17,11 @@ The unmodified upstream files each language was built from.
 
 | Language | Upstream source | Pinned commit | Original `base.ini` sha256 |
 |---|---|---|---|
-| english | _Star Citizen (game build — `base_en.ini`)_ | — | `4d26ad3b0b3364b6abfcee48310b272c46e2e927cc2faf51ae299cc28debda00` |
-| french | `Dymerz/StarCitizen-Localization@main` | [`0ffa5ea`](https://github.com/Dymerz/StarCitizen-Localization/blob/0ffa5ead42cbfa38472701901ec03819e9a3c0f2/data/Localization/french_(france)/global.ini) | `334107fd9bff04d0c1dbb8ac68d08bfb2e529bb7e712ea208a54916b6bb06950` |
-| italian | `Dymerz/StarCitizen-Localization@main` | [`0ffa5ea`](https://github.com/Dymerz/StarCitizen-Localization/blob/0ffa5ead42cbfa38472701901ec03819e9a3c0f2/data/Localization/italian_(italy)/global.ini) | `fb5ef74c6a4aa77bf79b133f0a04f3f70b4b82a3241cb3f6bec36f3eaa3de765` |
-| portuguese_br | `danielgmota/StarCitizen-Localization@develop` | [`31022f8`](https://github.com/danielgmota/StarCitizen-Localization/blob/31022f8648352596d0984728756eebfcb713ddd0/data/Localization/portuguese_(brazil)/global.ini) | `86ca4ccb76a4aeab4cf7ef5d03262a527baa7f794b9a8f96e47676fe864aa4cf` |
-| portuguese_br_dymerz | `Dymerz/StarCitizen-Localization@main` | [`0ffa5ea`](https://github.com/Dymerz/StarCitizen-Localization/blob/0ffa5ead42cbfa38472701901ec03819e9a3c0f2/data/Localization/portuguese_(brazil)/global.ini) | `d33ad605f0e0ba645aa3f30f871ce02f985ebcb324de37ff1276721ba16a59ee` |
+| english | _Star Citizen (game build — `base_en.ini`)_ | — | `99113d762aaabeb1519458e6fdca7b45610bcce3c5e3adfb795c79a96fcb7cea` |
+| french | `Dymerz/StarCitizen-Localization@main` | [`e46418b`](https://github.com/Dymerz/StarCitizen-Localization/blob/e46418bd83ce38b799c70856d255dd96ab5fe3c3/data/Localization/french_(france)/global.ini) | `334107fd9bff04d0c1dbb8ac68d08bfb2e529bb7e712ea208a54916b6bb06950` |
+| italian | `Dymerz/StarCitizen-Localization@main` | [`e46418b`](https://github.com/Dymerz/StarCitizen-Localization/blob/e46418bd83ce38b799c70856d255dd96ab5fe3c3/data/Localization/italian_(italy)/global.ini) | `fb5ef74c6a4aa77bf79b133f0a04f3f70b4b82a3241cb3f6bec36f3eaa3de765` |
+| portuguese_br | `danielgmota/StarCitizen-Localization@develop` | [`3afa0ce`](https://github.com/danielgmota/StarCitizen-Localization/blob/3afa0cec7361dac3f71a3cf473807eb278b887b2/data/Localization/portuguese_(brazil)/global.ini) | `6b3f2f3a0346d238b5751e127bf5b239914a9a0b76f870a70e9eeabb15d75948` |
+| portuguese_br_dymerz | `Dymerz/StarCitizen-Localization@main` | [`e46418b`](https://github.com/Dymerz/StarCitizen-Localization/blob/e46418bd83ce38b799c70856d255dd96ab5fe3c3/data/Localization/portuguese_(brazil)/global.ini) | `ba7695603ce3a1c5056d2129d82ebbaca6f9a037aa045ef0ee22f43d5e44f334` |
 | spanish | `Thord82/Star_citizen_ES@main` | [`56e6215`](https://github.com/Thord82/Star_citizen_ES/blob/56e6215558b6e3f49851597289761154fa516781/global.ini) | `5181b3b49ab5df1d0de35ba6e1960a11b4fe278bc76e91c088dc7b2b9f64a70b` |
 
 ## Enhancement generation (per-language input -> output)
@@ -30,91 +30,91 @@ What was passed to the generator/merger and what it produced.
 
 ### english
 
-- Generated at: `2026-11-11T21:07:53` (build `12913470`)
-- Input `base_en.ini` (game build): sha256 `4d26ad3b0b3364b6abfcee48310b272c46e2e927cc2faf51ae299cc28debda00`
-- Input `base.ini`: the game's own English base (no community translation) — sha256 `4d26ad3b0b3364b6abfcee48310b272c46e2e927cc2faf51ae299cc28debda00`
+- Generated at: `2026-11-12T14:53:33` (build `13165946`)
+- Input `base_en.ini` (game build): sha256 `99113d762aaabeb1519458e6fdca7b45610bcce3c5e3adfb795c79a96fcb7cea`
+- Input `base.ini`: the game's own English base (no community translation) — sha256 `99113d762aaabeb1519458e6fdca7b45610bcce3c5e3adfb795c79a96fcb7cea`
 - Outputs (8 files):
-  - `components_desc_enhancements.ini` — sha256 `1ed076c0840097520b212294c7c5f8f59f5b10fb066375b2515f25f9b20c5d77`
-  - `fps_weapons_desc_enhancements.ini` — sha256 `785ea63dbd88b6a755da4729c85614cf5dfffdd1dd8c1e7c5ca74ec7f9eeaffb`
-  - `global.ini` — sha256 `b85834fbf1abe2ffadaef9d5069480b955b92ce7939a7f8e3279c02e794fc3ed`
-  - `journal_enhancements.ini` — sha256 `e11c1b33526acda53ded14e3b58dd7575b22b94232857f2e8b9112c57a2f5022`
-  - `missile_enhancements.ini` — sha256 `fa271883a74660b0b571639cbaed5dcb8868461036395a7f2d53f6a067fb58b9`
-  - `mission_rewards_enhancements.ini` — sha256 `62e34041cf0ab0df7947ae27d0a799df3c378960fb6a05d7adac317e0e966bc6`
-  - `ship_weapons_desc_enhancements.ini` — sha256 `c311ad4e8761e92bc57e75096b9c36dfac658471ce71241c5b9254546cf3294a`
-  - `ships_desc_enhancements.ini` — sha256 `d13f7841da2e97f15dc1324fe4c6c9b264760fdbab81f337d63858c2f0d3d560`
+  - `components_desc_enhancements.ini` — sha256 `5973937ab669ab84a2cbb2d94fbf26b8f4f6e8e2fefacce5fc435c795ef9b052`
+  - `fps_weapons_desc_enhancements.ini` — sha256 `f7947ab8e12b024d0e020734b1a8ec4f6ae6094be62abe93b983e7f96fb5deb1`
+  - `global.ini` — sha256 `e65b638d8d0d1d7830b962ea754df70edca8a3f3bedda5eebf25d365e156cb42`
+  - `journal_enhancements.ini` — sha256 `41262f6a11d8dbad26c886bac676f5669bf3cd5d8e3496e8c3148a0a372820ec`
+  - `missile_enhancements.ini` — sha256 `d44552e2139e72f29ac16ab0e5e0df725e6091119cbae58419518a26fa197896`
+  - `mission_rewards_enhancements.ini` — sha256 `a0830517fe2f44aaedc39540fc1fc58bc2e11bafe0bc05d0f10aa7857149fa56`
+  - `ship_weapons_desc_enhancements.ini` — sha256 `2b78390fa1c8b3be460ea08282ca84528379dbeda9efcece986f4b57891ef1d5`
+  - `ships_desc_enhancements.ini` — sha256 `71705d44e0d39ecbd0707482118afd80d75985aadb6d73c7b25dca87c854e166`
 
 ### french
 
-- Generated at: `2026-11-11T21:07:54` (build `12913470`)
-- Input `base_en.ini` (game build): sha256 `4d26ad3b0b3364b6abfcee48310b272c46e2e927cc2faf51ae299cc28debda00`
-- Input `base.ini` (original translation): `Dymerz/StarCitizen-Localization@0ffa5ea` — sha256 `334107fd9bff04d0c1dbb8ac68d08bfb2e529bb7e712ea208a54916b6bb06950`
+- Generated at: `2026-11-12T14:53:47` (build `13165946`)
+- Input `base_en.ini` (game build): sha256 `99113d762aaabeb1519458e6fdca7b45610bcce3c5e3adfb795c79a96fcb7cea`
+- Input `base.ini` (original translation): `Dymerz/StarCitizen-Localization@e46418b` — sha256 `334107fd9bff04d0c1dbb8ac68d08bfb2e529bb7e712ea208a54916b6bb06950`
 - Outputs (8 files):
-  - `components_desc_enhancements.ini` — sha256 `bedb033a832454562a2f720cf69da6690b4caa624452089dc1424bbad31b3b15`
-  - `fps_weapons_desc_enhancements.ini` — sha256 `73a3e8d066b58f6236647730dc7c2aa69b60c4562a5455fefa446bceee217e5a`
-  - `global.ini` — sha256 `f8002b5d1874259297e887ec65337716b0fd4b0b9152812f79311df7444c019c`
+  - `components_desc_enhancements.ini` — sha256 `12d980ff26f56ee84551dddf099f9088c4a44d5ae4128cbd7d3bf563e7fdb69f`
+  - `fps_weapons_desc_enhancements.ini` — sha256 `840eb1fc0a4a9f93ce83f9da1f7525240cecf9c3fb72eeeabd672a92482d60d1`
+  - `global.ini` — sha256 `cb5af9b498e8c57c0a9862b8709fe91dee09edde1f4ea956dc19be7463e86299`
   - `journal_enhancements.ini` — sha256 `4aa41d57e3aaec6cba1f2343c1aed25c029a69b55083c735a1465d282d0e4966`
-  - `missile_enhancements.ini` — sha256 `ca14ab706222763feec4811b62025468d8f704b11e46cf323e4e0c6763de3877`
-  - `mission_rewards_enhancements.ini` — sha256 `87c8f22e973b91c1a196efe03721b7bd5fcd28fd8e386104a5a9dcf14e04a377`
-  - `ship_weapons_desc_enhancements.ini` — sha256 `f1cb58443a78a21a2988c94252fa09435db78f7811428f05f5d183c8d93d4400`
-  - `ships_desc_enhancements.ini` — sha256 `121a88479af2436ce470bf6dd44ab0303af0707bcb311f0049022115143616ca`
+  - `missile_enhancements.ini` — sha256 `98de7fd69308ad8ddf012441c99aed1cb703640d788cf44f8cb3ed6c812186de`
+  - `mission_rewards_enhancements.ini` — sha256 `49133e899828be71b7ad6ec77ddc09b4f05ed40f1f613bfe46a9e8b9f24837e5`
+  - `ship_weapons_desc_enhancements.ini` — sha256 `6b420a00e5d937ef4cbca8982c449037a75168d718f2510447f0eca4724d3b93`
+  - `ships_desc_enhancements.ini` — sha256 `4484c7c4eced0c89a7f1056a379b1d6c9c7a105743d0a0abf4f50eb95aa66d8b`
 
 ### italian
 
-- Generated at: `2026-11-11T21:07:55` (build `12913470`)
-- Input `base_en.ini` (game build): sha256 `4d26ad3b0b3364b6abfcee48310b272c46e2e927cc2faf51ae299cc28debda00`
-- Input `base.ini` (original translation): `Dymerz/StarCitizen-Localization@0ffa5ea` — sha256 `fb5ef74c6a4aa77bf79b133f0a04f3f70b4b82a3241cb3f6bec36f3eaa3de765`
+- Generated at: `2026-11-12T14:54:01` (build `13165946`)
+- Input `base_en.ini` (game build): sha256 `99113d762aaabeb1519458e6fdca7b45610bcce3c5e3adfb795c79a96fcb7cea`
+- Input `base.ini` (original translation): `Dymerz/StarCitizen-Localization@e46418b` — sha256 `fb5ef74c6a4aa77bf79b133f0a04f3f70b4b82a3241cb3f6bec36f3eaa3de765`
 - Outputs (8 files):
-  - `components_desc_enhancements.ini` — sha256 `5a43a59dd519266fbaa048798fb04c72cb5133fe235dfd7bd6804714f178a1c7`
-  - `fps_weapons_desc_enhancements.ini` — sha256 `c222ed37a5088c6bb6a9f77448b23121a1f0d183a2fee61058b2d9532787e71f`
-  - `global.ini` — sha256 `24305d0cd3cac3a4edc0ff342d7fe8d4edd54a45c0b53c3edc6c0ab3959778d9`
-  - `journal_enhancements.ini` — sha256 `e3fffe86b6a6d039afc4fa1715e3dfee964b9657c231c116b300c408ce56e34e`
-  - `missile_enhancements.ini` — sha256 `c257cdbff5dc88732601d7a0901d4a5ae0678c08113af15868aa7faceb606364`
-  - `mission_rewards_enhancements.ini` — sha256 `1c5dd52eec53cd8d33faa0e3740ad16a4e8b327aadf245c9a4b1ac6b2857ec6e`
-  - `ship_weapons_desc_enhancements.ini` — sha256 `f348cb8d3e8d2ca0d0b37bad08a67f05d34b8e6645339880509d638d51af95ad`
-  - `ships_desc_enhancements.ini` — sha256 `5729df6e66d04ef21334477908f65f455baf6fb5761a7e65ac6b4df15e1823aa`
+  - `components_desc_enhancements.ini` — sha256 `8dbaa8d4a341608d64e2bbb5032a35754334647a6111b8fec19fd0b51b8a4b82`
+  - `fps_weapons_desc_enhancements.ini` — sha256 `5d285cc2d89dac88c65918ce97dc6874fad787da25f6e10b71259b93bef5481f`
+  - `global.ini` — sha256 `9f75ae0f27a428c9284934aba564353423dd78c80261b1c530e58a061e427b28`
+  - `journal_enhancements.ini` — sha256 `044f175d27117ca1a1df13dcbd05f6e2fd75ab50538c7eb4da48d5a3bf5436ef`
+  - `missile_enhancements.ini` — sha256 `b7cb390ccec6d9d135a7c60006e3e093c41d3bd822fb0a17a959f729facf9042`
+  - `mission_rewards_enhancements.ini` — sha256 `a0dd7326c212835cc52f151092f7b8556155e074df0a51731a53d1184569cbdc`
+  - `ship_weapons_desc_enhancements.ini` — sha256 `406fc908168427da55ca2c0166477aad0cea92005ecd7863d50ff37d196c7f07`
+  - `ships_desc_enhancements.ini` — sha256 `f05d7ef7c29ac714e53d7dd9d147a22d7be87a07a83ae74da1bc155661c33014`
 
 ### portuguese_br
 
-- Generated at: `2026-11-11T21:07:56` (build `12913470`)
-- Input `base_en.ini` (game build): sha256 `4d26ad3b0b3364b6abfcee48310b272c46e2e927cc2faf51ae299cc28debda00`
-- Input `base.ini` (original translation): `danielgmota/StarCitizen-Localization@31022f8` — sha256 `86ca4ccb76a4aeab4cf7ef5d03262a527baa7f794b9a8f96e47676fe864aa4cf`
+- Generated at: `2026-11-12T14:54:15` (build `13165946`)
+- Input `base_en.ini` (game build): sha256 `99113d762aaabeb1519458e6fdca7b45610bcce3c5e3adfb795c79a96fcb7cea`
+- Input `base.ini` (original translation): `danielgmota/StarCitizen-Localization@3afa0ce` — sha256 `6b3f2f3a0346d238b5751e127bf5b239914a9a0b76f870a70e9eeabb15d75948`
 - Outputs (8 files):
-  - `components_desc_enhancements.ini` — sha256 `7beb2501da3be2dfbc289c53631fa538142f059ac4b67b958414dc74256b8a0f`
-  - `fps_weapons_desc_enhancements.ini` — sha256 `fd0af94e0cb27f7721356354b976c219e557c18cdf4d547e651a30249cb4e6a7`
-  - `global.ini` — sha256 `d1904ca1920c6979cfa32a91346034c4d1ca551059451898f76d18eef17dc3c1`
-  - `journal_enhancements.ini` — sha256 `492756b9ba1f4c0311254525c8dac06087b505ac79206771f25e74a706bdd24b`
-  - `missile_enhancements.ini` — sha256 `8b8e1454d33aa59b883755af23cec3f4d49571917c78805f57a253e65fb19d5a`
-  - `mission_rewards_enhancements.ini` — sha256 `6ed684ffefc559f65adc6405b1fc9dc53621c1ff0e2b86a7d4bd559d24c92a44`
-  - `ship_weapons_desc_enhancements.ini` — sha256 `42bf7c11e87ce2ae0e6933d97e44189a0ea3c0cdfa6e16768f92377f5c6e860b`
-  - `ships_desc_enhancements.ini` — sha256 `fbae8b3e54ed386f5cafd3805ebb18cbe770a5e075686596d36c8de0628cade1`
+  - `components_desc_enhancements.ini` — sha256 `091bbe858d545c2949e23f8b6e9458135cad2bcade43cf47058a78bed7733ccf`
+  - `fps_weapons_desc_enhancements.ini` — sha256 `9547880896df54401602bd3f12d37cc5d60293d170fbf5e3e5cb63564cfe2bb6`
+  - `global.ini` — sha256 `75e01d37983bc6bb00235b32b25be4df5b15b42fe2a6eb9e4446b5cffb4cca6f`
+  - `journal_enhancements.ini` — sha256 `5715bd1b3e1571ef107bcf20ba875f3768f6368614458141452a3861546883fe`
+  - `missile_enhancements.ini` — sha256 `5c52a0c097315f4f681e42f8c136746fec579b8899058e476ede986a02f511c0`
+  - `mission_rewards_enhancements.ini` — sha256 `07efde15ecb984cd1fadc1176f3dace8a709b2436cfd3f318ce6c6dce1ec1866`
+  - `ship_weapons_desc_enhancements.ini` — sha256 `115a9e8122306f3e9da03df4b3c7cc08e2b06995a7913cabb16110ff7d30db34`
+  - `ships_desc_enhancements.ini` — sha256 `a1afaf9c2c045365a2d463d984a671dbb1050036300f5cef05aba15c9fedc7c6`
 
 ### portuguese_br_dymerz
 
-- Generated at: `2026-11-11T21:07:57` (build `12913470`)
-- Input `base_en.ini` (game build): sha256 `4d26ad3b0b3364b6abfcee48310b272c46e2e927cc2faf51ae299cc28debda00`
-- Input `base.ini` (original translation): `Dymerz/StarCitizen-Localization@0ffa5ea` — sha256 `d33ad605f0e0ba645aa3f30f871ce02f985ebcb324de37ff1276721ba16a59ee`
+- Generated at: `2026-11-12T14:54:30` (build `13165946`)
+- Input `base_en.ini` (game build): sha256 `99113d762aaabeb1519458e6fdca7b45610bcce3c5e3adfb795c79a96fcb7cea`
+- Input `base.ini` (original translation): `Dymerz/StarCitizen-Localization@e46418b` — sha256 `ba7695603ce3a1c5056d2129d82ebbaca6f9a037aa045ef0ee22f43d5e44f334`
 - Outputs (8 files):
-  - `components_desc_enhancements.ini` — sha256 `acbe5867868156bf21d15618ea302a5578e7a9f954072014459c78b7e9b52190`
-  - `fps_weapons_desc_enhancements.ini` — sha256 `92c35631e2b5362cab24eab282623dd9d1d992b9e6d7a276651debfd2180c011`
-  - `global.ini` — sha256 `d603a4738a1325f6ef9a90db5b20a16ca42b8f5cb130c99f4949123ab6d5acfe`
-  - `journal_enhancements.ini` — sha256 `70539522c7fe7dc9956431df26391dc9863fe827cac747bf0a528da41bb60a5c`
-  - `missile_enhancements.ini` — sha256 `0aa69ff1bd4715d18ece779f285ddc8ba71f1cce3259597999719e8df67e4b12`
-  - `mission_rewards_enhancements.ini` — sha256 `230f6fd3825c6fdfa39c0f0abd4a649ae1bc62fdade3de389d5e778689e898f4`
-  - `ship_weapons_desc_enhancements.ini` — sha256 `0d9487c92a0db3f382cb690989ff914d8cc0b014ec34882c6cfe315411de7e81`
-  - `ships_desc_enhancements.ini` — sha256 `03ab65cd87bfd06561ee15f1c53cb0066c0a456b9a3305de9806887a836a10f6`
+  - `components_desc_enhancements.ini` — sha256 `1cd19e3e76f6a2873f603ee51beaeeb7e4195c27ab5fef2a2381046f0a3efe9e`
+  - `fps_weapons_desc_enhancements.ini` — sha256 `4af90347e00437ed59bdd6421e41b9ca04337d935948cd43e2e60b9c080621c7`
+  - `global.ini` — sha256 `30865b241240a652ceb5e014291e8357996bbe7d40db95d174c37f28b3573c29`
+  - `journal_enhancements.ini` — sha256 `22a5e20608d3066e664d832e2b81134e68dfa64341eefd463399400d8670216e`
+  - `missile_enhancements.ini` — sha256 `5db3f98f0bb834f2a7acdf336db26c98b5d415a92a7da0ebcd5f8676cef5ef34`
+  - `mission_rewards_enhancements.ini` — sha256 `a6442674722b9dd0b78faf94ab67305a6a2bcfe5413c76994998c470ad3b57ef`
+  - `ship_weapons_desc_enhancements.ini` — sha256 `615538fb54d377aa623d5a277044398d73d6d85a89f1dd269bacd5dacf4d422c`
+  - `ships_desc_enhancements.ini` — sha256 `829c0d9a405ced1195a8e5e234a13540e8cd41bb2b0854a38366245295e13217`
 
 ### spanish
 
-- Generated at: `2026-11-11T21:07:58` (build `12913470`)
-- Input `base_en.ini` (game build): sha256 `4d26ad3b0b3364b6abfcee48310b272c46e2e927cc2faf51ae299cc28debda00`
+- Generated at: `2026-11-12T14:54:43` (build `13165946`)
+- Input `base_en.ini` (game build): sha256 `99113d762aaabeb1519458e6fdca7b45610bcce3c5e3adfb795c79a96fcb7cea`
 - Input `base.ini` (original translation): `Thord82/Star_citizen_ES@56e6215` — sha256 `5181b3b49ab5df1d0de35ba6e1960a11b4fe278bc76e91c088dc7b2b9f64a70b`
 - Outputs (8 files):
-  - `components_desc_enhancements.ini` — sha256 `13757d023131b39a94d0c62c6d4a9597bace875b69a77b1640cb485bd336ac19`
-  - `fps_weapons_desc_enhancements.ini` — sha256 `db9aa21f1a4634a437228bb421e5243754914d5a99dd8d01caffb3f682dc6a31`
-  - `global.ini` — sha256 `5becf9f1a8e1f58da296d56abfc6fdbab1a892a2688251489b00e98e0216f81a`
+  - `components_desc_enhancements.ini` — sha256 `dbb5e01f566169374bcd96e108d029b0f1bcfdee98b514f0240347ed84a3c433`
+  - `fps_weapons_desc_enhancements.ini` — sha256 `12c0778115f481494b58ce1e5246876118ae708ae0905e4d9b1747d16c643082`
+  - `global.ini` — sha256 `a686cd8434979d7986da226b32e85573b9cb34b58c8e5b7d2efb2f17b8174993`
   - `journal_enhancements.ini` — sha256 `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`
-  - `missile_enhancements.ini` — sha256 `42093d2fa05504400b0d2523d64a5d9aa1434111af20346dc38c9577c5048e7a`
-  - `mission_rewards_enhancements.ini` — sha256 `1e3a0b3973094ac7aea8c59dec39510d361ca58c38417ae40d7a96b8143caca2`
-  - `ship_weapons_desc_enhancements.ini` — sha256 `2911a9c99239135b355fbf950653c0a7c86ccfb0e8eb80ae72de990f0d05484e`
-  - `ships_desc_enhancements.ini` — sha256 `11f14587fb87122bc85dabd6447c85cafdc88c66fcb3518476eb9f19bd3e600f`
+  - `missile_enhancements.ini` — sha256 `0d215c18f09c1e9f6a87e50c547a7aea73891287ce33685c055e41385eced88a`
+  - `mission_rewards_enhancements.ini` — sha256 `770183cd0eb9d565e057d03597ede1c07a53aef757cce25db8d5789a253e35f2`
+  - `ship_weapons_desc_enhancements.ini` — sha256 `98e7300caf566402d3409798b6f520bdd5de33ab6ecc670a90287cc95071e2c3`
+  - `ships_desc_enhancements.ini` — sha256 `0b2ac095ae1738d1d6c0e26316ad49e549402a9ffa10ffe6c6843f626219a833`
 
