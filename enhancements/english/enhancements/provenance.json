@@ -1,11 +1,11 @@
 {
   "build": "13165946",
   "language": "english",
-  "generated_at": "2026-11-12T14:53:33",
+  "generated_at": "2026-11-12T23:47:04",
   "inputs": {
     "base_en.ini": {
       "sha256": "99113d762aaabeb1519458e6fdca7b45610bcce3c5e3adfb795c79a96fcb7cea",
-      "path": "D:\\starcitizen\\projects\\lce\\lazy-citizen-enhancements\\enhancements\\base_en.ini"
+      "path": "/home/runner/work/lazy-citizen-enhancements/lazy-citizen-enhancements/enhancements/base_en.ini"
     },
     "base.ini": {
       "origin": "game",
