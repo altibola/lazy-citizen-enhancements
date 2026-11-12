@@ -574,23 +574,35 @@ def main(argv: list[str] | None = None) -> int:
         game_version = args.game_version or _detect_game_version(p4k)
         environment = args.environment.upper() if args.environment else _detect_environment(p4k)
         
-        # Determine the user-friendly display version (e.g., 4.8.0-live-11952564)
+        # Determine the user-friendly display version (e.g., 4.10.3-live-13165946)
         display_version = f"{environment.lower()}-{game_version}"
         if args.display_version:
             display_version = f"{args.display_version}-{environment.lower()}-{game_version}"
         else:
-            manifest = p4k.parent / "build_manifest.id"
-            if manifest.exists():
-                try:
-                    payload = json.loads(manifest.read_text(encoding="utf-8"))
-                    inner = payload.get("Data", payload)
-                    branch = str(inner.get("Branch", "")).strip()
-                    if branch:
-                        if branch.startswith("sc-alpha-"):
-                            branch = branch[len("sc-alpha-"):]
-                        display_version = f"{branch}-{environment.lower()}-{game_version}"
-                except Exception:
-                    pass
+            # First try launcher logs for the exact public display version (e.g., 4.10.3)
+            try:
+                import get_launcher_version
+                launcher_raw = get_launcher_version.get_launcher_version(environment)
+                if launcher_raw:
+                    disp = launcher_raw.split("-")[0]
+                    if disp:
+                        display_version = f"{disp}-{environment.lower()}-{game_version}"
+            except Exception:
+                pass
+
+            if display_version == f"{environment.lower()}-{game_version}":
+                manifest = p4k.parent / "build_manifest.id"
+                if manifest.exists():
+                    try:
+                        payload = json.loads(manifest.read_text(encoding="utf-8"))
+                        inner = payload.get("Data", payload)
+                        branch = str(inner.get("Branch", "")).strip()
+                        if branch:
+                            if branch.startswith("sc-alpha-"):
+                                branch = branch[len("sc-alpha-"):]
+                            display_version = f"{branch}-{environment.lower()}-{game_version}"
+                    except Exception:
+                        pass
 
         # Ensure output directory exists and write version.json
         out_dir.mkdir(parents=True, exist_ok=True)

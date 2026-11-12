@@ -6,7 +6,7 @@
 
 | Field | Value |
 |---|---|
-| Public Version | `4.10.0-live-13165946` |
+| Public Version | `4.10.3-live-13165946` |
 | Build (P4CL) | `13165946` |
 | Environment | `LIVE` |
 | `base_en.ini` sha256 | `99113d762aaabeb1519458e6fdca7b45610bcce3c5e3adfb795c79a96fcb7cea` |
