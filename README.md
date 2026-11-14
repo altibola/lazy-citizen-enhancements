@@ -29,14 +29,14 @@ irm "https://raw.githubusercontent.com/altibola/lazy-citizen-enhancements/LIVE/i
 
 <!-- VERSION-STATUS:START -->
 
-_Last updated: **2026-11-13 14:14 UTC** — refreshed automatically every 15 minutes by the **Update community translations** workflow._
+_Last updated: **2026-11-14 14:52 UTC** — refreshed automatically every 15 minutes by the **Update community translations** workflow._
 
 | Source | Pinned (this repo) | Upstream HEAD | Status |
 |---|---|---|---|
 | Game build (P4CL) | `4.10.3-live-13165946` <br/> `(P4CL: 13165946)` | — | — |
 | french — [`Dymerz/StarCitizen-Localization@main`](https://github.com/Dymerz/StarCitizen-Localization/tree/main) | [`e46418b`](https://github.com/Dymerz/StarCitizen-Localization/commit/e46418bd83ce38b799c70856d255dd96ab5fe3c3) | `e46418b` | ✅ up to date (pinned at build) |
 | italian — [`Dymerz/StarCitizen-Localization@main`](https://github.com/Dymerz/StarCitizen-Localization/tree/main) | [`e46418b`](https://github.com/Dymerz/StarCitizen-Localization/commit/e46418bd83ce38b799c70856d255dd96ab5fe3c3) | `e46418b` | ✅ up to date (pinned at build) |
-| portuguese_br — [`danielgmota/StarCitizen-Localization@develop`](https://github.com/danielgmota/StarCitizen-Localization/tree/develop) | [`279a948`](https://github.com/danielgmota/StarCitizen-Localization/commit/279a94824cf9556dc40b4d371b85e3b0511b812e) | `279a948` | ✅ up to date (pinned at build) |
+| portuguese_br — [`danielgmota/StarCitizen-Localization@develop`](https://github.com/danielgmota/StarCitizen-Localization/tree/develop) | [`f91ce22`](https://github.com/danielgmota/StarCitizen-Localization/commit/f91ce22d6ab2b66c5c03665a1de6809ecbdd1ee3) | `f91ce22` | ✅ up to date (pinned at build) |
 | portuguese_br_dymerz — [`Dymerz/StarCitizen-Localization@main`](https://github.com/Dymerz/StarCitizen-Localization/tree/main) | [`e46418b`](https://github.com/Dymerz/StarCitizen-Localization/commit/e46418bd83ce38b799c70856d255dd96ab5fe3c3) | `e46418b` | ✅ up to date (pinned at build) |
 | spanish — [`Thord82/Star_citizen_ES@main`](https://github.com/Thord82/Star_citizen_ES/tree/main) | [`56e6215`](https://github.com/Thord82/Star_citizen_ES/commit/56e6215558b6e3f49851597289761154fa516781) | `56e6215` | ✅ up to date (pinned at build) |
 
