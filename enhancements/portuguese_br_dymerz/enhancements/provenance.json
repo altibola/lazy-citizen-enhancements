@@ -1,7 +1,7 @@
 {
   "build": "13165946",
   "language": "portuguese_br_dymerz",
-  "generated_at": "2026-11-16T20:06:10",
+  "generated_at": "2026-11-20T16:48:50",
   "inputs": {
     "base_en.ini": {
       "sha256": "99113d762aaabeb1519458e6fdca7b45610bcce3c5e3adfb795c79a96fcb7cea",
@@ -13,8 +13,8 @@
       "owner": "Dymerz",
       "repo": "StarCitizen-Localization",
       "branch": "main",
-      "commit": "e46418bd83ce38b799c70856d255dd96ab5fe3c3",
-      "permalink": "https://github.com/Dymerz/StarCitizen-Localization/blob/e46418bd83ce38b799c70856d255dd96ab5fe3c3/data/Localization/portuguese_(brazil)/global.ini"
+      "commit": "e497c66dbcdcb15d187c1477e1f3126a95b22100",
+      "permalink": "https://github.com/Dymerz/StarCitizen-Localization/blob/e497c66dbcdcb15d187c1477e1f3126a95b22100/data/Localization/portuguese_(brazil)/global.ini"
     }
   },
   "outputs": {

@@ -1,9 +1,9 @@
 {
   "url": "https://raw.githubusercontent.com/danielgmota/StarCitizen-Localization/develop/data/Localization/portuguese_(brazil)/global.ini",
-  "sha256": "06caf9892f1f23f323a55dd6ea4518cb70720b452818e57a7262ad20ce2f64e1",
+  "sha256": "ac0b880d94519c483336142a8a0cadeb074723c07cb4fdecb764e18663342bd9",
   "owner": "danielgmota",
   "repo": "StarCitizen-Localization",
   "branch": "develop",
-  "commit": "96728f1ad31e77f04062b50bd55614c6356ed65f",
-  "permalink": "https://github.com/danielgmota/StarCitizen-Localization/blob/96728f1ad31e77f04062b50bd55614c6356ed65f/data/Localization/portuguese_(brazil)/global.ini"
+  "commit": "647bcc5a9a3ac971d36c1253134327dcc051d0bb",
+  "permalink": "https://github.com/danielgmota/StarCitizen-Localization/blob/647bcc5a9a3ac971d36c1253134327dcc051d0bb/data/Localization/portuguese_(brazil)/global.ini"
 }
